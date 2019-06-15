@@ -1,0 +1,13 @@
+{
+    "name": "dominicus75/fig-standards",
+    "description": "A PHP Keretrendszerközi Átjárhatósági Munkacsoport által elfogadott szabványok magyar fordítása",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Domokos Endre János",
+            "email": "domokos.endrejanos@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
