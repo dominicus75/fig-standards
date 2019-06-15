@@ -47,8 +47,5 @@ Az alábbi tábla a teljesen minősített osztálynévhez tartozó névtér elő
 | \Symfony\Core\Request         | Symfony\Core       | ./vendor/Symfony/Core/   | ./vendor/Symfony/Core/Request.php
 | \Zend\Acl                     | Zend               | /usr/includes/Zend/      | /usr/includes/Zend/Acl.php
 
-A specifikációnak megfelelő autoloader minta-implementációkat az [ezeket tartalmazó fájlban][] lehet megcsodálni. Az ott szereplő minta-implementációkat NEM SZABAD a jelen specifikáció részének tekinteni, mivel bármikor változhatnak.
-
 [automatikus betöltését]: http://php.net/autoload
 [PSR-0]: PSR-0.md
-[ezeket tartalmazó fájlban]: PSR-4-autoloader-examples.md
