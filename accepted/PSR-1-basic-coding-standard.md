@@ -1,47 +1,39 @@
-# Basic Coding Standard
+# Alapvető kódolási szabvány
 
-This section of the standard comprises what should be considered the standard
-coding elements that are required to ensure a high level of technical
-interoperability between shared PHP code.
+Ez a PSR-ajánlás azokat a szabványos kódolási konvenciókat tartalmazza, amelyek a megosztott PHP-kódok magas szintű együttműködéséhez szükségesek.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119].
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-[RFC 2119]: http://www.ietf.org/rfc/rfc2119.txt
-[PSR-0]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
-[PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
+[PSR-0]: PSR-0.md
+[PSR-4]: PSR-4-autoloader.md
 
-## 1. Overview
+## 1. Áttekintés
 
-- Files MUST use only `<?php` and `<?=` tags.
+- A forrásfájlokban kizárólag `<?php` és `<?=` címkéket KELL használni.
 
-- Files MUST use only UTF-8 without BOM for PHP code.
+- A PHP forrásfájlokat kizárólag UTF-8 kódolással KELL elkészíteni, [BOM-kódolás](https://hu.wikipedia.org/wiki/UTF-8#BOM) nélkül.
 
-- Files SHOULD *either* declare symbols (classes, functions, constants, etc.)
-  *or* cause side-effects (e.g. generate output, change .ini settings, etc.)
-  but SHOULD NOT do both.
+- A forrásfájloknak AJÁNLOTT kizárólag entitásokat (osztályok, függvények, állandók, stb.) deklarálni, *vagy* mellékhatásokat kiváltani (pl. kimenetet generálása, .ini beállítások megváltoztatása, stb.), de NEM KELLENE mindkettőt csinálni egyszerre.
 
-- Namespaces and classes MUST follow an "autoloading" PSR: [[PSR-0], [PSR-4]].
+- Az osztályok és névterek elnevezésénél a következő ajánlásokat KELL figyelembe venni: [[PSR-0], [PSR-4]].
 
-- Class names MUST be declared in `StudlyCaps`.
+- Az osztályok elnevezésében a `StudlyCaps` vagy `PascalCase` stílust KELL követni.
 
-- Class constants MUST be declared in all upper case with underscore separators.
+- Az osztályállandók elnevezésének kizárólag nagybetűt és (szóelválasztóként) aláhúzás karaktert KELL tartalmaznia.
 
-- Method names MUST be declared in `camelCase`.
+- A metódusok/függvények elnevezésében a `camelCase` stílust KELL alkalmazni.
 
 ## 2. Files
 
-### 2.1. PHP Tags
+### 2.1. PHP címkék
 
-PHP code MUST use the long `<?php ?>` tags or the short-echo `<?= ?>` tags; it
-MUST NOT use the other tag variations.
+A PHP kódban kizárólag a hosszú `<?php ?>` címkék és a rövid-echoként is emlegetett `<?= ?>` címkéket KELL alkalmazni; bármilyen más címkevariáció alkalmazása TILOS.
 
-### 2.2. Character Encoding
+### 2.2. Karakterkódolás
 
-PHP code MUST use only UTF-8 without BOM.
+A PHP kódban kizárólag BOM nélküli UTF-8 kódolást KELL használni.
 
-### 2.3. Side Effects
+### 2.3. Mellékhatások
 
 A file SHOULD declare new symbols (classes, functions, constants,
 etc.) and cause no other side effects, or it SHOULD execute logic with side
@@ -97,7 +89,7 @@ if (! function_exists('bar')) {
 }
 ~~~
 
-## 3. Namespace and Class Names
+## 3. Névtér és osztálynevek
 
 Namespaces and classes MUST follow an "autoloading" PSR: [[PSR-0], [PSR-4]].
 
@@ -131,11 +123,11 @@ class Vendor_Model_Foo
 }
 ~~~
 
-## 4. Class Constants, Properties, and Methods
+## 4. Osztályállandók, tulajdonságok és metódusok
 
 The term "class" refers to all classes, interfaces, and traits.
 
-### 4.1. Constants
+### 4.1. Állandók
 
 Class constants MUST be declared in all upper case with underscore separators.
 For example:
@@ -151,7 +143,7 @@ class Foo
 }
 ~~~
 
-### 4.2. Properties
+### 4.2. Tulajdonságok
 
 This guide intentionally avoids any recommendation regarding the use of
 `$StudlyCaps`, `$camelCase`, or `$under_score` property names.
@@ -160,6 +152,6 @@ Whatever naming convention is used SHOULD be applied consistently within a
 reasonable scope. That scope may be vendor-level, package-level, class-level,
 or method-level.
 
-### 4.3. Methods
+### 4.3. Metódusok
 
 Method names MUST be declared in `camelCase()`.

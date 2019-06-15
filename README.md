@@ -36,6 +36,7 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 17  | [HTTP-gyárak][psr17]              | Woody Gilk                     | elfogadott   |
 | 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   |
 
+
 [psr0]: accepted/PSR-0.md
 [psr1]: accepted/PSR-1-basic-coding-standard.md
 [psr2]: accepted/PSR-2-coding-style-guide.md
