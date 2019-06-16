@@ -70,39 +70,35 @@ A kódnak követnie KELL a [PSR-1] alapvető kódolási szabvány összes rendel
 
 ### 2.2. Forrásfájlok
 
-All PHP files MUST use the Unix LF (soremelés) line ending.
+Minden PHP fájlban Unix LF (soremelés) karaktereket KELL használni a sorok lezárására.
 
-All PHP files MUST end with a single blank line.
+Minden PHP fájlnak egy üres sorral KELL véget érnie.
 
-The closing `?>` tag MUST be omitted from files containing only PHP.
+A záról `?>` php-címkét el KELL hagyni a kizárólag PHP-kódot tartalmazó fájlokból.
 
 ### 2.3. Sorok
 
-There MUST NOT be a hard limit on line length.
+A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani.
 
-The soft limit on line length MUST be 120 characters; automated style checkers
-MUST warn but MUST NOT error at the soft limit.
+A rugalmas korlátot 120 karakternél KELL meghúzni; az automatizált stílusellenőrzőknek ennek átlépésekor figyelmeztetést KELL dobniuk, hibát viszont NEM SZABAD.
 
-Lines SHOULD NOT be longer than 80 characters; lines longer than that SHOULD
-be split into multiple subsequent lines of no more than 80 characters each.
+Az egyes soroknak NEM KELLENE hosszabbnak lennie 80 karakternél; az ennél hosszabbakat AJÁNLOTT felosztani 80 karakternél nem hosszabb sorokra.
 
-There MUST NOT be trailing whitespace at the end of non-blank lines.
+A nem üres sorok végére TILOS szóközt tenni.
 
-Blank lines MAY be added to improve readability and to indicate related
-blocks of code.
+Az olvashatóság javítása és a kapcsolódó kódblokkok jelzése érdekében üres sorokat LEHET alkalmazni.
 
-There MUST NOT be more than one statement per line.
+Soronként NEM LEHET egynél több utasítás.
 
 ### 2.4. Behúzás
 
-Code MUST use an indent of 4 spaces, and MUST NOT use tabs for indenting.
+A kódban 4 szóközt KELL használni a sorok behúzására, tabulátort TILOS.
 
-> N.b.: Using only spaces, and not mixing spaces with tabs, helps to avoid
-> problems with diffs, patches, history, and annotations. The use of spaces
-> also makes it easy to insert fine-grained sub-indentation for inter-line
-> alignment.
+> Fontos: a szóközök kizárólagos (tehát nem tabulátorokkal kevert!) használata,
+> segít elkerülni a fájl összehasonlítással, javításokkal és egyebekkel kapcsolatos
+> problémákat.
 
-### 2.5. Kulcsszavak és True/False/Null értékek
+### 2.5. Kulcsszavak és a True/False/Null értékek
 
 PHP [keywords] MUST be in lower case.
 
