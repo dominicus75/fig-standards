@@ -35,52 +35,45 @@ A PHP kódban kizárólag BOM nélküli UTF-8 kódolást KELL használni.
 
 ### 2.3. Mellékhatások
 
-A file SHOULD declare new symbols (classes, functions, constants,
-etc.) and cause no other side effects, or it SHOULD execute logic with side
-effects, but SHOULD NOT do both.
+Egy forrásfájlnak csak új adatszerkezeteket és működési logikát (osztályok, függvények, állandók,
+stb.) KELLENE deklarálni és nem okozhat más mellékhatást, illetve nem változtathatja meg az alkalmazás állapotát vagy a csak működési logikát KELLENE végrehajtania mellékhatásokat is kiváltva, de NEM KELLENE mindkettőt egyszerre.
 
-The phrase "side effects" means execution of logic not directly related to
-declaring classes, functions, constants, etc., *merely from including the
-file*.
+A "mellékhatások" kifejezés olyan logika *pusztán a tartalmazó fájl betöltődéséből fakadó* végrehajtását jelenti, amely nem közvetlenül az osztályok, függvények, állandók és egyebek deklarálásához kapcsolódik.
 
-"Side effects" include but are not limited to: generating output, explicit
-use of `require` or `include`, connecting to external services, modifying ini
-settings, emitting errors or exceptions, modifying global or static variables,
-reading from or writing to a file, and so on.
+A "mellékhatások" közé tartozik: a kimenet generálása, a `require` vagy `include` használata, kapcsolódás külső szolgáltatásokhoz, az ini beállítások módosítása, hibák és kivételek dobása, globális és statikus változók módosítása, állományok beolvasása és írása, stb.
 
-The following is an example of a file with both declarations and side effects;
-i.e, an example of what to avoid:
+Az alábbiakban egy olyan példakód látható, amelyben ugyanazon fájlban találhatunk deklarációkat és mellékhatást kiváltó utasításokat, tehát egy példát arra, hogy mit kell kerülnünk:
 
 ~~~php
 <?php
-// side effect: change ini settings
+// mellékhatás: php.ini beállítás megváltoztatása
 ini_set('error_reporting', E_ALL);
 
-// side effect: loads a file
+// mellékhatás: állomány betöltése
 include "file.php";
 
-// side effect: generates output
+// mellékhatás: kimenet generálása
 echo "<html>\n";
 
-// declaration
+// függvény deklaráció
 function foo()
 {
     // function body
 }
 ~~~
 
-The following example is of a file that contains declarations without side
-effects; i.e., an example of what to emulate:
+A következő példakód egy olyan fájlt mutat be, amely mellékhatások nélkül tartalmazza a függvény deklarációt, vagyis a követendő példát szemlélteti:
 
 ~~~php
 <?php
-// declaration
+
+// függvény deklaráció
 function foo()
 {
     // function body
 }
 
-// conditional declaration is *not* a side effect
+// egy feltételes deklaráció, ami *nem minősül* mellékhatásnak
 if (! function_exists('bar')) {
     function bar()
     {
@@ -91,20 +84,19 @@ if (! function_exists('bar')) {
 
 ## 3. Névtér és osztálynevek
 
-Namespaces and classes MUST follow an "autoloading" PSR: [[PSR-0], [PSR-4]].
+Az osztályok és névterek elnevezésénél a következő ajánlásokat KELL figyelembe venni: [[PSR-0], [PSR-4]]
 
-This means each class is in a file by itself, and is in a namespace of at
-least one level: a top-level vendor name.
+Ez azt jelenti, hogy minden osztálynak (interfésznek, trait-nek) önmagában egy külön fájlban kell lennie, és legalább egy névtérben kell helyet foglalnia, ez a kötelezően elvárt legfelsőbb szintű névtér pedig a szállító (vendor) egyedi neve.
 
-Class names MUST be declared in `StudlyCaps`.
+Az osztályok elnevezésében a `StudlyCaps` vagy `PascalCase` stílust KELL követni. Ez azt jelenti, hogy a névnek nagy betűvel kell kezdődnie és több szóból álló elnevezés esetén minden szót nagy kezdőbetűvel (és nem aláhúzás karakterrel) választunk el a többitől, valahogy így: `OsztalyNeveAmiCsinalValamit`.
 
-Code written for PHP 5.3 and after MUST use formal namespaces.
+A PHP 5.3 vagy újabb változataiban írt kódokban formális névtereket KELL használni.
 
-For example:
+Példakód:
 
 ~~~php
 <?php
-// PHP 5.3 and later:
+// PHP 5.3 vagy újabb:
 namespace Vendor\Model;
 
 class Foo
@@ -112,12 +104,11 @@ class Foo
 }
 ~~~
 
-Code written for 5.2.x and before SHOULD use the pseudo-namespacing convention
-of `Vendor_` prefixes on class names.
+A PHP 5.2.x vagy annál régebbi változatiban írt kódban AJÁNLOTT az ál/pszeudo-névtér konvenció alkalmazása, ahol a szállító neve előtagként (`Vendor_`) kapcsolódik az osztály nevéhez, aláhúzás karakterrel elválasztva.
 
 ~~~php
 <?php
-// PHP 5.2.x and earlier:
+// PHP 5.2.x vagy régebbi:
 class Vendor_Model_Foo
 {
 }
@@ -125,12 +116,11 @@ class Vendor_Model_Foo
 
 ## 4. Osztályállandók, tulajdonságok és metódusok
 
-The term "class" refers to all classes, interfaces, and traits.
+Az "osztály" kifejezés jelen dokumentumban az összes osztályra, interfészre, traitre vonatkozik.
 
 ### 4.1. Állandók
 
-Class constants MUST be declared in all upper case with underscore separators.
-For example:
+Az osztályállandók elnevezésének kizárólag nagybetűt és (szóelválasztóként) aláhúzás karaktert KELL tartalmaznia, mint az alábbi példában:
 
 ~~~php
 <?php
@@ -145,13 +135,10 @@ class Foo
 
 ### 4.2. Tulajdonságok
 
-This guide intentionally avoids any recommendation regarding the use of
-`$StudlyCaps`, `$camelCase`, or `$under_score` property names.
+Jelen ajánlás szándékosan kerüli, hogy bármilyen ajánlást fogalmazzon meg a `$StudlyCaps`, `$camelCase`, vagy `$under_score` stílusú tulajdonságnevekkel kapcsolatban.
 
-Whatever naming convention is used SHOULD be applied consistently within a
-reasonable scope. That scope may be vendor-level, package-level, class-level,
-or method-level.
+Akármelyik elnevezési konvenciót lehet alkalmazni, de arra KELLENE törekedni, hogy ezt észszerű határokon belül következetesen tegyük. A hatókör, amelyen belül egységesen egy elnevezési konvencióhoz KELLENE ragaszkodni lehet szállítói-, csomag-, osztály-, vagy metódus szint.
 
 ### 4.3. Metódusok
 
-Method names MUST be declared in `camelCase()`.
+A metódusok/függvények elnevezésében a `camelCase` stílust KELL alkalmazni. Ez azt jelenti, hogy a névnek kisbetűvel kell kezdődnie és több szóból álló elnevezés esetén minden szót nagy kezdőbetűvel (és nem aláhúzás karakterrel) választunk el a többitől, valahogy így: `valamitCsinaloFuggveny()`.
