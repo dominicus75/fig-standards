@@ -27,7 +27,7 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 211
 
 ### 2.1. PHP címkék
 
-A PHP kódban kizárólag a hosszú `<?php ?>` címkék és a rövid-echoként is emlegetett `<?= ?>` címkéket KELL alkalmazni; bármilyen más címkevariáció alkalmazása TILOS.
+A PHP kódban kizárólag a hosszú `<?php ?>` illetve a rövid-echoként is emlegetett `<?= ?>` címkéket KELL alkalmazni; bármilyen más címkevariáció alkalmazása TILOS.
 
 ### 2.2. Karakterkódolás
 
