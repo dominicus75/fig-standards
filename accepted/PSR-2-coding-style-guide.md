@@ -70,11 +70,11 @@ A kódnak követnie KELL a [PSR-1] alapvető kódolási szabvány összes rendel
 
 ### 2.2. Forrásfájlok
 
-Minden PHP fájlban Unix LF (soremelés) karaktereket KELL használni a sorok lezárására.
+Minden PHP fájlban Unix LF (soremelés, `\n`) karaktereket KELL használni a sorok lezárására.
 
 Minden PHP fájlnak egy üres sorral KELL véget érnie.
 
-A záról `?>` php-címkét el KELL hagyni a kizárólag PHP-kódot tartalmazó fájlokból.
+A záró `?>` php-címkét el KELL hagyni a kizárólag PHP-kódot tartalmazó fájlokból.
 
 ### 2.3. Sorok
 
@@ -98,7 +98,7 @@ A kódban 4 szóközt KELL használni a sorok behúzására, tabulátort TILOS.
 > segít elkerülni a fájl összehasonlítással, javításokkal és egyebekkel kapcsolatos
 > problémákat.
 
-### 2.5. Kulcsszavak és a True/False/Null értékek
+### 2.5. Kulcsszavak és a true/false/null értékek
 
 PHP [keywords] MUST be in lower case.
 
