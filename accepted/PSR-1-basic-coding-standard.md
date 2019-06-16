@@ -23,7 +23,7 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 211
 
 - A metódusok/függvények elnevezésében a `camelCase` stílust KELL alkalmazni.
 
-## 2. Files
+## 2. Forrásfájlok
 
 ### 2.1. PHP címkék
 
