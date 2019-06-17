@@ -36,13 +36,13 @@ A PHP kódban kizárólag BOM nélküli UTF-8 kódolást KELL használni.
 ### 2.3. Mellékhatások
 
 Egy forrásfájlnak csak új adatszerkezeteket és működési logikát (osztályok, függvények, állandók,
-stb.) KELLENE deklarálni és nem okozhat más mellékhatást, illetve nem változtathatja meg az alkalmazás állapotát vagy a csak működési logikát KELLENE végrehajtania mellékhatásokat is kiváltva, de NEM KELLENE mindkettőt egyszerre.
+stb.) KELLENE deklarálni és nem okozhat más mellékhatást, illetve nem változtathatja meg az alkalmazás állapotát; vagy a csak működési logikát KELLENE végrehajtania mellékhatásokat is kiváltva, de NEM KELLENE mindkettőt egyszerre.
 
 A "mellékhatások" kifejezés olyan logika *pusztán a tartalmazó fájl betöltődéséből fakadó* végrehajtását jelenti, amely nem közvetlenül az osztályok, függvények, állandók és egyebek deklarálásához kapcsolódik.
 
 A "mellékhatások" közé tartozik: a kimenet generálása, a `require` vagy `include` használata, kapcsolódás külső szolgáltatásokhoz, az ini beállítások módosítása, hibák és kivételek dobása, globális és statikus változók módosítása, állományok beolvasása és írása, stb.
 
-Az alábbiakban egy olyan példakód látható, amelyben ugyanazon fájlban találhatunk deklarációkat és mellékhatást kiváltó utasításokat, tehát egy példát arra, hogy mit kell kerülnünk:
+Az alábbiakban egy olyan kód látható, amelyben ugyanazon fájlban találhatunk deklarációkat és mellékhatást kiváltó utasításokat, tehát egy példát arra, hogy mit kell kerülnünk:
 
 ~~~php
 <?php
@@ -70,14 +70,14 @@ A következő példakód egy olyan fájlt mutat be, amely mellékhatások nélk�
 // függvény deklaráció
 function foo()
 {
-    // function body
+    // függvénytörzs
 }
 
-// egy feltételes deklaráció, ami *nem minősül* mellékhatásnak
+// egy feltételes deklaráció, ami nem minősül mellékhatásnak
 if (! function_exists('bar')) {
     function bar()
     {
-        // function body
+        // függvénytörzs
     }
 }
 ~~~
@@ -116,7 +116,7 @@ class Vendor_Model_Foo
 
 ## 4. Osztályállandók, tulajdonságok és metódusok
 
-Az "osztály" kifejezés jelen dokumentumban az összes osztályra, interfészre, traitre vonatkozik.
+Az "osztály" kifejezés jelen dokumentumban az összes osztályra, interfészre, trait-re vonatkozik.
 
 ### 4.1. Állandók
 

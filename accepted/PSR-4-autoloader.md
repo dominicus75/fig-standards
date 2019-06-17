@@ -8,7 +8,7 @@ Ez a PSR az osztályok fájlelérési út szerinti [automatikus betöltését][]
 
 ## 2. Specifikáció
 
-1. Az "osztály" kifejezés utalhat osztályokra, interfészekre, trétekre vagy más hasonló struktúrákra.
+1. Az "osztály" kifejezés vonatkozhat osztályokra, interfészekre, trétekre vagy más hasonló struktúrákra.
 
 2. Egy teljesen minősített osztálynévnek a következő sémát kell követnie:
 

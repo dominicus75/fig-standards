@@ -16,7 +16,7 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 211
 - A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani; a rugalmas korlátot 120
   karakternél KELL meghúzni; a soroknak legfeljebb 80 karakter hosszúnak KELLENE lenniük.
 
-- A `namespace` deklarációt üres sornak KELL követni, ahogy a `use` deklarációk blokkját is egy üres sorral KELL elválasztani a kód további részétől.
+- A `namespace` deklarációt üres sornak KELL követni, ahogy a `use` operátorok blokkját is egy üres sorral KELL elválasztani a kód további részétől.
 
 - Az osztálydeklarációk nyitó (kapcsos-)zárójelét a következő sorban KELL elhelyezni, az osztálytörzset befejező zárójelet pedig a törzs után következő sorban.
 
@@ -57,7 +57,7 @@ class Foo extends Bar implements FooInterface
 
     final public static function bar()
     {
-        // method body
+        // függvénytörzs
     }
 }
 ~~~
@@ -100,51 +100,50 @@ A kódban 4 szóközt KELL használni a sorok behúzására, tabulátort TILOS.
 
 ### 2.5. Kulcsszavak és a true/false/null értékek
 
-PHP [keywords] MUST be in lower case.
+A PHP [kulcsszavakat] kisbetűvel KELL írni.
 
-The PHP constants `true`, `false`, and `null` MUST be in lower case.
+A `true`, `false`, és `null` értékeket szintén kisbetűvel KELL írni.
 
-[keywords]: http://php.net/manual/en/reserved.keywords.php
+[kulcsszavakat]: http://php.net/manual/en/reserved.keywords.php
 
-## 3. Névtér és `use` deklarációk
+## 3. Névtér deklarációk és a `use` operátor
 
-When present, there MUST be one blank line after the `namespace` declaration.
+A `namespace` deklarációt üres sornak KELL követni.
 
-When present, all `use` declarations MUST go after the `namespace`
-declaration.
+A `use` operátoroknak a névtér deklaráció után KELL következnie.
 
-There MUST be one `use` keyword per declaration.
+A `use` kulcsszónak csak egyszer KELL szerepelnie deklarációnként.
 
-There MUST be one blank line after the `use` block.
+A `use` operátorok blokkját egy üres sorral KELL elválasztani a kód további részétől.
 
-For example:
+Példa a fenti szabályok alkalmazásra:
 
 ~~~php
 <?php
+
 namespace Vendor\Package;
 
 use FooClass;
 use BarClass as Bar;
 use OtherVendor\OtherPackage\BazClass;
 
-// ... additional PHP code ...
+// ... további PHP kód ...
 
 ~~~
 
 ## 4. Osztályok, tulajdonságok és metódusok
 
-The term "class" refers to all classes, interfaces, and traits.
+Az "osztály" kifejezés ebben a dokumentumban egyaránt vonatkozik osztályokra, interfészekre vagy trait-ekre.
 
-### 4.1. Kiterjeszt és megvalósít kulcsszavak
+### 4.1. Az `extends` és az `implements` kulcsszavak
 
-The `extends` and `implements` keywords MUST be declared on the same line as
-the class name.
+Az `extends` és az `implements` kulcsszavaknak az osztálynévvel egy sorban KELL lenniük.
 
-The opening brace for the class MUST go on its own line; the closing brace
-for the class MUST go on the next line after the body.
+Az osztálydeklarációk nyitó (kapcsos-)zárójelét külön sorban KELL elhelyezni (a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
 
 ~~~php
 <?php
+
 namespace Vendor\Package;
 
 use FooClass;
@@ -153,7 +152,7 @@ use OtherVendor\OtherPackage\BazClass;
 
 class ClassName extends ParentClass implements \ArrayAccess, \Countable
 {
-    // constants, properties, methods
+    // állandók, tulajdonságok, metódusok
 }
 ~~~
 
