@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 # Önbetöltő (autoloader) szabvány
 
 A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
@@ -49,3 +51,5 @@ Az alábbi tábla a teljesen minősített osztálynévhez tartozó névtér elő
 
 [automatikus betöltését]: http://php.net/autoload
 [PSR-0]: PSR-0.md
+
+[Kezdőlap](../README.md)
