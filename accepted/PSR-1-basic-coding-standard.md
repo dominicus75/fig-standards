@@ -135,7 +135,7 @@ class Foo
 
 ### 4.2. Tulajdonságok
 
-Jelen ajánlás szándékosan kerüli, hogy bármilyen ajánlást fogalmazzon meg a `$StudlyCaps`, `$camelCase`, vagy `$under_score` stílusú tulajdonságnevekkel kapcsolatban.
+Jelen dokumentum szándékosan kerüli, hogy bármilyen ajánlást fogalmazzon meg a `$StudlyCaps`, `$camelCase`, vagy `$under_score` stílusú tulajdonságnevekkel kapcsolatban.
 
 Akármelyik elnevezési konvenciót lehet alkalmazni, de arra KELLENE törekedni, hogy ezt észszerű határokon belül következetesen tegyük. A hatókör, amelyen belül egységesen egy elnevezési konvencióhoz KELLENE ragaszkodni lehet szállítói-, csomag-, osztály-, vagy metódus szint.
 

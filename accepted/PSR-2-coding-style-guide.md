@@ -1,8 +1,13 @@
 # Kódolási stílus útmutató
 
-Ez az útmutató kibővíti a [PSR-1] alapvető kódolási szabványt. Célja, hogy csökkentse az értelmezési nehézségeket a különböző szerzőktől származó kódok olvasása közben. Ennek érdekében a PHP kód formázására vonatkozó közös szabály-, és elvárásrendszert állít fel. Az itt szereplő stilisztikai szabályok a munkacsoport [tagprojektjei](../personel.md) mögött álló fejlesztői közösségekből származnak.
+Ez az útmutató kibővíti a [PSR-1] alapvető kódolási szabványt. Célja, hogy csökkentse
+az értelmezési nehézségeket a különböző szerzőktől származó kódok olvasása közben.
+Ennek érdekében a PHP kód formázására vonatkozó közös szabály-, és elvárásrendszert állít fel.
+Az itt szereplő stilisztikai szabályok a munkacsoport [tagprojektjei](../personel.md)
+mögött álló fejlesztői közösségekből származnak.
 
-A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban
+az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 [PSR-0]: PSR-0.md
 [PSR-1]: PSR-1-basic-coding-standard.md
@@ -13,20 +18,27 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 211
 
 - A kódban 4 szóközt KELL használni a sorok behúzására, nem tabulátort.
 
-- A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani; a rugalmas korlátot 120
-  karakternél KELL meghúzni; a soroknak legfeljebb 80 karakter hosszúnak KELLENE lenniük.
+- A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani; a rugalmas korlátot
+120 karakternél KELL meghúzni; a soroknak legfeljebb 80 karakter hosszúnak KELLENE lenniük.
 
-- A `namespace` deklarációt üres sornak KELL követni, ahogy a `use` operátorok blokkját is egy üres sorral KELL elválasztani a kód további részétől.
+- A `namespace` deklarációt üres sornak KELL követni, ahogy a `use` operátorok
+blokkját is egy üres sorral KELL elválasztani a kód további részétől.
 
-- Az osztálydeklarációk nyitó (kapcsos-)zárójelét a következő sorban KELL elhelyezni, az osztálytörzset befejező zárójelet pedig a törzs után következő sorban.
+- Az osztálydeklarációk nyitó kapcsos zárójelét a következő sorban KELL elhelyezni,
+az osztálytörzset befejező zárójelet pedig a törzs után következő sorban.
 
-- A metódusok nyitó zárójelét szintén új sorba KELL írni, a befejező zárójelnek pedig a törzs utáni sorba KELL kerülni.
+- A metódusok nyitó zárójelét szintén új sorba KELL írni, a befejező zárójelnek
+pedig a törzs utáni sorba KELL kerülni.
 
-- A láthatóságot minden metódusnál és tulajdonságnál be KELL állítani; az `abstract` és `final` kulcsszónak a láthatóság előtt KELL szerepelnie; míg a `static` kulcsszót a láthatósági deklaráció után KELL feltüntetni.
+- A láthatóságot minden metódusnál és tulajdonságnál be KELL állítani;
+az `abstract` és `final` kulcsszónak a láthatóság előtt KELL szerepelnie; míg
+a `static` kulcsszót a láthatósági deklaráció után KELL feltüntetni.
 
-- A vezérlési szerkezetek kulcsszavai után egy szóközt KELL hagyni; viszont metódus-, és függvényhívás után ezt TILOS.
+- A vezérlési szerkezetek kulcsszavai után egy szóközt KELL hagyni; viszont metódus-,
+és függvényhívás után ezt TILOS.
 
-- A vezérlési szerkezetek nyitó zárójelét ugyanabban a sorban KELL elhelyezni, a befejező zárójelnek pedig a törzs utáni sorba KELL kerülni.
+- A vezérlési szerkezetek nyitó zárójelét ugyanabban a sorban KELL elhelyezni,
+a befejező zárójelnek pedig a törzs utáni sorba KELL kerülni.
 
 - A vezérlési szerkezetek nyitó zárójele után és befejező zárójele előtt NEM LEHET szóköz.
 
@@ -80,9 +92,11 @@ A záró `?>` php-címkét el KELL hagyni a kizárólag PHP-kódot tartalmazó f
 
 A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani.
 
-A rugalmas korlátot 120 karakternél KELL meghúzni; az automatizált stílusellenőrzőknek ennek átlépésekor figyelmeztetést KELL dobniuk, hibát viszont NEM SZABAD.
+A rugalmas korlátot 120 karakternél KELL meghúzni; az automatizált
+stílusellenőrzőknek ennek átlépésekor figyelmeztetést KELL dobniuk, hibát viszont NEM SZABAD.
 
-Az egyes soroknak NEM KELLENE hosszabbnak lennie 80 karakternél; az ennél hosszabbakat AJÁNLOTT felosztani 80 karakternél nem hosszabb sorokra.
+Az egyes soroknak NEM KELLENE hosszabbnak lennie 80 karakternél; az ennél
+hosszabbakat AJÁNLOTT felosztani 80 karakternél nem hosszabb sorokra.
 
 A nem üres sorok végére TILOS szóközt tenni.
 
@@ -112,7 +126,7 @@ A `namespace` deklarációt üres sornak KELL követni.
 
 A `use` operátoroknak a névtér deklaráció után KELL következnie.
 
-A `use` kulcsszónak csak egyszer KELL szerepelnie deklarációnként.
+A `use` operátornak csak egyszer KELL szerepelnie deklarációnként.
 
 A `use` operátorok blokkját egy üres sorral KELL elválasztani a kód további részétől.
 
@@ -133,13 +147,15 @@ use OtherVendor\OtherPackage\BazClass;
 
 ## 4. Osztályok, tulajdonságok és metódusok
 
-Az "osztály" kifejezés ebben a dokumentumban egyaránt vonatkozik osztályokra, interfészekre vagy trait-ekre.
+Az "osztály" kifejezés ebben a dokumentumban egyaránt vonatkozik osztályokra,
+interfészekre vagy trait-ekre.
 
 ### 4.1. Az `extends` és az `implements` kulcsszavak
 
 Az `extends` és az `implements` kulcsszavaknak az osztálynévvel egy sorban KELL lenniük.
 
-Az osztálydeklarációk nyitó (kapcsos-)zárójelét külön sorban KELL elhelyezni (a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
+Az osztálydeklarációk nyitó (kapcsos-)zárójelét külön sorban KELL elhelyezni
+(a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
 
 ~~~php
 <?php
@@ -156,9 +172,10 @@ class ClassName extends ParentClass implements \ArrayAccess, \Countable
 }
 ~~~
 
-Lists of `implements` MAY be split across multiple lines, where each
-subsequent line is indented once. When doing so, the first item in the list
-MUST be on the next line, and there MUST be only one interface per line.
+A megvalósított interfészek listáját (`implements`) több sorba is szét LEHET tördelni,
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk,
+akkor a lista első elemének a következő sorba KELL kerülnie és soronként csak
+egyetlen interfészt KELL feltüntetni, ahogy a következő példában is látható:
 
 ~~~php
 <?php
@@ -173,25 +190,27 @@ class ClassName extends ParentClass implements
     \Countable,
     \Serializable
 {
-    // constants, properties, methods
+    // állandók, tulajdonságok, metódusok
 }
 ~~~
 
 ### 4.2. Tulajdonságok
 
-Visibility MUST be declared on all properties.
+A láthatóságot minden objektumtulajdonsághoz meg KELL adni.
 
-The `var` keyword MUST NOT be used to declare a property.
+Az elavult, de kompatibilitási okokból még támogatott `var` kulcsszót TILOS használni
+az objektumtulajdonságok deklarálásánál.
 
-There MUST NOT be more than one property declared per statement.
+Utasításonként egynél több tulajdonságot TILOS deklarálni.
 
-Property names SHOULD NOT be prefixed with a single underscore to indicate
-protected or private visibility.
+Az objektumtulajdonságok láthatósági szintjét (`private` vagy `protected`)
+NEM AJÁNLOTT aláhúzás karakterrel jelezni a tulajdonságnév elején.
 
-A property declaration looks like the following.
+Az előadottak tükrében egy objektumtulajdonság-deklarációnak valahogy így kellene kinéznie:
 
 ~~~php
 <?php
+
 namespace Vendor\Package;
 
 class ClassName
@@ -202,18 +221,22 @@ class ClassName
 
 ### 4.3. Metódusok
 
-Visibility MUST be declared on all methods.
+A láthatóságot minden objektum metódushoz meg KELL adni.
 
-Method names SHOULD NOT be prefixed with a single underscore to indicate
-protected or private visibility.
+A metódusok láthatósági szintjét (`private` vagy `protected`)
+NEM AJÁNLOTT aláhúzás karakterrel jelezni a metódusnév elején.
 
-Method names MUST NOT be declared with a space after the method name. The
+A metódusnév után TILOS szóközt tenni.
+Az osztálydeklarációk nyitó kapcsoszárójelét külön sorban KELL elhelyezni
+(a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
+
+The
 opening brace MUST go on its own line, and the closing brace MUST go on the
 next line following the body. There MUST NOT be a space after the opening
 parenthesis, and there MUST NOT be a space before the closing parenthesis.
 
-A method declaration looks like the following. Note the placement of
-parentheses, commas, spaces, and braces:
+A fentiek alapján egy metódus deklarációnak a következőképpen kellene kinéznie.
+Különösen figyeljünk oda a zárójelek, vesszők és szóközök elhelyezésére:
 
 ~~~php
 <?php
