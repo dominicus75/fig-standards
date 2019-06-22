@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 # Kódolási stílus útmutató
 
 Ez az útmutató kibővíti a [PSR-1] alapvető kódolási szabványt. Célja, hogy csökkentse
@@ -604,3 +606,5 @@ guide. These include but are not limited to:
 
 Future recommendations MAY revise and extend this guide to address those or
 other elements of style and practice.
+
+[Kezdőlap](../README.md)
