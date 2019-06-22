@@ -21,7 +21,7 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 211
 
 - Az osztályállandók elnevezésének kizárólag nagybetűt és (szóelválasztóként) aláhúzás karaktert KELL tartalmaznia.
 
-- A metódusok/függvények elnevezésében a `camelCase` stílust KELL alkalmazni.
+- A metódusok/függvények elnevezésében a [`camelCase`](https://hu.wikipedia.org/wiki/CamelCase) stílust KELL alkalmazni.
 
 ## 2. Forrásfájlok
 
