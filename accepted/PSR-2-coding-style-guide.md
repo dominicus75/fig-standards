@@ -226,17 +226,14 @@ A láthatóságot minden objektum metódushoz meg KELL adni.
 A metódusok láthatósági szintjét (`private` vagy `protected`)
 NEM AJÁNLOTT aláhúzás karakterrel jelezni a metódusnév elején.
 
-A metódusnév után TILOS szóközt tenni.
-Az osztálydeklarációk nyitó kapcsoszárójelét külön sorban KELL elhelyezni
-(a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
-
-The
-opening brace MUST go on its own line, and the closing brace MUST go on the
-next line following the body. There MUST NOT be a space after the opening
-parenthesis, and there MUST NOT be a space before the closing parenthesis.
+A metódusnév után TILOS szóközt tenni. A metódus esetleges paramétereit tartalmazó
+kerek zárójel nyitó eleme után és záró eleme előtt NEM LEHET szóköz. Az osztálydeklarációk
+nyitó kapcsos zárójelét külön sorban KELL elhelyezni (a deklaráció után),
+az osztálytörzset befejező kapcsos zárójelet pedig a törzs utáni sorban.
 
 A fentiek alapján egy metódus deklarációnak a következőképpen kellene kinéznie.
-Különösen figyeljünk oda a zárójelek, vesszők és szóközök elhelyezésére:
+Különösen figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és
+szóközök elhelyezésére:
 
 ~~~php
 <?php
@@ -246,18 +243,17 @@ class ClassName
 {
     public function fooBarBaz($arg1, &$arg2, $arg3 = [])
     {
-        // method body
+        // függvénytörzs
     }
 }
 ~~~
 
 ### 4.4. Metódus paraméterek
 
-In the argument list, there MUST NOT be a space before each comma, and there
-MUST be one space after each comma.
+A metódusok paraméterlistájában az egyes paraméterek utáni vessző elé TILOS
+szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
-Method arguments with default values MUST go at the end of the argument
-list.
+Az alapértelmezett értéket tartalmazó metódus paramétereknek a lista végén KELL elhelyezkedni.
 
 ~~~php
 <?php
@@ -267,18 +263,19 @@ class ClassName
 {
     public function foo($arg1, &$arg2, $arg3 = [])
     {
-        // method body
+        // függvénytörzs
     }
 }
 ~~~
 
-Argument lists MAY be split across multiple lines, where each subsequent line
-is indented once. When doing so, the first item in the list MUST be on the
-next line, and there MUST be only one argument per line.
+A metódus paraméterlistáját több sorba is szét LEHET tördelni, ahol minden egyes sort
+egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk, akkor a lista
+első elemének a következő sorba KELL kerülnie és soronként csak egyetlen paramétert
+KELL feltüntetni.
 
-When the argument list is split across multiple lines, the closing parenthesis
-and opening brace MUST be placed together on their own line with one space
-between them.
+Ha a paraméterlistát külön sorokba tördeljük, akkor a listát lezáró kerek zárójelet
+és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet külön sorba KELL írni,
+szóközzel elválasztva, ahogy az alábbi példában is látható:
 
 ~~~php
 <?php
@@ -291,18 +288,17 @@ class ClassName
         &$arg2,
         array $arg3 = []
     ) {
-        // method body
+        // függvénytörzs
     }
 }
 ~~~
 
 ### 4.5. `abstract`, `final`, és `static`
 
-When present, the `abstract` and `final` declarations MUST precede the
-visibility declaration.
+Ha szükség van rájuk, akkor az `abstract` és a `final` kulcsszavaknak meg KELL
+előzniük a láthatósági beállítást a deklarációkban.
 
-When present, the `static` declaration MUST come after the visibility
-declaration.
+Ellenben a `static` kulcsszónak a láthatósági deklaráció után KELL állnia.
 
 ~~~php
 <?php
@@ -316,7 +312,7 @@ abstract class ClassName
 
     final public static function bar()
     {
-        // method body
+        // függvénytörzs
     }
 }
 ~~~
