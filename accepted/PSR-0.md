@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 Önbetöltő (autoloader) szabvány
 ===============================
 
@@ -68,4 +70,6 @@ SplClassLoader megvalósítás
 A következő gist egy egyszerű SplClassLoader megvalósítást mutat be, amely gond nélkül képes betölteni azon osztályokat, amelyek elnevezésében követték a fenti kölcsönös használhatósági szabályokat.
 
 * [http://gist.github.com/221634](http://gist.github.com/221634)
+
+[Kezdőlap](../README.md)
 
