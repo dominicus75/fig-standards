@@ -388,7 +388,7 @@ kulcsszó egységesen egybe legyen írva.
 ### 5.2. A `switch` szerkezet és a `case` elágazás
 
 A `switch` szerkezetnek az alábbi példakódhoz hasonlóan kell kinéznie. Különösen
-figyeljünk oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+figyeljünk oda a kerek és kapcsos zárójelek, szóközök elhelyezésére.
 A `case` elágazást a `switch`-hez viszonyítva egy behúzással beljebb KELL kezdeni,
 a `break` kulcsszót (vagy más lezáró kulcsszót) a `case` törzsével azonos szinten
  KELL elhelyezni. Amikor egy nem üres `case`-törzsben a továbblépés szándékos, akkor
@@ -418,7 +418,7 @@ switch ($expr) {
 ### 5.3. A `while` és a `do while` ciklusok
 
 A `while` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
-oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+oda a kerek és kapcsos zárójelek, szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -428,8 +428,8 @@ while ($expr) {
 ~~~
 
 A `do while` ciklus nem sokban különbözik a `while` ciklustól, így a rá vonatkozó
-szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos zárójelek, vesszők
-és szóközök elhelyezésére.
+szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos zárójelek és
+szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -441,7 +441,7 @@ do {
 ### 5.4. A `for` ciklus
 
 A `for` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
-oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -453,7 +453,7 @@ for ($i = 0; $i < 10; $i++) {
 ### 5.5. `foreach`
 
 A `foreach` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
-oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -465,7 +465,7 @@ foreach ($iterable as $key => $value) {
 ### 5.6. `try`, `catch`
 
 A `try catch` blokknak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
-oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
