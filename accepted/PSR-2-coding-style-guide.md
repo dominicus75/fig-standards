@@ -37,10 +37,11 @@ a `static` kulcsszót a láthatósági deklaráció után KELL feltüntetni.
 - A vezérlési szerkezetek kulcsszavai után egy szóközt KELL hagyni; viszont metódus-,
 és függvényhívás után ezt TILOS.
 
-- A vezérlési szerkezetek nyitó zárójelét ugyanabban a sorban KELL elhelyezni,
-a befejező zárójelnek pedig a törzs utáni sorba KELL kerülni.
+- A vezérlési szerkezetek törzsét határoló kapcsos zárójel nyitó elemét ugyanabban
+a sorban KELL elhelyezni, a záró elemnek pedig a törzs utáni sorba KELL kerülni.
 
-- A vezérlési szerkezetek nyitó zárójele után és befejező zárójele előtt NEM LEHET szóköz.
+- A vezérlési szerkezetnek átadandó paramétereket tartalmazó kerek zárójelek nyitó
+eleme után és befejező eleme előtt NEM LEHET szóköz.
 
 ### 1.1. Példakód
 
@@ -319,11 +320,12 @@ abstract class ClassName
 
 ### 4.6. Metódus-, és függvényhívás
 
-When making a method or function call, there MUST NOT be a space between the
-method or function name and the opening parenthesis, there MUST NOT be a space
-after the opening parenthesis, and there MUST NOT be a space before the
-closing parenthesis. In the argument list, there MUST NOT be a space before
-each comma, and there MUST be one space after each comma.
+Metódus-, vagy függvényhívás esetén a hívott metódus vagy függvény neve és a paraméterlista
+kezdő zárójele közé - a 4.3. pontban megénekelt metódus-deklarációhoz hasonlóan - TILOS
+szóközt tenni, ugyanúgy a paraméterlistát határoló kerek zárójel nyitó eleme után és
+záró eleme előtt NEM LEHET szóköz. A meghívott metódus paraméterlistájában az egyes
+paraméterek utáni vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
+
 
 ~~~php
 <?php
@@ -332,142 +334,147 @@ $foo->bar($arg1);
 Foo::bar($arg2, $arg3);
 ~~~
 
-Argument lists MAY be split across multiple lines, where each subsequent line
-is indented once. When doing so, the first item in the list MUST be on the
-next line, and there MUST be only one argument per line.
+A hívandó metódus vagy függvény paraméterlistáját több sorba is szét LEHET tördelni,
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk,
+akkor a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
+argumentumot KELL feltüntetni.
 
 ~~~php
 <?php
 $foo->bar(
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 );
 ~~~
 
 ## 5. Vezérlési szerkezetek
 
-The general style rules for control structures are as follows:
+A vezérlési szerkezetekre vonatkozó általános szabályok a következők:
 
-- There MUST be one space after the control structure keyword
-- There MUST NOT be a space after the opening parenthesis
-- There MUST NOT be a space before the closing parenthesis
-- There MUST be one space between the closing parenthesis and the opening
-  brace
-- The structure body MUST be indented once
-- The closing brace MUST be on the next line after the body
+- A vezérlési szerkezet kulcsszava után egy szóközt KELL tenni
+- A vezérlési szerkezetnek átadandó paramétereket tartalmazó kerek zárójelek nyitó
+eleme után és befejező eleme előtt NEM LEHET szóköz.
+- A paraméterlistát lezáró kerek zárójelet és a függvénytörzs kezdetét jelző nyitó
+kapcsos zárójelet szóközzel KELL elválasztani
+- A vezérlési szerkezet törzsét egyszeres behúzással KELL tagolni
+- A törzset lezáró kapcsos zárójelnek a törzset követő sorban KELL lennie
 
-The body of each structure MUST be enclosed by braces. This standardizes how
-the structures look, and reduces the likelihood of introducing errors as new
-lines get added to the body.
+Minden egyes vezérlési szerkezet törzsét kapcsos zárójelekkel KELL határolni.
+Ez egységesíti a szerkezetek megjelenését, új sorok törzshöz adásakor pedig
+csökkenti a hibák felbukkanásának valószínűségét.
 
 ### 5.1. `if`, `elseif`, `else`
 
-An `if` structure looks like the following. Note the placement of parentheses,
-spaces, and braces; and that `else` and `elseif` are on the same line as the
-closing brace from the earlier body.
+Egy `if` elágazásnak az alábbi példakódhoz hasonlóan kell kinéznie. Különösen
+figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és szóközök elhelyezésére;
+valamint arra, hogy az `else` és `elseif` kulcsszavak ugyan abban a sorban legyenek, mint
+ az őket megelőző kifejezés törzsét lezáró kapcsos zárójel.
 
 ~~~php
 <?php
 if ($expr1) {
-    // if body
+    // if törzs
 } elseif ($expr2) {
-    // elseif body
+    // elseif törzs
 } else {
-    // else body;
+    // else törzs;
 }
 ~~~
 
-The keyword `elseif` SHOULD be used instead of `else if` so that all control
-keywords look like single words.
+Az `elseif` kulcsszót KELLENE használni az `else if` alak helyett, hogy minden vezérlő
+kulcsszó egységesen egybe legyen írva.
 
-### 5.2. `switch`, `case`
+### 5.2. A `switch` szerkezet és a `case` elágazás
 
-A `switch` structure looks like the following. Note the placement of
-parentheses, spaces, and braces. The `case` statement MUST be indented once
-from `switch`, and the `break` keyword (or other terminating keyword) MUST be
-indented at the same level as the `case` body. There MUST be a comment such as
-`// no break` when fall-through is intentional in a non-empty `case` body.
+A `switch` szerkezetnek az alábbi példakódhoz hasonlóan kell kinéznie. Különösen
+figyeljünk oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
+A `case` elágazást a `switch`-hez viszonyítva egy behúzással beljebb KELL kezdeni,
+a `break` kulcsszót (vagy más lezáró kulcsszót) a `case` törzsével azonos szinten
+ KELL elhelyezni. Amikor egy nem üres `case`-törzsben a továbblépés szándékos, akkor
+ olyan megjegyzéseket KELL elhelyezni, mint az alábbi példában is szereplő
+`// no break`.
 
 ~~~php
 <?php
 switch ($expr) {
     case 0:
-        echo 'First case, with a break';
+        echo 'Első eset, megszakítással';
         break;
     case 1:
-        echo 'Second case, which falls through';
+        echo 'Második eset, megszakítás nélküli továbblépéssel';
         // no break
     case 2:
     case 3:
     case 4:
-        echo 'Third case, return instead of break';
+        echo 'Harmadik eset, megszakítás helyett visszatéréssel';
         return;
     default:
-        echo 'Default case';
+        echo 'Alapértelmezett eset';
         break;
 }
 ~~~
 
-### 5.3. `while`, `do while`
+### 5.3. A `while` és a `do while` ciklusok
 
-A `while` statement looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `while` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
 
 ~~~php
 <?php
 while ($expr) {
-    // structure body
+    // ciklusmag
 }
 ~~~
 
-Similarly, a `do while` statement looks like the following. Note the placement
-of parentheses, spaces, and braces.
+A `do while` ciklus nem sokban különbözik a `while` ciklustól, így a rá vonatkozó
+szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos zárójelek, vesszők
+és szóközök elhelyezésére.
 
 ~~~php
 <?php
 do {
-    // structure body;
+    // ciklusmag;
 } while ($expr);
 ~~~
 
-### 5.4. `for`
+### 5.4. A `for` ciklus
 
-A `for` statement looks like the following. Note the placement of parentheses,
-spaces, and braces.
+A `for` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
 
 ~~~php
 <?php
 for ($i = 0; $i < 10; $i++) {
-    // for body
+    // ciklusmag
 }
 ~~~
 
 ### 5.5. `foreach`
 
-A `foreach` statement looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `foreach` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
 
 ~~~php
 <?php
 foreach ($iterable as $key => $value) {
-    // foreach body
+    // utasítások
 }
 ~~~
 
 ### 5.6. `try`, `catch`
 
-A `try catch` block looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `try catch` blokknak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek, vesszők és szóközök elhelyezésére.
 
 ~~~php
 <?php
 try {
-    // try body
+    // try törzs
 } catch (FirstExceptionType $e) {
-    // catch body
+    // catch törzs
 } catch (OtherExceptionType $e) {
-    // catch body
+    // catch törzs
 }
 ~~~
 
@@ -495,11 +502,11 @@ parentheses, commas, spaces, and braces:
 ~~~php
 <?php
 $closureWithArgs = function ($arg1, $arg2) {
-    // body
+    // törzs
 };
 
 $closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2) {
-    // body
+    // törzs
 };
 ~~~
 
@@ -518,47 +525,47 @@ variable lists split across multiple lines.
 ~~~php
 <?php
 $longArgs_noVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) {
-    // body
+    // törzs
 };
 
 $noArgs_longVars = function () use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-    // body
+    // törzs
 };
 
 $longArgs_longVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-    // body
+    // törzs
 };
 
 $longArgs_shortVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) use ($var1) {
-    // body
+    // törzs
 };
 
 $shortArgs_longVars = function ($arg) use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-    // body
+    // törzs
 };
 ~~~
 
@@ -570,7 +577,7 @@ in a function or method call as an argument.
 $foo->bar(
     $arg1,
     function ($arg2) use ($var1) {
-        // body
+        // törzs
     },
     $arg3
 );
