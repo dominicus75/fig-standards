@@ -1,6 +1,6 @@
 [Kezdőlap](../README.md)
 
-# Kódolási stílus útmutató
+# Kódstílus útmutató
 
 Ez az útmutató kibővíti a [PSR-1] alapvető kódolási szabványt. Célja, hogy csökkentse
 az értelmezési nehézségeket a különböző szerzőktől származó kódok olvasása közben.
