@@ -5,28 +5,30 @@ Naplózó Interfész
 
 Ez a dokumentum egy közös programozási felületet ír le a naplózó függvénykönyvtárak számára.
 
-The main goal is to allow libraries to receive a `Psr\Log\LoggerInterface`
-object and write logs to it in a simple and universal way. Frameworks
-and CMSs that have custom needs MAY extend the interface for their own
-purpose, but SHOULD remain compatible with this document. This ensures
-that the third-party libraries an application uses can write to the
-centralized application logs.
+A fő cél az, hogy lehetővé váljon a különböző függvénykönyvtárak számára egy
+`Psr\Log\LoggerInterface`-típusú objektum fogadása és ennek segítségével az egyszerű
+és univerzális naplózás. Az egyedi igényeket kielégítő keretrendszerek és
+tartalomkezelők (CMS) céljainak megfelelően ki LEHET terjeszteni az interfészt,
+de ezeknek a változatoknak továbbra is kompatibilisnek kell maradni ezzel a
+dokumentummal. Ez biztosítja azt, hogy a harmadik féltől származó, szintén jelen
+PSR-t megvalósító függvénykönyvtárak is képesek legyenek írni egy központi
+alkalmazás-naplóba.
 
 A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
 [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-The word `implementor` in this document is to be interpreted as someone
-implementing the `LoggerInterface` in a log-related library or framework.
-Users of loggers are referred to as `user`.
-
+A `kivitelező` alatt ebben a dokumentumban azt a személyt értjük, aki megvalósítja
+a `LoggerInterface`-t egy naplózáshoz kapcsolódó függvénykönyvtárban, vagy
+keretrendszerben. Az így elkészült naplózókat használókra a szöveg `felhasználóként`
+hivatkozik.
 
 ## 1. Specifikáció
 
 ### 1.1 Alapok
 
-- The `LoggerInterface` exposes eight methods to write logs to the eight
-  [RFC 5424][] levels (debug, info, notice, warning, error, critical, alert,
-  emergency).
+- A `LoggerInterface` nyolc olyan metódust ír elő, amelyek az [RFC 5424][] nyolc
+  szintjének (debug, info, notice, warning, error, critical, alert, emergency)
+  megfelelően naplózzák az eseményeket.
 
 - A ninth method, `log`, accepts a log level as the first argument. Calling this
   method with one of the log level constants MUST have the same result as
