@@ -1,7 +1,9 @@
-Logger Interface
-================
+[Kezdőlap](../README.md)
 
-This document describes a common interface for logging libraries.
+Naplózó Interfész
+=================
+
+Ez a dokumentum egy közös programozási felületet ír le a naplózó függvénykönyvtárak számára.
 
 The main goal is to allow libraries to receive a `Psr\Log\LoggerInterface`
 object and write logs to it in a simple and universal way. Frameworks
@@ -10,19 +12,17 @@ purpose, but SHOULD remain compatible with this document. This ensures
 that the third-party libraries an application uses can write to the
 centralized application logs.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][].
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
+[RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 The word `implementor` in this document is to be interpreted as someone
 implementing the `LoggerInterface` in a log-related library or framework.
 Users of loggers are referred to as `user`.
 
-[RFC 2119]: http://tools.ietf.org/html/rfc2119
 
-## 1. Specification
+## 1. Specifikáció
 
-### 1.1 Basics
+### 1.1 Alapok
 
 - The `LoggerInterface` exposes eight methods to write logs to the eight
   [RFC 5424][] levels (debug, info, notice, warning, error, critical, alert,
@@ -37,7 +37,7 @@ Users of loggers are referred to as `user`.
 
 [RFC 5424]: http://tools.ietf.org/html/rfc5424
 
-### 1.2 Message
+### 1.2 Az üzenet
 
 - Every method accepts a string as the message, or an object with a
   `__toString()` method. Implementors MAY have special handling for the passed
@@ -94,7 +94,7 @@ Users of loggers are referred to as `user`.
   echo interpolate($message, $context);
   ~~~
 
-### 1.3 Context
+### 1.3 Kontextus
 
 - Every method accepts an array as context data. This is meant to hold any
   extraneous information that does not fit well in a string. The array can
@@ -109,7 +109,7 @@ Users of loggers are referred to as `user`.
   key is actually an `Exception` before using it as such, as it MAY contain
   anything.
 
-### 1.4 Helper classes and interfaces
+### 1.4 Segítő (helper) osztályok és interfészek
 
 - The `Psr\Log\AbstractLogger` class lets you implement the `LoggerInterface`
   very easily by extending it and implementing the generic `log` method.
@@ -133,7 +133,7 @@ Users of loggers are referred to as `user`.
 
 - The `Psr\Log\LogLevel` class holds constants for the eight log levels.
 
-## 2. Package
+## 2. A csomag
 
 The interfaces and classes described as well as relevant exception classes
 and a test suite to verify your implementation are provided as part of the
@@ -302,3 +302,5 @@ class LogLevel
     const DEBUG     = 'debug';
 }
 ~~~
+
+[Kezdőlap](../README.md)
