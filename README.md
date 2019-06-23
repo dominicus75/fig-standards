@@ -23,8 +23,8 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 |:---:|--------------------------------------|--------------------------------|------------|----------|
 | 0   | [Önbetöltő szabvány][psr0]         | Matthew Weier O'Phinney        | elavult | magyar |
 | 1   | [Alapvető kódolási szabvány][psr1]        | Paul M. Jones                  | elfogadott   | magyar |
-| 2   | [Kódstílus útmutató][psr2]           | Paul M. Jones                  | elfogadott   | fordítás folyamatban |
-| 3   | [Naplózó interfész][psr3]             | Jordi Boggiano                 | elfogadott   | angol |
+| 2   | [Kódstílus útmutató][psr2]           | Paul M. Jones                  | elfogadott   | magyar |
+| 3   | [Naplózó interfész][psr3]             | Jordi Boggiano                 | elfogadott   | fordítás folyamatban |
 | 4   | [Önbetöltő szabvány][psr4]         | Paul M. Jones                  | elfogadott   | magyar |
 | 6   | [Gyorsítótár interfész][psr6]            | Larry Garfield                 | elfogadott   | angol |
 | 7   | [HTTP-üzenet interfész][psr7]       | Matthew Weier O'Phinney        | elfogadott   | angol |
