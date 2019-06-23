@@ -30,14 +30,16 @@ hivatkozik.
   szintjének (debug, info, notice, warning, error, critical, alert, emergency)
   megfelelően naplózzák az eseményeket.
 
-- A ninth method, `log`, accepts a log level as the first argument. Calling this
-  method with one of the log level constants MUST have the same result as
-  calling the level-specific method. Calling this method with a level not
-  defined by this specification MUST throw a `Psr\Log\InvalidArgumentException`
-  if the implementation does not know about the level. Users SHOULD NOT use a
-  custom level without knowing for sure the current implementation supports it.
+- A kilencedik, `log` névre hallgató metódus első paraméterként a naplózási
+  szintre kíváncsi. Meghívva ezt a metódust a 8 naplózási szint egyikét reprezentáló
+  konstanssal, azonos eredményt KELL kapni, mint a naplózási szint-specifikus
+  metódus hívása esetén. Ha a jelen specifikáció által nem definiált, vagy az
+  ezt implementáló osztály által nem ismert naplózási szinttel kerül meghívásra
+  a metódus, akkor egy `Psr\Log\InvalidArgumentException`-típusú kivételt KELL
+  dobnia. A felhasználóknak NEM KELLENE egyéni naplózási szinteket használni,
+  anélkül, hogy biztosan tudnák, hogy az aktuális implementáció támogatja-e azt.
 
-[RFC 5424]: http://tools.ietf.org/html/rfc5424
+[RFC 5424]: ../related-rfcs/2119.md
 
 ### 1.2 Az üzenet
 
