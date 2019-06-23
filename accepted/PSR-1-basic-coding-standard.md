@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 # Alapvető kódolási szabvány
 
 Ez a PSR-ajánlás azokat a szabványos kódolási konvenciókat tartalmazza, amelyek a megosztott PHP-kódok magas szintű együttműködéséhez szükségesek.
@@ -142,3 +144,5 @@ Akármelyik elnevezési konvenciót lehet alkalmazni, de arra KELLENE törekedni
 ### 4.3. Metódusok
 
 A metódusok/függvények elnevezésében a `camelCase` stílust KELL alkalmazni. Ez azt jelenti, hogy a névnek kisbetűvel kell kezdődnie és több szóból álló elnevezés esetén minden szót nagy kezdőbetűvel (és nem aláhúzás karakterrel) választunk el a többitől, valahogy így: `valamitCsinaloFuggveny()`.
+
+[Kezdőlap](../README.md)
