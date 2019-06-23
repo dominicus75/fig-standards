@@ -18,16 +18,16 @@ az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 - A kódnak követnie KELL a [PSR-1] alapvető kódolási szabványt.
 
-- A kódban 4 szóközt KELL használni a sorok behúzására, nem tabulátort.
+- A kódban tabulátor helyett 4 szóközt KELL használni a sorok behúzására.
 
 - A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani; a rugalmas korlátot
-120 karakternél KELL meghúzni; a soroknak legfeljebb 80 karakter hosszúnak KELLENE lenniük.
+120 karakternél KELL meghúzni; de a soroknak legfeljebb 80 karakter hosszúnak KELLENE lenniük.
 
 - A `namespace` deklarációt üres sornak KELL követni, ahogy a `use` operátorok
 blokkját is egy üres sorral KELL elválasztani a kód további részétől.
 
 - Az osztálydeklarációk nyitó kapcsos zárójelét a következő sorban KELL elhelyezni,
-az osztálytörzset befejező zárójelet pedig a törzs után következő sorban.
+az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
 
 - A metódusok nyitó zárójelét szintén új sorba KELL írni, a befejező zárójelnek
 pedig a törzs utáni sorba KELL kerülni.
@@ -103,7 +103,8 @@ hosszabbakat AJÁNLOTT felosztani 80 karakternél nem hosszabb sorokra.
 
 A nem üres sorok végére TILOS szóközt tenni.
 
-Az olvashatóság javítása és a kapcsolódó kódblokkok jelzése érdekében üres sorokat LEHET alkalmazni.
+Az olvashatóság javítása és a kapcsolódó kódblokkok jelzése érdekében üres sorokat
+LEHET alkalmazni.
 
 Soronként NEM LEHET egynél több utasítás.
 
@@ -157,8 +158,8 @@ interfészekre vagy trait-ekre.
 
 Az `extends` és az `implements` kulcsszavaknak az osztálynévvel egy sorban KELL lenniük.
 
-Az osztálydeklarációk nyitó (kapcsos-)zárójelét külön sorban KELL elhelyezni
-(a deklaráció után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
+Az osztálydeklarációk nyitó kapcsos zárójelét külön sorban KELL elhelyezni
+(az osztályfejléc után), az osztálytörzset befejező zárójelet pedig a törzs utáni sorban.
 
 ~~~php
 <?php
@@ -176,8 +177,8 @@ class ClassName extends ParentClass implements \ArrayAccess, \Countable
 ~~~
 
 A megvalósított interfészek listáját (`implements`) több sorba is szét LEHET tördelni,
-ahol minden egyes sort egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk,
-akkor a lista első elemének a következő sorba KELL kerülnie és soronként csak
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
+a lista első elemének a következő sorba KELL kerülnie és soronként csak
 egyetlen interfészt KELL feltüntetni, ahogy a következő példában is látható:
 
 ~~~php
@@ -230,9 +231,9 @@ A metódusok láthatósági szintjét (`private` vagy `protected`)
 NEM AJÁNLOTT aláhúzás karakterrel jelezni a metódusnév elején.
 
 A metódusnév után TILOS szóközt tenni. A metódus esetleges paramétereit tartalmazó
-kerek zárójel nyitó eleme után és záró eleme előtt NEM LEHET szóköz. Az osztálydeklarációk
-nyitó kapcsos zárójelét külön sorban KELL elhelyezni (a deklaráció után),
-az osztálytörzset befejező kapcsos zárójelet pedig a törzs utáni sorban.
+kerek zárójel nyitó eleme után és záró eleme előtt NEM LEHET szóköz. A függvénytörzset
+nyitó kapcsos zárójelét külön sorban KELL elhelyezni (a fejléc után),
+a függvénytörzset befejező kapcsos zárójelet pedig a törzs utáni sorban.
 
 A fentiek alapján egy metódus deklarációnak a következőképpen kellene kinéznie.
 Különösen figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és
@@ -272,12 +273,11 @@ class ClassName
 ~~~
 
 A metódus paraméterlistáját több sorba is szét LEHET tördelni, ahol minden egyes sort
-egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk, akkor a lista
-első elemének a következő sorba KELL kerülnie és soronként csak egyetlen paramétert
-KELL feltüntetni.
+egyszeres behúzással kell kezdeni. Ennél a megoldásnál a lista első elemének a
+következő sorba KELL kerülnie és soronként csak egyetlen paramétert KELL feltüntetni.
 
 Ha a paraméterlistát külön sorokba tördeljük, akkor a listát lezáró kerek zárójelet
-és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet külön sorba KELL írni,
+és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet egy sorba KELL írni,
 szóközzel elválasztva, ahogy az alábbi példában is látható:
 
 ~~~php
@@ -337,8 +337,8 @@ Foo::bar($arg2, $arg3);
 ~~~
 
 A hívandó metódus vagy függvény paraméterlistáját több sorba is szét LEHET tördelni,
-ahol minden egyes sort egyszeres behúzással kell kezdeni. Ha ezt a megoldást válasszuk,
-akkor a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
+a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
 argumentumot KELL feltüntetni.
 
 ~~~php
@@ -429,9 +429,9 @@ while ($expr) {
 }
 ~~~
 
-A `do while` ciklus nem sokban különbözik a `while` ciklustól, így a rá vonatkozó
-szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos zárójelek és
-szóközök megfelelő elhelyezésére.
+A `do while` ciklus küllemben nem sokban különbözik a `while` ciklustól, így a
+rá vonatkozó szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos
+zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -480,26 +480,36 @@ try {
 }
 ~~~
 
-## 6. Closure-ök (névtelen függvények)
+## 6. Záradékos függvények
 
-Closures MUST be declared with a space after the `function` keyword, and a
-space before and after the `use` keyword.
+*A fordító megjegyzése: a témával foglalkozó magyar nyelvű források általában
+átveszik és használják az angol **closure** terminust, aminek nincs
+általánosan elfogadott magyar megfelelője. A jelen fordításban alkalmazott
+**záradékos függvény** elnevezés ha nem is adja vissza egyetlen szóban a fogalom
+lényegét, megpróbál rá úgy utalni, hogy elkerülje a körülményes és zavaró körülírásokat.*
 
-The opening brace MUST go on the same line, and the closing brace MUST go on
-the next line following the body.
+*A záradékos függvény (closure) olyan névtelen (más néven lambda) függvény, ami
+a paraméterlistában átadott argumentumok mellett hozzáférhet a hatókörén kívül
+létrehozott azon változókhoz is, amelyek a függvénydeklaráció záradékában
+(a `use` kulcsszó utáni kerek zárójelben, innen a neve) vannak felsorolva.*
 
-There MUST NOT be a space after the opening parenthesis of the argument list
-or variable list, and there MUST NOT be a space before the closing parenthesis
-of the argument list or variable list.
+Záradékos függvény létrehozásánál a `function` kulcsszó után szóközt KELL tenni,
+ahogy a záradékot jelölő `use` kulcsszó előtt és után is.
 
-In the argument list and variable list, there MUST NOT be a space before each
-comma, and there MUST be one space after each comma.
+A függvénytörzset megnyitó kapcsos zárójelnek (az 5. fejezetben taglalt vezérlési
+szerkezetekhez hasonlóan) egy sorban KELL lennie a függvényfejléccel, a törzset
+lezáró kapcsos zárójelnek viszont a törzs utáni sorban KELL lennie.
 
-Closure arguments with default values MUST go at the end of the argument
-list.
+A záradékos függvény paraméter-, és váltózólistáját tartalmazó kerek zárójelek
+nyitó eleme után és záró eleme előtt NEM SZABAD szóközt hagyni.
 
-A closure declaration looks like the following. Note the placement of
-parentheses, commas, spaces, and braces:
+A záradékos függvény paraméter-, és váltózólistájában az egyes változónevek utáni
+vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
+
+Az alapértelmezett értéket tartalmazó paramétereknek a lista végére KELL kerülni.
+
+Egy záradékos függvény deklarációjának az alábbi kódhoz hasonlóan kell kinéznie.
+Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére:
 
 ~~~php
 <?php
@@ -512,17 +522,19 @@ $closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2) {
 };
 ~~~
 
-Argument lists and variable lists MAY be split across multiple lines, where
-each subsequent line is indented once. When doing so, the first item in the
-list MUST be on the next line, and there MUST be only one argument or variable
-per line.
 
-When the ending list (whether of arguments or variables) is split across
-multiple lines, the closing parenthesis and opening brace MUST be placed
-together on their own line with one space between them.
+A záradékos függvény paraméter-, és váltózólistáját több sorba is szét LEHET tördelni,
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
+a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
+paramétert/változót KELL feltüntetni.
 
-The following are examples of closures with and without argument lists and
-variable lists split across multiple lines.
+Ha a paraméter-, és váltózólistát külön sorokba tördeljük, akkor a listát lezáró
+kerek zárójelet és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet azonos
+ sorba KELL írni, szóközzel elválasztva.
+
+A következő példakódok olyan záradékos függvény-deklarációkat mutatnak be, amelyek
+a paraméterlista mellett rendelkezhetnek változólistával (záradék) is, s ezek a
+listák több sorba vannak tördelve, a fenti szabályok szerint.
 
 ~~~php
 <?php
@@ -571,8 +583,9 @@ $shortArgs_longVars = function ($arg) use (
 };
 ~~~
 
-Note that the formatting rules also apply when the closure is used directly
-in a function or method call as an argument.
+Ne feledjük, hogy a formázási szabályok akkor is érvényesek, ha a záradékos függvény
+ egy másik függvény vagy metódus argumentumaként kerül meghívásra, mint az alábbi
+ példában:
 
 ~~~php
 <?php
