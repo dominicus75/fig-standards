@@ -480,35 +480,34 @@ try {
 }
 ~~~
 
-## 6. Záradékos függvények
+## 6. Záradékos névtelen függvények
 
 *A fordító megjegyzése: a témával foglalkozó magyar nyelvű források általában
 átveszik és használják az angol **closure** terminust, aminek nincs
-általánosan elfogadott magyar megfelelője. A jelen fordításban alkalmazott
-**záradékos függvény** elnevezés ha nem is adja vissza egyetlen szóban a fogalom
-lényegét, megpróbál rá úgy utalni, hogy elkerülje a körülményes és zavaró körülírásokat.*
+általánosan elfogadott magyar megfelelője. A jelen fordításban a **záradékos
+névtelen függvény** elnevezés szerepel.*
 
-*A záradékos függvény (closure) olyan névtelen (más néven lambda) függvény, ami
+*A záradékos névtelen függvény (closure) olyan névtelen (más néven lambda) függvény, ami
 a paraméterlistában átadott argumentumok mellett hozzáférhet a hatókörén kívül
 létrehozott azon változókhoz is, amelyek a függvénydeklaráció záradékában
 (a `use` kulcsszó utáni kerek zárójelben, innen a neve) vannak felsorolva.*
 
-Záradékos függvény létrehozásánál a `function` kulcsszó után szóközt KELL tenni,
+Záradékos névtelen függvény létrehozásánál a `function` kulcsszó után szóközt KELL tenni,
 ahogy a záradékot jelölő `use` kulcsszó előtt és után is.
 
 A függvénytörzset megnyitó kapcsos zárójelnek (az 5. fejezetben taglalt vezérlési
 szerkezetekhez hasonlóan) egy sorban KELL lennie a függvényfejléccel, a törzset
 lezáró kapcsos zárójelnek viszont a törzs utáni sorban KELL lennie.
 
-A záradékos függvény paraméter-, és váltózólistáját tartalmazó kerek zárójelek
+A záradékos névtelen függvény paraméter-, és váltózólistáját tartalmazó kerek zárójelek
 nyitó eleme után és záró eleme előtt NEM SZABAD szóközt hagyni.
 
-A záradékos függvény paraméter-, és váltózólistájában az egyes változónevek utáni
+A záradékos névtelen függvény paraméter-, és váltózólistájában az egyes változónevek utáni
 vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
 Az alapértelmezett értéket tartalmazó paramétereknek a lista végére KELL kerülni.
 
-Egy záradékos függvény deklarációjának az alábbi kódhoz hasonlóan kell kinéznie.
+Egy záradékos névtelen függvény deklarációjának az alábbi kódhoz hasonlóan kell kinéznie.
 Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére:
 
 ~~~php
@@ -523,7 +522,7 @@ $closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2) {
 ~~~
 
 
-A záradékos függvény paraméter-, és váltózólistáját több sorba is szét LEHET tördelni,
+A záradékos névtelen függvény paraméter-, és váltózólistáját több sorba is szét LEHET tördelni,
 ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
 a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
 paramétert/változót KELL feltüntetni.
@@ -532,7 +531,7 @@ Ha a paraméter-, és váltózólistát külön sorokba tördeljük, akkor a lis
 kerek zárójelet és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet azonos
  sorba KELL írni, szóközzel elválasztva.
 
-A következő példakódok olyan záradékos függvény-deklarációkat mutatnak be, amelyek
+A következő példakódok olyan záradékos névtelen függvény-deklarációkat mutatnak be, amelyek
 a paraméterlista mellett rendelkezhetnek változólistával (záradék) is, s ezek a
 listák több sorba vannak tördelve, a fenti szabályok szerint.
 
@@ -583,9 +582,9 @@ $shortArgs_longVars = function ($arg) use (
 };
 ~~~
 
-Ne feledjük, hogy a formázási szabályok akkor is érvényesek, ha a záradékos függvény
- egy másik függvény vagy metódus argumentumaként kerül meghívásra, mint az alábbi
- példában:
+Ne feledjük, hogy a formázási szabályok akkor is érvényesek, ha a záradékos névtelen
+függvény egy másik függvény vagy metódus argumentumaként kerül meghívásra, mint az
+alábbi példában:
 
 ~~~php
 <?php
@@ -600,24 +599,24 @@ $foo->bar(
 
 ## 7. Összegzés
 
-There are many elements of style and practice intentionally omitted by this
-guide. These include but are not limited to:
+Van néhány olyan elem és szokás, ami szándékosan maradt ki ebből a dokumentumból.
+Ezek közé tartozik, a teljesség igénye nélkül:
 
-- Declaration of global variables and global constants
+- Globális változók deklarálása
 
-- Declaration of functions
+- Függvények deklarálása
 
-- Operators and assignment
+- Hozzárendelő operátorok
 
-- Inter-line alignment
+- Függőleges igazítások
 
-- Comments and documentation blocks
+- Megjegyzés és dokumentációs blokkok
 
-- Class name prefixes and suffixes
+- Osztálynév elő-, és utótagok
 
-- Best practices
+- Legjobb praktikák
 
-Future recommendations MAY revise and extend this guide to address those or
-other elements of style and practice.
+A jövőben előfordulhat, hogy a közösség felülvizsgálja és más stíluselemekkel és
+praktikákkal bővíti ezt az ajánlást.
 
 [Kezdőlap](../README.md)
