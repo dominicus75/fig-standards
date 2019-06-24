@@ -8,7 +8,7 @@ Ez a dokumentum egy közös programozási felületet ír le a naplózó függvé
 A fő cél az, hogy lehetővé váljon a különböző függvénykönyvtárak számára egy
 `Psr\Log\LoggerInterface`-típusú objektum fogadása és ennek segítségével az egyszerű
 és univerzális naplózás. Az egyedi igényeket kielégítő keretrendszerek és
-tartalomkezelők (CMS) céljainak megfelelően ki LEHET terjeszteni az interfészt,
+tartalomkezelők (CMS) céljainak megfelelően ki is LEHET terjeszteni az interfészt,
 de ezeknek a változatoknak továbbra is kompatibilisnek kell maradni ezzel a
 dokumentummal. Ez biztosítja azt, hogy a harmadik féltől származó, szintén jelen
 PSR-t megvalósító függvénykönyvtárak is képesek legyenek írni egy központi
@@ -17,7 +17,7 @@ alkalmazás-naplóba.
 A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
 [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-A `kivitelező` alatt ebben a dokumentumban azt a személyt értjük, aki megvalósítja
+A `megvalósító` alatt ebben a dokumentumban azt a személyt értjük, aki implementálja
 a `LoggerInterface`-t egy naplózáshoz kapcsolódó függvénykönyvtárban, vagy
 keretrendszerben. Az így elkészült naplózókat használókra a szöveg `felhasználóként`
 hivatkozik.
@@ -43,12 +43,12 @@ hivatkozik.
 
 ### 1.2 Az üzenet
 
-- Every method accepts a string as the message, or an object with a
-  `__toString()` method. Implementors MAY have special handling for the passed
-  objects. If that is not the case, implementors MUST cast it to a string.
+- Mindegyik metódus képes fogadni egyszerű szövegként átadott üzenetet vagy olyan objektumot,
+  amelyik rendelkezik [`__toString()`](http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=10#section_8_2) metódussal. A megvalósítóknak LEHET különlegesen kezelni az átadott objektumokat.
+  Ha nem ez a helyzet, akkor a szöveggé KELL konvertálni őket.
 
-- The message MAY contain placeholders which implementors MAY replace with
-  values from the context array.
+- Az üzenet szövegében LEHET helyőrzőket is elhelyezni, amelyeket a megvalósítónak
+  ki LEHET cserélni a kontextus tömbből származó értékekre.
 
   Placeholder names MUST correspond to keys in the context array.
 
@@ -151,24 +151,23 @@ and a test suite to verify your implementation are provided as part of the
 namespace Psr\Log;
 
 /**
- * Describes a logger instance.
+ * Leír egy naplózó példányt.
  *
- * The message MUST be a string or object implementing __toString().
+ * Az üzenetnek szövegnek KELL lennie, vagy olyan objektumnak, amely
+ * implementálja a __toString() mágikus metódust.
  *
  * The message MAY contain placeholders in the form: {foo} where foo
  * will be replaced by the context data in key "foo".
  *
- * The context array can contain arbitrary data, the only assumption that
+ * A kontextus tömb tartalmazhat tetszőleges adatot, the only assumption that
  * can be made by implementors is that if an Exception instance is given
  * to produce a stack trace, it MUST be in a key named "exception".
  *
- * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
- * for the full interface specification.
  */
 interface LoggerInterface
 {
     /**
-     * System is unusable.
+     * A rendszer használhatatlan.
      *
      * @param string $message
      * @param array $context
@@ -177,10 +176,10 @@ interface LoggerInterface
     public function emergency($message, array $context = array());
 
     /**
-     * Action must be taken immediately.
+     * Azonnali beavatkozást igényel.
      *
-     * Example: Entire website down, database unavailable, etc. This should
-     * trigger the SMS alerts and wake you up.
+     * Például: a teljes webhely leállt, az adatbázis elérhetetlen, stb.
+     * Akár SMS-riasztást is ki kell váltania, hogy felébressze az illetékest.
      *
      * @param string $message
      * @param array $context
@@ -189,9 +188,10 @@ interface LoggerInterface
     public function alert($message, array $context = array());
 
     /**
-     * Critical conditions.
+     * Kritikus körülmények.
      *
-     * Example: Application component unavailable, unexpected exception.
+     * Például: az alkalmazás egyik komponense nem elérhető, váratlan (nem elkapott,
+     * kezeletlen) kivétel.
      *
      * @param string $message
      * @param array $context
@@ -200,8 +200,8 @@ interface LoggerInterface
     public function critical($message, array $context = array());
 
     /**
-     * Runtime errors that do not require immediate action but should typically
-     * be logged and monitored.
+     * Futásidejű hibák, amelyek nem igényelnek azonnali beavatkozást, de
+     * ajánlott őket ellenőrizni és naplózni.
      *
      * @param string $message
      * @param array $context
@@ -210,10 +210,10 @@ interface LoggerInterface
     public function error($message, array $context = array());
 
     /**
-     * Exceptional occurrences that are not errors.
+     * Hibának nem minősülő rendkívüli események.
      *
-     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-     * that are not necessarily wrong.
+     * Például: Elavult API használata, egy API nem megfelelő használata,
+     * nem feltétlenül rossz, de nem kívánatos dolgok.
      *
      * @param string $message
      * @param array $context
@@ -222,7 +222,7 @@ interface LoggerInterface
     public function warning($message, array $context = array());
 
     /**
-     * Normal but significant events.
+     * Normális, de speciális kezelést igényló esemény.
      *
      * @param string $message
      * @param array $context
@@ -231,9 +231,9 @@ interface LoggerInterface
     public function notice($message, array $context = array());
 
     /**
-     * Interesting events.
+     * Érdekes események.
      *
-     * Example: User logs in, SQL logs.
+     * Például: felhasználó bejelentkezik.
      *
      * @param string $message
      * @param array $context
@@ -242,7 +242,7 @@ interface LoggerInterface
     public function info($message, array $context = array());
 
     /**
-     * Detailed debug information.
+     * Részletes hibakeresési információk.
      *
      * @param string $message
      * @param array $context
@@ -251,7 +251,7 @@ interface LoggerInterface
     public function debug($message, array $context = array());
 
     /**
-     * Logs with an arbitrary level.
+     * Naplózás tetszőlegesen választott szinttel.
      *
      * @param mixed $level
      * @param string $message
@@ -270,12 +270,13 @@ interface LoggerInterface
 namespace Psr\Log;
 
 /**
- * Describes a logger-aware instance.
+ * Leír egy naplózó-felismerő példányt.
  */
 interface LoggerAwareInterface
 {
     /**
-     * Sets a logger instance on the object.
+     * Elhelyez egy LoggerInterface-t megvalósító
+     * naplózó-objektumpéldányt az implementáló objektumban.
      *
      * @param LoggerInterface $logger
      * @return void
@@ -292,7 +293,7 @@ interface LoggerAwareInterface
 namespace Psr\Log;
 
 /**
- * Describes log levels.
+ * Naplózási szintek leírása.
  */
 class LogLevel
 {
