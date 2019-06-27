@@ -50,51 +50,51 @@ hivatkozik.
 - Az üzenet szövegében LEHET helyőrzőket is elhelyezni, amelyeket a megvalósítónak
   ki LEHET cserélni a kontextus tömbből származó értékekre.
 
-  Placeholder names MUST correspond to keys in the context array.
+  A helyőrzők neveinek meg KELL felelniük a kontextus tömb kulcsainak.
 
-  Placeholder names MUST be delimited with a single opening brace `{` and
-  a single closing brace `}`. There MUST NOT be any whitespace between the
-  delimiters and the placeholder name.
+  A helyőrzők neveit kapcsos zárójellel (`{}`) KELL határolni. A határoló karakterek és a
+  helyőrzőnév között NEM LEHET semmilyen térköz (whitespace) karakter.
 
-  Placeholder names SHOULD be composed only of the characters `A-Z`, `a-z`,
-  `0-9`, underscore `_`, and period `.`. The use of other characters is
-  reserved for future modifications of the placeholders specification.
+  A helyőrzők neveinek kizárólag az angol ábécé kis-, és nagybetűit, számokat, aláhúzás
+  karaktereket és pontot KELLENE tartalmazni. Más karakterek használata a helyőrzők
+  specifikációjának esetleges későbbi módosításától függ.
 
-  Implementors MAY use placeholders to implement various escaping strategies
-  and translate logs for display. Users SHOULD NOT pre-escape placeholder
-  values since they can not know in which context the data will be displayed.
+  A megvalósítóknak LEHET helyőrzőket használni különféle védő(escape)karakter-stratégiák
+  megvalósításához és a naplók megjelenítéshez kapcsolódó formázásához.
+  A felhasználóknak viszont NEM KELLENE védőkarakterrel előre ellátott helyőrzőket
+  használni, mivel nem tudhatják, hogy milyen kontextusban lesz az adat megjelenítve.
 
-  The following is an example implementation of placeholder interpolation
-  provided for reference purposes only:
+  Az alábbiakban egy példa implementáció látható, amely helyőrző közbeszúrást
+  valósít meg:
 
   ~~~php
   <?php
 
   /**
-   * Interpolates context values into the message placeholders.
+   * A kontextus tömb elemeinek közbeszúrása az üzenetben található helyőrzők helyére.
    */
   function interpolate($message, array $context = array())
   {
-      // build a replacement array with braces around the context keys
+      // Csere-tömb létrehozása a kontextus tömb kapcsos zárójelbe tett kulcsaival indexelve
       $replace = array();
       foreach ($context as $key => $val) {
-          // check that the value can be casted to string
+          // Ellenőrzi, hogy az érték átkonvertálható-e szöveggé
           if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
               $replace['{' . $key . '}'] = $val;
           }
       }
 
-      // interpolate replacement values into the message and return
+      // a csere-tömb értékeinek beszúrása az üzenetbe, majd visszatérés a kész szöveggel
       return strtr($message, $replace);
   }
 
-  // a message with brace-delimited placeholder names
-  $message = "User {username} created";
+  // üzenet kapcsos zárójelekkel határolt helyőrzőnévvel
+  $message = "{username} felhasználó létrehozva";
 
-  // a context array of placeholder names => replacement values
+  // a kontextus tömb a helyőrző nevekhez rendelt csere értékekkel
   $context = array('username' => 'bolivar');
 
-  // echoes "User bolivar created"
+  // "bolivar felhasználó létrehozva" szöveg kiíratása
   echo interpolate($message, $context);
   ~~~
 
@@ -156,8 +156,8 @@ namespace Psr\Log;
  * Az üzenetnek szövegnek KELL lennie, vagy olyan objektumnak, amely
  * implementálja a __toString() mágikus metódust.
  *
- * The message MAY contain placeholders in the form: {foo} where foo
- * will be replaced by the context data in key "foo".
+ * Az üzenet szövegében LEHET helyőrzőket elhelyezni, a következő formában: {foo} ahol foo
+ * ki lesz cserélve a kontextus tömb "foo" indexű elemével.
  *
  * A kontextus tömb tartalmazhat tetszőleges adatot, the only assumption that
  * can be made by implementors is that if an Exception instance is given
