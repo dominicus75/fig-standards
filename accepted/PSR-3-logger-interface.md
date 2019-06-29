@@ -100,48 +100,57 @@ hivatkozik.
 
 ### 1.3 Kontextus
 
-- Every method accepts an array as context data. This is meant to hold any
-  extraneous information that does not fit well in a string. The array can
-  contain anything. Implementors MUST ensure they treat context data with
-  as much lenience as possible. A given value in the context MUST NOT throw
-  an exception nor raise any php error, warning or notice.
+- Minden metódus egy tömböt vár kontextus adat gyanánt. Ez a tömb tartalmazhat
+  bármilyen külső információt, akár olyat is, ami nem illeszkedik jól
+  egy karakterláncba. A megvalósítóknak biztosítaniuk KELL azt, hogy a
+  kontextusadatokat minél kisebb engedékenységgel kezeljék. A kontextus tömbben
+  átadott értékeknek TILOS kivételt dobniuk, PHP hibát (error), figyelmeztetést
+  (warning) vagy értesítést (notice) kiváltania.
 
-- If an `Exception` object is passed in the context data, it MUST be in the
-  `'exception'` key. Logging exceptions is a common pattern and this allows
-  implementors to extract a stack trace from the exception when the log
-  backend supports it. Implementors MUST still verify that the `'exception'`
-  key is actually an `Exception` before using it as such, as it MAY contain
-  anything.
+- Ha egy `Exception` objektum kerül átadásra a kontextus adatok között, akkor annak
+  a kontextus tömb `'exception'` kulcsa alatt KELL helyet foglalnia.
+  A kivételek (exception) naplózása egy olyan közös minta alapján történik, amely
+  lehetővé teszi a megvalósítók számára, hogy veremkivonatot (stack trace) hozzanak
+  létre a kapott `Exception` objektumból, ha a napló háttérprogramja támogatja ezt.
+  A megvalósítóknak használatbavétel előtt mindig ellenőrizni KELL azt, hogy a
+  kontextus tömb `'exception'` kulcsa alatt valóban egy `Exception` objektum található,
+  mivel LEHET benne bármilyen típusú adat.
 
 ### 1.4 Segítő (helper) osztályok és interfészek
 
-- The `Psr\Log\AbstractLogger` class lets you implement the `LoggerInterface`
-  very easily by extending it and implementing the generic `log` method.
-  The other eight methods are forwarding the message and context to it.
+- A `Psr\Log\AbstractLogger` osztály kiterjesztésével és az általános `log` metódus
+  implementálásával lehetővé válik a `LoggerInterface` nagyon könnyű megvalósítása.
+  A másik nyolc metódus segítségével továbbítható az üzenet és a kontextus tömb.
 
-- Similarly, using the `Psr\Log\LoggerTrait` only requires you to
-  implement the generic `log` method. Note that since traits can not implement
-  interfaces, in this case you still have to implement `LoggerInterface`.
+- Hasonlóképpen a `Psr\Log\LoggerTrait` csak az általános `log` metódus
+  implementálását követeli meg. Ne feledjük, hogy a trait nem tud interfészeket
+  implementálni, ezért mindig meg kell valósítani a `LoggerInterface`-t is.
 
-- The `Psr\Log\NullLogger` is provided together with the interface. It MAY be
-  used by users of the interface to provide a fall-back "black hole"
-  implementation if no logger is given to them. However, conditional logging
-  may be a better approach if context data creation is expensive.
+- A `Psr\Log\AbstractLogger` osztályt kiterjesztő `Psr\Log\NullLogger` biztosítja
+  mindkettőt, interfésszel együtt. Ezt a "black hole" technikát biztosító interfészt
+  alkalmazó felhasználóknak LEHET használni, ha nem áll rendelkezésre egy naplózó.
+  A feltételes naplózás viszont jobb megközelítés LEHET, ha a kontextus adatok
+  létrehozása túl nagy ráfordítással járna.
 
-- The `Psr\Log\LoggerAwareInterface` only contains a
-  `setLogger(LoggerInterface $logger)` method and can be used by frameworks to
-  auto-wire arbitrary instances with a logger.
+- A `Psr\Log\LoggerAwareInterface` csupán egy `setLogger(LoggerInterface $logger)`
+  metódus megvalósítását írja elő, amelyet a keretrendszerek tudnak használni arra,
+  hogy automatikusan összedrótozzanak tetszőleges objektumpéldányokat a naplózóval.
 
-- The `Psr\Log\LoggerAwareTrait` trait can be used to implement the equivalent
-  interface easily in any class. It gives you access to `$this->logger`.
+- A `Psr\Log\LoggerAwareTrait` trait segítségével az azonos nevű interfész könnyedén
+  megvalósítható bármely osztályban.
 
-- The `Psr\Log\LogLevel` class holds constants for the eight log levels.
+- A `Psr\Log\LogLevel` osztály az RFC 5424 nyolc szintjének megfelelően tartalmazza
+  a naplózási szinteket.
 
 ## 2. A csomag
 
-The interfaces and classes described as well as relevant exception classes
-and a test suite to verify your implementation are provided as part of the
-[psr/log](https://packagist.org/packages/psr/log) package.
+A szükséges interfészek és osztályok, továbbá a vonatkozó kivétel (Exception) osztályok leírásai,
+valamint az egyes implementációk ellenőrzést lehetővé tevő teszt eszközök rendelkezésre állnak
+a [psr/log](https://packagist.org/packages/psr/log) csomag részeként.
+
+Telepítése (Composer segítségével, terminálon): `composer require psr/log`.
+
+Példa a PSR-3 megvalósítására: [Monolog](https://github.com/Seldaek/monolog/blob/master/src/Monolog/Logger.php).
 
 ## 3. `Psr\Log\LoggerInterface`
 
@@ -159,9 +168,10 @@ namespace Psr\Log;
  * Az üzenet szövegében LEHET helyőrzőket elhelyezni, a következő formában: {foo} ahol foo
  * ki lesz cserélve a kontextus tömb "foo" indexű elemével.
  *
- * A kontextus tömb tartalmazhat tetszőleges adatot, the only assumption that
- * can be made by implementors is that if an Exception instance is given
- * to produce a stack trace, it MUST be in a key named "exception".
+ * A kontextus tömb tartalmazhat tetszőleges adatot, az egyetlen kikötés a
+ * a megvalósítók számára az, hogy ha egy Exception példány van hivatva
+ * a veremkivonat (stack trace) létrehozására, annak a kontextus tömb "exception"
+ * kulcsa alatt KELL lakni.
  *
  */
 interface LoggerInterface
