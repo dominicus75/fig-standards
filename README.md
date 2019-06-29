@@ -24,9 +24,9 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 0   | [Önbetöltő szabvány][psr0]         | Matthew Weier O'Phinney        | elavult | magyar |
 | 1   | [Alapvető kódolási szabvány][psr1]        | Paul M. Jones                  | elfogadott   | magyar |
 | 2   | [Kódstílus útmutató][psr2]           | Paul M. Jones                  | elfogadott   | magyar |
-| 3   | [Naplózó interfész][psr3]             | Jordi Boggiano                 | elfogadott   | fordítás folyamatban |
+| 3   | [Naplózó interfész][psr3]             | Jordi Boggiano                 | elfogadott   | magyar |
 | 4   | [Önbetöltő szabvány][psr4]         | Paul M. Jones                  | elfogadott   | magyar |
-| 6   | [Gyorsítótár interfész][psr6]            | Larry Garfield                 | elfogadott   | angol |
+| 6   | [Gyorsítótár interfész][psr6]            | Larry Garfield                 | elfogadott   | fordítás folyamatban |
 | 7   | [HTTP-üzenet interfész][psr7]       | Matthew Weier O'Phinney        | elfogadott   | angol |
 | 11  | [Tároló interfész][psr11]         | Matthieu Napoli, David Négrier | elfogadott   | angol |
 | 13  | [Hypermédia hivatkozások][psr13]            | Larry Garfield                 | elfogadott   | angol |
