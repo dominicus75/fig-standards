@@ -1,44 +1,47 @@
-# Caching Interface
+[Kezdőlap](../README.md)
 
-Caching is a common way to improve the performance of any project, making
-caching libraries one of the most common features of many frameworks and
-libraries. This has lead to a situation where many libraries roll their own
-caching libraries, with various levels of functionality. These differences are
-causing developers to have to learn multiple systems which may or may not
-provide the functionality they need. In addition, the developers of caching
-libraries themselves face a choice between only supporting a limited number
-of frameworks or creating a large number of adapter classes.
+# Gyorsítótár interfész
 
-A common interface for caching systems will solve these problems. Library and
-framework developers can count on the caching systems working the way they're
-expecting, while the developers of caching systems will only have to implement
-a single set of interfaces rather than a whole assortment of adapters.
+A [gyorsítótárazás](https://www.letscode.hu/2015/02/05/cache-avagy-dugikeszletek)
+bevett módja bármely projekt teljesítményének javítására, a különböző gyorsítótár
+megoldások számos keretrendszer és függvénykönyvtár legáltalánosabb szolgáltatásai.
+Ez olyan helyzetet eredményezett, ahol számos projekt görgeti maga előtt saját,
+a funkcionalitás változatos szintjeit megtestesítő gyorsítótárazó függvénykönyvtárait.
+Ezen különbözőségek okán a fejlesztőknek több rendszert is el kellett sajátítaniuk,
+hogy biztosítsák azt a funkcionalitást, amelyre szükségük volt. E mellett maguknak
+a gyorsítótárazó függvénykönyvtárak fejlesztőinek is szembesülniük kellett a
+választással a között, hogy kizárólag korlátozott számú keretrendszert támogassanak
+vagy hozzanak létre nagy számú adapter osztályt, hogy munkájukat minél szélesebb
+körben alkalmazhassák.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][].
+A gyorsítótárazó rendszerek számára készített közös programozási felület megoldhatja
+ezt a problémát. A különböző programkönyvtárak és keretrendszerek fejlesztői
+számíthatnak arra, hogy a gyorsítótárazó rendszerek az elvárt módon fognak működni,
+míg ezen rendszerek fejlesztőinek csupán egyetlen programozási felületet kell
+megvalósítani, adapterek sokaságának megírása helyett.
 
-[RFC 2119]: http://tools.ietf.org/html/rfc2119
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
+[RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-## Goal
+## Cél
 
-The goal of this PSR is to allow developers to create cache-aware libraries that
-can be integrated into existing frameworks and systems without the need for
-custom development.
+Ezen PSR célja, hogy lehetővé tegye a fejlesztők számára olyan gyorsítótárazó
+programkönyvtárak készítését, amelyek egyedi fejlesztés nélkül integrálhatók a már
+létező keretrendszerekbe és projektekbe.
 
-## Definitions
+## Alapfogalmak
 
-*    **Calling Library** - The library or code that actually needs the cache
-services. This library will utilize caching services that implement this
-standard's interfaces, but will otherwise have no knowledge of the
-implementation of those caching services.
+*    **Hívó vagy kliens kód** - Az a programkönyvtár vagy kód, amelynek ténylegesen
+gyorsítótár szolgáltatásra van szüksége. Ez a kód fogja használni az ezen szabványos
+interfészt megvalósító gyorsítótár szolgáltatást, de egyébként nem lesz tudomása
+eme szolgáltatások megvalósításáról.
 
-*    **Implementing Library** - This library is responsible for implementing
-this standard in order to provide caching services to any Calling Library. The
-Implementing Library MUST provide classes which implement the
-Cache\CacheItemPoolInterface and Cache\CacheItemInterface interfaces.
-Implementing Libraries MUST support at minimum TTL functionality as described
-below with whole-second granularity.
+*    **Megvalósító vagy szolgáltató programkönyvtár** - Ez a programkönyvtár felelős
+a jelen szabvány megvalósításáért és azért, hogy biztosítsa a gyorsítótárazó szolgáltatást
+a hívó vagy kliens kód számára. A szolgáltató programkönyvtárnak KELL biztosítania
+azokat az osztályokat, amelyek implementálják a `Cache\CacheItemPoolInterface` és
+a `Cache\CacheItemInterface` interfészeket. A szolgáltató programkönyvtáraknak
+támogatniuk KELL legalább a TTL (lejárati idő, részletek alább) funkcionalitást.
 
 *    **TTL** - The Time To Live (TTL) of an item is the amount of time between
 when that item is stored and it is considered stale. The TTL is normally defined
@@ -438,3 +441,5 @@ interface InvalidArgumentException extends CacheException
 {
 }
 ~~~
+
+[Kezdőlap](../README.md)
