@@ -2,11 +2,11 @@
 
 # Gyorsítótár interfész
 
-A [gyorsítótárazás](https://www.letscode.hu/2015/02/05/cache-avagy-dugikeszletek)
-bevett módja bármely projekt teljesítményének javítására, a különböző gyorsítótár
+A [gyorsítótárazás/cache](https://www.letscode.hu/2015/02/05/cache-avagy-dugikeszletek)
+bevett mód bármely projekt teljesítménynövelésének, a különböző gyorsítótár
 megoldások számos keretrendszer és függvénykönyvtár legáltalánosabb szolgáltatásai.
 Ez olyan helyzetet eredményezett, ahol számos projekt görgeti maga előtt saját,
-a funkcionalitás változatos szintjeit megtestesítő gyorsítótárazó függvénykönyvtárait.
+a funkcionalitás változatos szintjeit megtestesítő cache függvénykönyvtárait.
 Ezen különbözőségek okán a fejlesztőknek több rendszert is el kellett sajátítaniuk,
 hogy biztosítsák azt a funkcionalitást, amelyre szükségük volt. E mellett maguknak
 a gyorsítótárazó függvénykönyvtárak fejlesztőinek is szembesülniük kellett a
@@ -43,43 +43,52 @@ azokat az osztályokat, amelyek implementálják a `Cache\CacheItemPoolInterface
 a `Cache\CacheItemInterface` interfészeket. A szolgáltató programkönyvtáraknak
 támogatniuk KELL legalább a TTL (lejárati idő, részletek alább) funkcionalitást.
 
-*    **TTL** - The Time To Live (TTL) of an item is the amount of time between
-when that item is stored and it is considered stale. The TTL is normally defined
-by an integer representing time in seconds, or a DateInterval object.
+*    **Élettartam** - Az egyes elemek élettartama (TTL) az az időtartam, amíg az
+adott elem tárolva van a gyorsítótárban és stabilnak tekinthető (nem változik).
+Az élettartamot általában egy másodperceket reprezentáló egész számmal szokás
+megadni, vagy egy rögzített időtartamot tároló
+[DateInterval](https://www.php.net/manual/en/class.dateinterval.php) objektummal.
 
-*    **Expiration** - The actual time when an item is set to go stale. This is
-typically calculated by adding the TTL to the time when an object is stored, but
-may also be explicitly set with DateTime object. An item with a 300 second TTL
-stored at 1:30:00 will have an expiration of 1:35:00. Implementing Libraries MAY
-expire an item before its requested Expiration Time, but MUST treat an item as
-expired once its Expiration Time is reached. If a calling library asks for an
-item to be saved but does not specify an expiration time, or specifies a null
-expiration time or TTL, an Implementing Library MAY use a configured default
-duration. If no default duration has been set, the Implementing Library MUST
-interpret that as a request to cache the item forever, or for as long as the
-underlying implementation supports.
+*    **Lejárat** - Az a tényleges időpont, amikor egy elem lejár. Ezt rendszerint
+úgy számítják ki, hogy az elem gyorsítótárba helyezésének időpontjához hozzáadják
+az élettartamot (TTL), de kifejezetten beállítható a DateTime objektummal is.
+Ha egy elem élettartamát 300 másodpercre állítjuk és 1:30:00 időpontban helyezzük a
+gyorsítótárba, akkor 1:35:00-kor fog lejárni.
+A szolgáltató programkönyvtáraknak LEHET egy elemet lejárttá tenni a kért lejárati
+idő előtt is, de a lejárati idő elérése után lejártként KELL kezelniük minden elemet.
+Ha a hívó kód kéri, hogy mentsen egy konkrét elemet, de nincs meghatározva lejárati
+idő, illetve az vagy az élettartam értéke `null`, akkor a szolgáltató programkönyvtárnak
+LEHET egy alapértelmezett időtartamot alkalmazni. Ha nincs beállítva alapértelmezett
+időtartam, akkor a szolgáltató programkönyvtárnak ezt úgy kell értelmezni, hogy
+az adott elem gyorsítótárazására irányuló kérelem örök időkre szól, vagy legalábbis
+addig, ameddig a mögöttes implementáció támogatja.
 
-*    **Key** - A string of at least one character that uniquely identifies a
-cached item. Implementing libraries MUST support keys consisting of the
-characters `A-Z`, `a-z`, `0-9`, `_`, and `.` in any order in UTF-8 encoding and a
-length of up to 64 characters. Implementing libraries MAY support additional
-characters and encodings or longer lengths, but must support at least that
-minimum.  Libraries are responsible for their own escaping of key strings
-as appropriate, but MUST be able to return the original unmodified key string.
-The following characters are reserved for future extensions and MUST NOT be
-supported by implementing libraries: `{}()/\@:`
+*    **Kulcs** - Legalább egy karakterből álló szöveg, amely egyedileg azonosítja
+a gyorstárazott elemet. A szolgáltató programkönyvtáraknak támogatniuk KELL az
+alfanumerikus karaktereket, aláhúzást és pontot bármilyen sorrendben tartalmazó,
+UTF-8 kódolású kulcsokat, melyek hossza nem haladja meg a 64 karaktert.
+A szolgáltató programkönyvtárak TETSZŐLEGESEN támogathatnak olyan kulcsokat is,
+amelyek a felsoroltakon kívül más karaktereket is tartalmaznak, nem UTF-8 a kódolásuk,
+vagy hosszabbak 64 karakternél, de csak a minimálisan elvárt követelmények teljesítésén felül.
+A szolgáltató programkönyvtárak felelősek szöveges kulcsaik megfelelő védőkarakterezéséért
+(szép magyar szóval: eszképelés), de képesnek KELL lenniük arra is, hogy
+visszaadják az eredeti, módosítatlan szöveges kulcsot. A következő karakterek fenn
+vannak tartva a szabvány jövendő kiterjesztései céljaira, ezért a szolgáltató
+programkönyvtáraknak NEM SZABAD támogatni a használatukat: `{}()/\@:`
 
-*    **Hit** - A cache hit occurs when a Calling Library requests an Item by key
-and a matching value is found for that key, and that value has not expired, and
-the value is not invalid for some other reason. Calling Libraries SHOULD make
-sure to verify isHit() on all get() calls.
+*    **Találat** - Találatról (hit) akkor beszélünk a gyorsítótárakkal kapcsolatban,
+amikor a hívó vagy kliens kód kér egy olyan egyedi kulccsal azonosított elemet, amely
+megtalálható a gyorsítótárban a kért kulcs alatt, illetve, ha ez az elem még nem
+járt le, vagy nem érvénytelen bármilyen más okból. A hívó programkönyvtáraknak erről
+AJÁNLOTT meggyőződni az `isHit()` metódus meghívásával, minden `get()` hívás esetén.
 
-*    **Miss** - A cache miss is the opposite of a cache hit. A cache miss occurs
-when a Calling Library requests an item by key and that value not found for that
-key, or the value was found but has expired, or the value is invalid for some
-other reason. An expired value MUST always be considered a cache miss.
+*    **Hiány** - A hiány (miss) meglepő módon az imént tárgyalt találat (hit) ellentéte.
+Akkor áll elő, ha a hívó vagy kliens kód kér egy olyan egyedi kulccsal azonosított elemet,
+amely vagy egyáltalán nem található a gyorsítótárban az adott kulcs alatt, vagy
+létezik ugyan, de már lejárt, esetleg bármilyen más okból érvénytelen. A lejárt vagy
+érvénytelen elemeket minden esetben gyorsítótár hiányként KELL figyelembe venni.
 
-*    **Deferred** - A deferred cache save indicates that a cache item may not be
+*    **Késleltetett** - A deferred cache save indicates that a cache item may not be
 persisted immediately by the pool. A Pool object MAY delay persisting a deferred
 cache item in order to take advantage of bulk-set operations supported by some
 storage engines. A Pool MUST ensure that any deferred cache items are eventually
@@ -91,17 +100,19 @@ items, such as an object destructor, persisting all on save(), a timeout or
 max-items check or any other appropriate logic. Requests for a cache item that
 has been deferred MUST return the deferred but not-yet-persisted item.
 
-## Data
+## Adat
 
-Implementing libraries MUST support all serializable PHP data types, including:
+A szolgáltató programkönyvtáraknak támogatniuk KELL az összes [szerializálható](http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=10#section_3_19)
+PHP adattípust, különösen a következőket:
 
-*    **Strings** - Character strings of arbitrary size in any PHP-compatible encoding.
-*    **Integers** - All integers of any size supported by PHP, up to 64-bit signed.
-*    **Floats** - All signed floating point values.
-*    **Boolean** - True and False.
-*    **Null** - The actual null value.
-*    **Arrays** - Indexed, associative and multidimensional arrays of arbitrary depth.
-*    **Object** - Any object that supports lossless serialization and
+*    **Karakterlánc** (string) - Tetszőleges méretű karakterláncok, bármely PHP-kompatibilis
+karakterkódolással.
+*    **Egész szám** (integer) - All integers of any size supported by PHP, up to 64-bit signed.
+*    **Lebegőpontos szám** (float) - Tizedes ponttal jelölt tört szám.
+*    **Logikai érték** (boolean) - Igaz (true) és hamis (false).
+*    **Null** - Tényleges null érték.
+*    **Tömb** - Numerikusan vagy szövegesen indexelt, többdimenziós tömb, tetszőleges mélységben.
+*    **Objektum** - Any object that supports lossless serialization and
 deserialization such that $o == unserialize(serialize($o)). Objects MAY
 leverage PHP's Serializable interface, `__sleep()` or `__wakeup()` magic methods,
 or similar language functionality if appropriate.
@@ -115,22 +126,22 @@ Compatibility with them is simply used as a baseline for acceptable object value
 If it is not possible to return the exact saved value for any reason, implementing
 libraries MUST respond with a cache miss rather than corrupted data.
 
-## Key Concepts
+## Kulcsfogalmak
 
-### Pool
+### Gyűjtő (pool)
 
 The Pool represents a collection of items in a caching system. The pool is
 a logical Repository of all items it contains.  All cacheable items are retrieved
 from the Pool as an Item object, and all interaction with the whole universe of
 cached objects happens through the Pool.
 
-### Items
+### Elemek (items)
 
 An Item represents a single key/value pair within a Pool. The key is the primary
 unique identifier for an Item and MUST be immutable. The Value MAY be changed
 at any time.
 
-## Error handling
+## Hibakezelés
 
 While caching is often an important part of application performance, it should never
 be a critical part of application functionality. Thus, an error in a cache system SHOULD NOT
@@ -146,7 +157,7 @@ it MUST NOT be considered an error condition if the specified key does not exist
 post-condition is the same (the key does not exist, or the pool is empty), thus there is
 no error condition.
 
-## Interfaces
+## Interfészek
 
 ### CacheItemInterface
 
