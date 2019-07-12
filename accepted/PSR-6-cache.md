@@ -3,7 +3,7 @@
 # Gyorsítótár interfész
 
 A [gyorsítótárazás/cache](https://www.letscode.hu/2015/02/05/cache-avagy-dugikeszletek)
-bevett mód bármely projekt teljesítménynövelésének, a különböző gyorsítótár
+bevett mód bármely projekt teljesítménynövelésére, a különböző gyorsítótár
 megoldások számos keretrendszer és függvénykönyvtár legáltalánosabb szolgáltatásai.
 Ez olyan helyzetet eredményezett, ahol számos projekt görgeti maga előtt saját,
 a funkcionalitás változatos szintjeit megtestesítő cache függvénykönyvtárait.
@@ -78,27 +78,29 @@ programkönyvtáraknak NEM SZABAD támogatni a használatukat: `{}()/\@:`
 
 *    **Találat** - Találatról (hit) akkor beszélünk a gyorsítótárakkal kapcsolatban,
 amikor a hívó vagy kliens kód kér egy olyan egyedi kulccsal azonosított elemet, amely
-megtalálható a gyorsítótárban a kért kulcs alatt, illetve, ha ez az elem még nem
-járt le, vagy nem érvénytelen bármilyen más okból. A hívó programkönyvtáraknak erről
+megtalálható a gyorsítótárban a kért kulcs alatt és ez az elem még nem járt le,
+vagy nem érvénytelen bármilyen más okból. A hívó programkönyvtáraknak erről
 AJÁNLOTT meggyőződni az `isHit()` metódus meghívásával, minden `get()` hívás esetén.
 
-*    **Hiány** - A hiány (miss) meglepő módon az imént tárgyalt találat (hit) ellentéte.
+*    **Hiány** - A hiány (miss) meglepő módon az imént tárgyalt találat ellentéte.
 Akkor áll elő, ha a hívó vagy kliens kód kér egy olyan egyedi kulccsal azonosított elemet,
 amely vagy egyáltalán nem található a gyorsítótárban az adott kulcs alatt, vagy
 létezik ugyan, de már lejárt, esetleg bármilyen más okból érvénytelen. A lejárt vagy
 érvénytelen elemeket minden esetben gyorsítótár hiányként KELL figyelembe venni.
 
-*    **Késleltetett** - A deferred cache save indicates that a cache item may not be
-persisted immediately by the pool. A Pool object MAY delay persisting a deferred
-cache item in order to take advantage of bulk-set operations supported by some
-storage engines. A Pool MUST ensure that any deferred cache items are eventually
-persisted and data is not lost, and MAY persist them before a Calling Library
-requests that they be persisted. When a Calling Library invokes the commit()
-method all outstanding deferred items MUST be persisted. An Implementing Library
-MAY use whatever logic is appropriate to determine when to persist deferred
-items, such as an object destructor, persisting all on save(), a timeout or
-max-items check or any other appropriate logic. Requests for a cache item that
-has been deferred MUST return the deferred but not-yet-persisted item.
+*    **Halasztott** - Egy halasztott gyorsítótár-mentés azt jelzi, hogy egy elem
+nem áll rendelkezésre azonnal a gyűjtőben. A gyűjtő objektumnak LEHET késleltetni
+egy ilyen halasztott cache-elemet azért, hogy kihasználhassa a tárolómotorok által
+támogatott tömeges műveletek előnyeit. A gyűjtőnek biztosítania KELL, hogy bármely
+halasztott cache-elem végig megmaradjon és az adat ne vesszen el, illetve álljon
+rendelkezésre mindaddig, amíg a hívó kód ezt kéri. Amikor a kliens kód meghívja a
+`commit()` metódust, minden fennálló halasztott elemet meg KELL tartani.
+Egy szolgáltató programkönyvtár TETSZŐLEGESEN alkalmazhat bármilyen megfelelő
+logikát arra, hogy meghatározza, mikor maradjanak meg a halasztott elemek. Ilyen
+megoldás lehet egy objektum destruktor, vagy annak kikötése, hogy maradjon meg
+minden mentéskor, illetve egy időkorlát, esetleg az elemek maximális számának
+ellenőrzése, vagy bármely más alkalmas logika. A halasztott gyorsítótár elemek
+iránti kérelmeknek vissza KELL adniuk a halasztott, de még fenntartott elemet.
 
 ## Adat
 
@@ -107,76 +109,82 @@ PHP adattípust, különösen a következőket:
 
 *    **Karakterlánc** (string) - Tetszőleges méretű karakterláncok, bármely PHP-kompatibilis
 karakterkódolással.
-*    **Egész szám** (integer) - All integers of any size supported by PHP, up to 64-bit signed.
+*    **Egész szám** (integer) - Bármilyen méretű, akár 64 biten ábrázolt a PHP által támogatott egész szám.
 *    **Lebegőpontos szám** (float) - Tizedes ponttal jelölt tört szám.
 *    **Logikai érték** (boolean) - Igaz (true) és hamis (false).
 *    **Null** - Tényleges null érték.
 *    **Tömb** - Numerikusan vagy szövegesen indexelt, többdimenziós tömb, tetszőleges mélységben.
-*    **Objektum** - Any object that supports lossless serialization and
-deserialization such that $o == unserialize(serialize($o)). Objects MAY
-leverage PHP's Serializable interface, `__sleep()` or `__wakeup()` magic methods,
-or similar language functionality if appropriate.
+*    **Objektum** - Bármely objektum, amely támogatja a veszteségmentes szerializációt
+és deszerializációt, oly módon, hogy `$objektum == unserialize(serialize($objektum))`
+kifejezés igaz legyen. Az objektumoknak ki LEHET használni a PHP [Serializable interfésze](https://www.php.net/manual/en/class.serializable.php) vagy a `__sleep()`
+illetve `__wakeup()` mágikus metódusok, esetleg más nyelvi eszközök által kínált
+funkcionalitást.
 
-All data passed into the Implementing Library MUST be returned exactly as
-passed. That includes the variable type. That is, it is an error to return
-(string) 5 if (int) 5 was the value saved.  Implementing Libraries MAY use PHP's
-serialize()/unserialize() functions internally but are not required to do so.
-Compatibility with them is simply used as a baseline for acceptable object values.
+Minden a szolgáltató programkönyvtárnak átadott adatot úgy KELL visszaadni, ahogy
+átadásra került, különös tekintettel a változók típusára. Tehát ha a visszatérési
+érték ugyan 5, de a típusa szöveg, annak ellenére, hogy egész számként volt eltárolva,
+akkor az hibának számít. A szolgáltató programkönyvtáraknak LEHET alkalmazni a PHP
+[serialize()](https://www.php.net/manual/en/function.serialize.php) és [unserialize()](https://www.php.net/manual/en/function.unserialize.php) függvényeit,
+de nem kötelesek erre. A kompatibilitás érdekében egyszerűen csak alapértékként
+kell használni az elfogadható objektum értékeket.
 
-If it is not possible to return the exact saved value for any reason, implementing
-libraries MUST respond with a cache miss rather than corrupted data.
+Ha bármilyen okból nem lehetséges a mentett érték pontos visszaadása, akkor a
+jelen PSR-t megvalósító programkönyvtáraknak inkább gyorsítótár-hiánnyal (miss -
+lásd fentebb) KELL visszatérniük, mint az érvénytelen adattal.
 
 ## Kulcsfogalmak
 
-### Gyűjtő (pool)
+### Gyűjtő
 
-The Pool represents a collection of items in a caching system. The pool is
-a logical Repository of all items it contains.  All cacheable items are retrieved
-from the Pool as an Item object, and all interaction with the whole universe of
-cached objects happens through the Pool.
+A gyűjtő (pool) a gyorsítótár rendszerekben tárolt elemek gyűjteménye, egy minden
+elemet magában foglaló logikai tároló. Minden gyorsítótárazható elem Item objektumként
+lekérhető belőle és a gyorstárazott objektumokkal zajló összes interakció
+a gyűjtőn keresztül történik.
 
-### Elemek (items)
+### Elemek
 
-An Item represents a single key/value pair within a Pool. The key is the primary
-unique identifier for an Item and MUST be immutable. The Value MAY be changed
-at any time.
+Egy elem (item) reprezentálja az egyes kulcs/érték párokat a gyűjtőn belül. A kulcs
+az elem elsődleges egyedi azonosítója, ezért állandónak KELL lennie. Az érték ezzel
+szemben bármikor TETSZŐLEGESEN változtatható.
 
 ## Hibakezelés
 
-While caching is often an important part of application performance, it should never
-be a critical part of application functionality. Thus, an error in a cache system SHOULD NOT
-result in application failure.  For that reason, Implementing Libraries MUST NOT
-throw exceptions other than those defined by the interface, and SHOULD trap any errors
-or exceptions triggered by an underlying data store and not allow them to bubble.
+Amíg a gyorsítótárazás gyakran az alkalmazás teljesítményének fontos része,
+soha nem lehet kritikus része a funkcionalitásának. Ennél fogva egy gyorsítótárban
+felmerülő hibának NEM KELLENE az egész alkalmazást működésképtelenné tenni. Ennek okán
+a jelen PSR-t megvalósító szolgáltató programkönyvtáraknak TILOS a jelen interfészben
+meghatározottakon kívül más kivételt dobni, ezen felül el KELLENE kapniuk bármilyen
+hibát vagy kivételt, amit egy mögöttes adattároló kiválthat. A szolgáltató
+programkönyvtáraknak adott esetben AJÁNLOTT naplózni vagy más módon jelezni az
+ilyen hibákat a rendszer-adminisztrátor számára.
 
-An Implementing Library SHOULD log such errors or otherwise report them to an
-administrator as appropriate.
-
-If a Calling Library requests that one or more Items be deleted, or that a pool be cleared,
-it MUST NOT be considered an error condition if the specified key does not exist. The
-post-condition is the same (the key does not exist, or the pool is empty), thus there is
-no error condition.
+Ha a hívó kód kérelmére egy vagy több elemet törölni, vagy az egész gyűjtőt
+nullázni kell, akkor NEM SZABAD hibaként figyelembe venni azt, hogy a keresett kulcs
+nem létezik. A végeredmény így is ugyan az lesz (a kulcs nem létezik vagy a gyűjtő üres),
+a kérés teljesül, ezért ez nem tekinthető hibának.
 
 ## Interfészek
 
 ### CacheItemInterface
 
-CacheItemInterface defines an item inside a cache system.  Each Item object
-MUST be associated with a specific key, which can be set according to the
-implementing system and is typically passed by the Cache\CacheItemPoolInterface
-object.
+A CacheItemInterface egy elemet ír le a gyorsítótár rendszeren belül. Minden egyes
+Item objektumot egy egyedi kulccsal KELL társítani, amit a megvalósító rendszer
+szerint lehet beállítani és jellemzően egy Cache\CacheItemPoolInterface objektum
+segítségével kerül átadásra.
 
-The Cache\CacheItemInterface object encapsulates the storage and retrieval of
-cache items. Each Cache\CacheItemInterface is generated by a
-Cache\CacheItemPoolInterface object, which is responsible for any required
-setup as well as associating the object with a unique Key.
-Cache\CacheItemInterface objects MUST be able to store and retrieve any type of
-PHP value defined in the Data section of this document.
+A Cache\CacheItemInterface objektum magában foglalja a cache-elemek tárolását és
+visszakeresését. Minden egyes Cache\CacheItemInterface objektum a
+Cache\CacheItemPoolInterface segítségével jön létre, ami felelős minden szükséges
+beállításért, továbbá az objektum egyedi kulcshoz társításáért.
+A Cache\CacheItemInterface objektumoknak képesnek KELL lenni tárolni és visszaadni
+bármilyen, a jelen dokumentum Adat-szekciójában meghatározott PHP-adattípust.
 
-Calling Libraries MUST NOT instantiate Item objects themselves. They may only
-be requested from a Pool object via the getItem() method.  Calling Libraries
-SHOULD NOT assume that an Item created by one Implementing Library is
-compatible with a Pool from another Implementing Library.
+Maguknak a hívó vagy kliens kódoknak NEM SZABAD példányosítani az Item osztályt,
+csak kérhetik ezt a gyűjtő objektumtól a `getItem()` metóduson keresztül. A hívó
+kódoknak NEM KELLENE azt feltételezni, hogy a szolgáltató programkönyvtár által
+létrehozott Item objektum kompatibilis más hasonló programkönyvtárak gyűjtő (Pool)
+objektumaival.
+
 
 ~~~php
 <?php
@@ -184,18 +192,19 @@ compatible with a Pool from another Implementing Library.
 namespace Psr\Cache;
 
 /**
- * CacheItemInterface defines an interface for interacting with objects inside a cache.
+ * A CacheItemInterface leír egy felületet, amelyen keresztül a gyorsítótárban lévő
+ * objektumok kommunikálhatnak egymással.
  */
 interface CacheItemInterface
 {
     /**
-     * Returns the key for the current cache item.
+     * Az aktuális cache-elem kulcsával tér vissza.
      *
-     * The key is loaded by the Implementing Library, but should be available to
-     * the higher level callers when needed.
+     * A szolgáltató/megvalósító könyvtár által betöltött kulcs, aminek rendelkezésre
+     * kell állnia a magasabb szintű hívók számára is, ha szükséges.
      *
-     * @return string
-     *   The key string for this cache item.
+     * @return string - A szöveges kulcs ehhez a cache-elemhez.
+     *
      */
     public function getKey();
 
