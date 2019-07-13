@@ -41,7 +41,7 @@ a jelen szabvány megvalósításáért és azért, hogy biztosítsa a gyorsít�
 a hívó vagy kliens kód számára. A szolgáltató programkönyvtárnak KELL biztosítania
 azokat az osztályokat, amelyek implementálják a `Cache\CacheItemPoolInterface` és
 a `Cache\CacheItemInterface` interfészeket. A szolgáltató programkönyvtáraknak
-támogatniuk KELL legalább a TTL (lejárati idő, részletek alább) funkcionalitást.
+támogatniuk KELL legalább a TTL (élettartam, részletek alább) funkcionalitást.
 
 *    **Élettartam** - Az egyes elemek élettartama (TTL) az az időtartam, amíg az
 adott elem tárolva van a gyorsítótárban és stabilnak tekinthető (nem változik).
@@ -179,8 +179,8 @@ beállításért, továbbá az objektum egyedi kulcshoz társításáért.
 A Cache\CacheItemInterface objektumoknak képesnek KELL lenni tárolni és visszaadni
 bármilyen, a jelen dokumentum Adat-szekciójában meghatározott PHP-adattípust.
 
-Maguknak a hívó vagy kliens kódoknak NEM SZABAD példányosítani az Item osztályt,
-csak kérhetik ezt a gyűjtő objektumtól a `getItem()` metóduson keresztül. A hívó
+Maguknak a hívó vagy kliens kódoknak NEM SZABAD példányosítani az Item objektumot,
+csak kérhetik ezt a gyűjtő (Pool) objektumtól a `getItem()` metóduson keresztül. A hívó
 kódoknak NEM KELLENE azt feltételezni, hogy a szolgáltató programkönyvtár által
 létrehozott Item objektum kompatibilis más hasonló programkönyvtárak gyűjtő (Pool)
 objektumaival.
@@ -209,71 +209,69 @@ interface CacheItemInterface
     public function getKey();
 
     /**
-     * Retrieves the value of the item from the cache associated with this object's key.
      *
-     * The value returned must be identical to the value originally stored by set().
+     * Visszaadja a jelen objektum kulcsához társított elem értékét a gyorstárból.
      *
-     * If isHit() returns false, this method MUST return null. Note that null
-     * is a legitimate cached value, so the isHit() method SHOULD be used to
-     * differentiate between "null value was found" and "no value was found."
+     * A visszaadott értéknek meg kell egyezni a set() metódussal beállított értékkel.
      *
-     * @return mixed
-     *   The value corresponding to this cache item's key, or null if not found.
+     * Ha az isHit() false-al tér vissza, akkor ennek a metódusnak null-al KELL.
+     * Megjegyzendő, hogy a null megengedetten tárolt érték, így az isHit()
+     * metódusnak különbséget KELLENE tenni a között, hogy null értéket talált,
+     * vagy egyáltalán nem talált értéket a kért kulcs alatt.
+     *
+     * @return mixed Jelen cache elem kulcsának megfelelő érték, vagy null, ha ilyen nincs.
+     *
      */
     public function get();
 
     /**
-     * Confirms if the cache item lookup resulted in a cache hit.
+     * Megerősíti, hogy a gyorsítótár-lekérdezés találatot eredményezett.
      *
-     * Note: This method MUST NOT have a race condition between calling isHit()
-     * and calling get().
+     * @return bool - true, ha a kérelem cache-találatot eredményezett, egyébként false.
      *
-     * @return bool
-     *   True if the request resulted in a cache hit. False otherwise.
      */
     public function isHit();
 
     /**
-     * Sets the value represented by this cache item.
+     * Beállítja a jelen gyorsítótár-elem által reprezentált értéket.
      *
-     * The $value argument may be any item that can be serialized by PHP,
-     * although the method of serialization is left up to the Implementing
-     * Library.
+     * A $value argumentum lehet bármilyen PHP-val szerializálható elem, akkor is
+     * ha a szerializáló metódus a megvalósító programkönyvtárban marad.
      *
-     * @param mixed $value
-     *   The serializable value to be stored.
+     * @param mixed $value - a szerializálható érték, amit tárolni szeretnénk
      *
-     * @return static
-     *   The invoked object.
+     * @return static - a hivatkozott objektum
+     *
      */
     public function set($value);
 
     /**
-     * Sets the expiration time for this cache item.
+     * Beállítja a jelen gyorsítótár-elemhez tartozó lejárati időpontot.
      *
      * @param \DateTimeInterface|null $expiration
-     *   The point in time after which the item MUST be considered expired.
-     *   If null is passed explicitly, a default value MAY be used. If none is set,
-     *   the value should be stored permanently or for as long as the
-     *   implementation allows.
+     *   Az az időpont, ami után az elemet lejártként KELL figyelembe venni.
+     *   Ha kifejezetten null kerül átadásra, akkor az alapértelmezett értéket LEHET
+     *   használni. Ha nincs beállítva, akkor az értéket tartósan tárolni kell,
+     *   vagy legalább addig, amíg az adott implementáció lehetővé teszi.
      *
-     * @return static
-     *   The called object.
+     * @return static - a hívott objektum.
+     *
      */
     public function expiresAt($expiration);
 
     /**
-     * Sets the expiration time for this cache item.
+     * Beállítja a jelen gyorsítótár-elemhez tartozó lejárati időtartamot.
      *
      * @param int|\DateInterval|null $time
-     *   The period of time from the present after which the item MUST be considered
-     *   expired. An integer parameter is understood to be the time in seconds until
-     *   expiration. If null is passed explicitly, a default value MAY be used.
-     *   If none is set, the value should be stored permanently or for as long as the
-     *   implementation allows.
+     *   Az a jelen pillanattól számított időtartam, miután az elemet lejártként
+     *   KELL figyelembe venni. Ez alatt az az egész számmal kifejezett időparaméter
+     *   értendő, amely azt az időt jelöli másodpercekben, amíg az elem lejár.
+     *   Ha kifejezetten null kerül átadásra, akkor az alapértelmezett értéket LEHET
+     *   használni. Ha nincs beállítva, akkor az értéket tartósan tárolni kell,
+     *   vagy legalább addig, amíg az adott implementáció lehetővé teszi.
      *
-     * @return static
-     *   The called object.
+     * @return static - a hívott objektum
+     *
      */
     public function expiresAfter($time);
 
@@ -282,11 +280,11 @@ interface CacheItemInterface
 
 ### CacheItemPoolInterface
 
-The primary purpose of Cache\CacheItemPoolInterface is to accept a key from the
-Calling Library and return the associated Cache\CacheItemInterface object.
-It is also the primary point of interaction with the entire cache collection.
-All configuration and initialization of the Pool is left up to an Implementing
-Library.
+A Cache\CacheItemPoolInterface elsődleges célja az, hogy fogadja a hívó kód által
+küldött kulcsot és visszaadja a hozzá tartozó Cache\CacheItemInterface objektumot.
+Ez a teljes gyorsítótár-kollekcióval történő interakció elsődleges pontja is.
+A gyűjtő (Pool) objektumok összes konfigurációja és inicializációja a megvalósító
+programkönyvtárra marad.
 
 ~~~php
 <?php
@@ -294,32 +292,32 @@ Library.
 namespace Psr\Cache;
 
 /**
- * CacheItemPoolInterface generates CacheItemInterface objects.
+ * A CacheItemPoolInterface feladata, hogy CacheItemInterface objektumokat hozzon létre.
  */
 interface CacheItemPoolInterface
 {
     /**
-     * Returns a Cache Item representing the specified key.
+     * Egy CacheItemInterface-t megvalósító objektummal tér vissza, amelyet a
+     * paraméterként várt egyedi kulcs azonosít.
      *
-     * This method must always return a CacheItemInterface object, even in case of
-     * a cache miss. It MUST NOT return null.
+     * Ennek a metódusnak mindig egy CacheItemInterface objektummal kell visszatérni,
+     * még abban az esetben is, ha gyorsítótár-hiány (miss, lásd fent) áll fent.
+     * Éppen ezért TILOS null értéket visszaadnia.
      *
-     * @param string $key
-     *   The key for which to return the corresponding Cache Item.
+     * @param string $key - a kért gyorsítótár-elemet azonosító egyedi kulcs.
      *
-     * @throws InvalidArgumentException
-     *   If the $key string is not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
+     * @throws InvalidArgumentException - ha a $key paraméter értéke érvénytelen,
+     * akkor egy \Psr\Cache\InvalidArgumentException típusú kivételt KELL dobni.
      *
-     * @return CacheItemInterface
-     *   The corresponding Cache Item.
+     * @return CacheItemInterface - a megfelelő cache-elem.
+     *
      */
     public function getItem($key);
 
     /**
-     * Returns a traversable set of cache items.
+     * A gyorsítótár elemeinek bejárható adatkollekciójával tér vissza.
      *
-     * @param string[] $keys
+     * @param string[] $keys -
      *   An indexed array of keys of items to retrieve.
      *
      * @throws InvalidArgumentException
