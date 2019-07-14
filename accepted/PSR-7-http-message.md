@@ -1,21 +1,26 @@
-# HTTP message interfaces
+[Kezdőlap](../README.md)
 
-This document describes common interfaces for representing HTTP messages as
-described in [RFC 7230](http://tools.ietf.org/html/rfc7230) and
-[RFC 7231](http://tools.ietf.org/html/rfc7231), and URIs for use with HTTP
-messages as described in [RFC 3986](http://tools.ietf.org/html/rfc3986).
+# HTTP üzenet interfészek
 
-HTTP messages are the foundation of web development. Web browsers and HTTP
-clients such as cURL create HTTP request messages that are sent to a web server,
-which provides an HTTP response message. Server-side code receives an HTTP
-request message, and returns an HTTP response message.
+Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az ide
+vonatkozó [RFC 7230](http://tools.ietf.org/html/rfc7230) és
+[RFC 7231](http://tools.ietf.org/html/rfc7231) ajánlás figyelembevételével ábrázolják
+a HTTP üzeneteket, különös tekintettel az [URI](https://hu.wikipedia.org/wiki/URI)
+komponensre, amelyet az [RFC 3986](http://tools.ietf.org/html/rfc3986) ajánlás
+határoz meg.
+
+A HTTP üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok,
+mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
+hoznak létere és küldenek el a webszervernek, amely gondoskodik a szintén szabványos
+HTTP válaszról (Response). A szerver oldali kód tehát megkapja a HTTP kérelmet,
+majd egy HTTP válasz üzenettel reagál rá.
 
 HTTP messages are typically abstracted from the end-user consumer, but as
 developers, we typically need to know how they are structured and how to
 access or manipulate them in order to perform our tasks, whether that might be
 making a request to an HTTP API, or handling an incoming request.
 
-Every HTTP request message has a specific form:
+Minden HTTP kérelemnek van egy meghatározott [formája](https://hu.wikipedia.org/wiki/HTTP#K%C3%A9r%C3%A9s_(request)):
 
 ~~~http
 POST /path HTTP/1.1
@@ -29,7 +34,8 @@ HTTP request method, the request target (usually either an absolute URI or a
 path on the web server), and the HTTP protocol version. This is followed by one
 or more HTTP headers, an empty line, and the message body.
 
-HTTP response messages have a similar structure:
+A [HTTP válasz](https://hu.wikipedia.org/wiki/HTTP#V%C3%A1lasz_(response)) üzenetek
+ehhez hasonló szerkezettel rendelkeznek:
 
 ~~~http
 HTTP/1.1 200 OK
@@ -46,20 +52,19 @@ followed by one or more HTTP headers, an empty line, and the message body.
 The interfaces described in this document are abstractions around HTTP messages
 and the elements composing them.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119](http://tools.ietf.org/html/rfc2119).
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
+[RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-### References
+### Referenciák
 
-- [RFC 2119](http://tools.ietf.org/html/rfc2119)
+- [RFC 2119](../related-rfcs/2119.md)
 - [RFC 3986](http://tools.ietf.org/html/rfc3986)
 - [RFC 7230](http://tools.ietf.org/html/rfc7230)
 - [RFC 7231](http://tools.ietf.org/html/rfc7231)
 
-## 1. Specification
+## 1. Specifikáció
 
-### 1.1 Messages
+### 1.1 Üzenetek
 
 An HTTP message is either a request from a client to a server or a response from
 a server to a client. This specification defines interfaces for the HTTP messages
@@ -73,7 +78,7 @@ implemented directly, implementors SHOULD implement
 From here forward, the namespace `Psr\Http\Message` will be omitted when
 referring to these interfaces.
 
-### 1.2 HTTP Headers
+### 1.2 HTTP fejlécek
 
 #### Case-insensitive header field names
 
@@ -168,7 +173,7 @@ foo.com                                 | bar.com                               
 - <sup id="uhc">3</sup> Host component of the URI being injected via
   `withUri()`.
 
-### 1.3 Streams
+### 1.3 Adatfolyamok
 
 HTTP messages consist of a start-line, headers, and a body. The body of an HTTP
 message can be very small or extremely large. Attempting to represent the body
@@ -206,7 +211,7 @@ the fact that the stream instance may be mutable, and, as such, could alter
 the state of the message; when in doubt, create a new stream instance and attach
 it to a message to enforce state.
 
-### 1.4 Request Targets and URIs
+### 1.4 A kérelmek célpontjai és az URI-k
 
 Per RFC 7230, request messages contain a "request-target" as the second segment
 of the request line. The request target can be one of the following forms:
@@ -286,7 +291,7 @@ authority-form, and asterisk-form). When used, the composed URI instance can
 still be of use, particularly in clients, where it may be used to create the
 connection to the server.
 
-### 1.5 Server-side Requests
+### 1.5 Kiszolgáló oldali kérelmek
 
 `RequestInterface` provides the general representation of an HTTP request
 message. However, server-side requests need additional treatment, due to the
@@ -318,7 +323,7 @@ application-specific rules (such as path matching, scheme matching, host
 matching, etc.). As such, the server request can also provide messaging between
 multiple request consumers.
 
-### 1.6 Uploaded files
+### 1.6 Feltöltött állományok
 
 `ServerRequestInterface` specifies a method for retrieving a tree of upload
 files in a normalized structure, with each leaf an instance of
@@ -615,12 +620,12 @@ $stream = new Psr7StreamWrapper($file1->getStream());
 stream_copy_to_stream($stream, $s3wrapper);
 ~~~
 
-## 2. Package
+## 2. A csomag
 
 The interfaces and classes described are provided as part of the
 [psr/http-message](https://packagist.org/packages/psr/http-message) package.
 
-## 3. Interfaces
+## 3. Interfészek
 
 ### 3.1 `Psr\Http\Message\MessageInterface`
 
@@ -1901,3 +1906,5 @@ interface UploadedFileInterface
     public function getClientMediaType();
 }
 ~~~
+
+[Kezdőlap](../README.md)
