@@ -425,7 +425,7 @@ interface CacheItemPoolInterface
 ### CacheException
 
 Ezt az Exception interfészt kritikus hibák kezelésére szánták, különös tekintettel,
-- de nem korlátozva kizárólagosan - a *cache setup* hibákra, mint a gyorsítótár szerver
+(de nem korlátozva kizárólagosan) a *cache setup* hibákra, mint a gyorsítótár szerver
 vagy a megadott hitelesítő adatok hibái.
 
 A jelen PSR-t implementáló programkönyvtáraknak meg KELL valósítani ezt az interfészt.
