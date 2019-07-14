@@ -227,6 +227,10 @@ interface CacheItemInterface
     /**
      * Megerősíti, hogy a gyorsítótár-lekérdezés találatot eredményezett.
      *
+     * Megjegyzés: ennek a metódusnak nem szabad versenyhelyzetet eredményeznie
+     * az isHit() és a get() hívások között.
+     * @see https://hu.wikipedia.org/wiki/Versenyhelyzet#A_sz%C3%A1m%C3%ADt%C3%A1stechnik%C3%A1ban
+     *
      * @return bool - true, ha a kérelem cache-találatot eredményezett, egyébként false.
      *
      */
@@ -316,106 +320,103 @@ interface CacheItemPoolInterface
 
     /**
      * A gyorsítótár elemeinek bejárható adatkollekciójával tér vissza.
+     * @see https://www.php.net/manual/en/class.traversable.php
      *
-     * @param string[] $keys -
-     *   An indexed array of keys of items to retrieve.
+     * @param string[] $keys - a lekérendő elemek kulcsainak indexelt tömbje.
      *
-     * @throws InvalidArgumentException
-     *   If any of the keys in $keys are not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
+     * @throws InvalidArgumentException - ha bármelyik kulcs értéke a paraméterként
+     * átadott $keys tömbben érvénytelen, akkor egy \Psr\Cache\InvalidArgumentException
+     * típusú kivételt KELL dobni.
      *
      * @return array|\Traversable
-     *   A traversable collection of Cache Items keyed by the cache keys of
-     *   each item. A Cache item will be returned for each key, even if that
-     *   key is not found. However, if no keys are specified then an empty
-     *   traversable MUST be returned instead.
+     *   A gyorsítótár elemeinek bejárható adatkollekciója, amelyet az egyes elemek
+     *   gyorsítótár-kulcsai indexelnek. A gyorsítótár-elem minden kulccsal vissza
+     *   fog térni, akkor is, ha kulcs nem található a tárban. Ha azonban nincsenek
+     *   megadva kulcsok, akkor egy üres tömböt vagy bejárható objektumot KELL
+     *   visszaadni helyette.
      */
     public function getItems(array $keys = array());
 
     /**
-     * Confirms if the cache contains specified cache item.
+     * Megerősíti, hogy a gyorsítótár tartalmazza-e a kért elemet.
      *
-     * Note: This method MAY avoid retrieving the cached value for performance reasons.
-     * This could result in a race condition with CacheItemInterface::get(). To avoid
-     * such situation use CacheItemInterface::isHit() instead.
+     * Megjegyzés: a teljesítmény növelése érdekében ez a metódus, ha LEHET,
+     * mellőzze a gyorstárazott érték visszaadását. Ez ugyanis versenyhelyzetet
+     * eredményezhet CacheItemInterface::get() metódussal. Az ilyen szituációk
+     * elkerülése érdekében ellenőrzésre csak a CacheItemInterface::isHit()
+     * metódust használjuk.
+     * @see https://hu.wikipedia.org/wiki/Versenyhelyzet#A_sz%C3%A1m%C3%ADt%C3%A1stechnik%C3%A1ban
      *
-     * @param string $key
-     *   The key for which to check existence.
+     * @param string $key - a kulcs, aminek a létezését vizsgáljuk
      *
-     * @throws InvalidArgumentException
-     *   If the $key string is not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
+     * @throws InvalidArgumentException - ha a $key paraméter értéke érvénytelen,
+     * akkor egy \Psr\Cache\InvalidArgumentException típusú kivételt KELL dobni.
      *
-     * @return bool
-     *   True if item exists in the cache, false otherwise.
+     * @return bool - true, ha az elem létezik a gyorstárban, egyébként false
+     *
      */
     public function hasItem($key);
 
     /**
-     * Deletes all items in the pool.
+     * Törli az összes elemet a gyűjtőből.
      *
-     * @return bool
-     *   True if the pool was successfully cleared. False if there was an error.
+     * @return bool - true, ha a gyűjtő sikeresen kiürítve, false, ha hiba történt.
+     *
      */
     public function clear();
 
     /**
-     * Removes the item from the pool.
+     * Eltávolítja a kért elemet a gyűjtőből.
      *
-     * @param string $key
-     *   The key to delete.
+     * @param string $key - a törlendő elem kulcsa.
      *
-     * @throws InvalidArgumentException
-     *   If the $key string is not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
+     * @throws InvalidArgumentException - ha a $key paraméter értéke érvénytelen,
+     * akkor egy \Psr\Cache\InvalidArgumentException típusú kivételt KELL dobni.
      *
-     * @return bool
-     *   True if the item was successfully removed. False if there was an error.
+     * @return bool - true, ha a kért elem sikeresen eltávolítva, false, ha hiba történt.
+     *
      */
     public function deleteItem($key);
 
     /**
-     * Removes multiple items from the pool.
+     * Eltávolít több elemet a gyűjtőből.
      *
-     * @param string[] $keys
-     *   An array of keys that should be removed from the pool.
-
-     * @throws InvalidArgumentException
-     *   If any of the keys in $keys are not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
+     * @param string[] $keys - a gyűjtőből eltávolítandó kulcsok tömbbe foglalt felsorolása.
      *
-     * @return bool
-     *   True if the items were successfully removed. False if there was an error.
+     * @throws InvalidArgumentException - ha bármelyik kulcs értéke a paraméterként
+     * átadott $keys tömbben érvénytelen, akkor egy \Psr\Cache\InvalidArgumentException
+     * típusú kivételt KELL dobni.
+     *
+     * @return bool - true, ha a kért elemek sikeresen el lettek távolítva, false, ha hiba történt.
+     *
      */
     public function deleteItems(array $keys);
 
     /**
-     * Persists a cache item immediately.
+     * A gyorsítótár-elem azonnali tartós tárolása.
      *
-     * @param CacheItemInterface $item
-     *   The cache item to save.
+     * @param CacheItemInterface $item - a mentendő gyorsítótár-elem.
      *
-     * @return bool
-     *   True if the item was successfully persisted. False if there was an error.
+     * @return bool - true, ha az elem sikeresen mentve, false, ha hiba történt.
+     *
      */
     public function save(CacheItemInterface $item);
 
     /**
-     * Sets a cache item to be persisted later.
+     * Gyorsítótár elem beállítása halasztott mentésre.
      *
-     * @param CacheItemInterface $item
-     *   The cache item to save.
+     * @param CacheItemInterface $item - a mentendő gyorsítótár-elem.
      *
-     * @return bool
-     *   False if the item could not be queued or if a commit was attempted and failed. True otherwise.
+     * @return bool - false, ha az elem nem állítható sorba, vagy ha az eltárolást
+     *   már sikertelenül megkísérelték. Egyébként true.
      */
     public function saveDeferred(CacheItemInterface $item);
 
     /**
-     * Persists any deferred cache items.
+     * Bármely halasztott gyorsítótár-elem tartós tárolása.
      *
-     * @return bool
-     *   True if all not-yet-saved items were successfully saved or there were none. False otherwise.
+     * @return bool - true, ha az összes még el nem mentett elem mentése sikeres volt,
+     *   vagy ha nem voltak ilyen elemek. Egyébként false.
      */
     public function commit();
 }
@@ -423,11 +424,11 @@ interface CacheItemPoolInterface
 
 ### CacheException
 
-This exception interface is intended for use when critical errors occur,
-including but not limited to *cache setup* such as connecting to a cache server
-or invalid credentials supplied.
+Ezt az Exception interfészt kritikus hibák kezelésére szánták, különös tekintettel,
+- de nem korlátozva kizárólagosan - a *cache setup* hibákra, mint a gyorsítótár szerver
+vagy a megadott hitelesítő adatok hibái.
 
-Any exception thrown by an Implementing Library MUST implement this interface.
+A jelen PSR-t implementáló programkönyvtáraknak meg KELL valósítani ezt az interfészt.
 
 ~~~php
 <?php
@@ -435,7 +436,8 @@ Any exception thrown by an Implementing Library MUST implement this interface.
 namespace Psr\Cache;
 
 /**
- * Exception interface for all exceptions thrown by an Implementing Library.
+ * Általános kivétel interfész a jelen PSR-t implementáló programkönyvtárak által
+ * dobott összes kivételhez.
  */
 interface CacheException
 {
@@ -450,10 +452,11 @@ interface CacheException
 namespace Psr\Cache;
 
 /**
- * Exception interface for invalid cache arguments.
+ * Kivétel interfész az érvénytelen gyorsítótár argumentumok kezelésére.
  *
- * Any time an invalid argument is passed into a method it must throw an
- * exception class which implements Psr\Cache\InvalidArgumentException.
+ * Bármikor egy érvénytelen argumentum kerül átadásra egy metódusnak, annak
+ * olyan kivételt kell dobnia, amelyik implementálja az alábbi
+ * Psr\Cache\InvalidArgumentException interfészt.
  */
 interface InvalidArgumentException extends CacheException
 {
