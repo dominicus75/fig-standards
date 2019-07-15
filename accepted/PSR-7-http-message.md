@@ -36,30 +36,35 @@ szerepel, amely a megadott erőforráson végzendő műveletet határozza meg. E
 a kérelem célja, vagyis annak az erőforrásnak az azonosítója, amelyre a kérelem
 irányul. Ez lehet abszolút URI vagy egy relatív elérési út a kiszolgálón. A sort
 az alkalmazott HTTP protokoll verziószáma zárja. Ezt a sort követheti tetszőleges
-számú HTTP-fejléc sor („header line”) „HEADER: ÉRTÉK” alakban, majd egy üres sor
+számú HTTP-fejléc sor („header line”) „HEADERNÉV: ÉRTÉK” alakban, majd egy üres sor
 után az üzenet törzse (ha van).
-
-A sorokat a CRLF (azaz kocsi vissza + soremelés, vagyis `\r\n`) karakterpárral kell
-elválasztani. A fejlécek végét jelző üres sor csak ezt a két karaktert tartalmazhatja,
-nem lehet benne szóköz és tabulátor sem.
 
 A [HTTP válasz](https://hu.wikipedia.org/wiki/HTTP#V%C3%A1lasz_(response)) üzenetek
 ehhez hasonló szerkezettel rendelkeznek:
 
 ~~~http
-HTTP/1.1 200 OK
-Content-Type: text/plain
-
-This is the response body
+HTTP/1.1 200 OK\r\n
+Content-Type: text/plain\r\n
+\r\n
+This is the response body\r\n
 ~~~
 
-The first line is the "status line", and contains, in order, the HTTP protocol
-version, the HTTP status code, and a "reason phrase," a human-readable
-description of the status code. Like the request message, this is then
-followed by one or more HTTP headers, an empty line, and the message body.
+A HTTP válasz első sora az állapotsor („status line”), amely
+„VERZIÓ STÁTUSZKÓD INDOKLÁS” alakú. A sort az alkalmazott HTTP protokoll verziója
+nyitja, ezt követi a [HTTP-állapotkód](https://hu.wikipedia.org/wiki/HTTP-%C3%A1llapotk%C3%B3dok)
+(„status code”), ami egy háromjegyű szám. Az állapotsort az indoklás
+(„reason phrase”) zárja, ami egy az állapotkódot magyarázó üzenet valamilyen emberi
+nyelven, vagy esetleg angolul. A kérelemhez hasonlóan ezt a sort követheti tetszőleges
+számú HTTP-fejléc sor „HEADERNÉV: ÉRTÉK” alakban, majd egy üres sor után az üzenet
+törzse. A kliens elsősorban az állapotkód, másodsorban a fejléc sorok tartalma
+alapján kezeli a választ.
 
-The interfaces described in this document are abstractions around HTTP messages
-and the elements composing them.
+A sorokat mind a kérelem, mind a válasz esetében a CRLF (kocsi vissza + soremelés,
+vagyis `\r\n`) karakterpárral kell elválasztani. A fejlécek végét jelző üres sor
+csak ezt a két karaktert tartalmazhatja, nem lehet benne szóköz és tabulátor sem.
+
+A jelen dokumentumban leírt interfészek a HTTP üzenetek és alkotórészeik körüli
+absztrakciók.
 
 A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
 [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
