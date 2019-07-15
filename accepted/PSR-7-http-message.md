@@ -1,38 +1,47 @@
 [Kezdőlap](../README.md)
 
-# HTTP üzenet interfészek
+# HTTP-üzenet interfészek
 
 Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az ide
 vonatkozó [RFC 7230](http://tools.ietf.org/html/rfc7230) és
-[RFC 7231](http://tools.ietf.org/html/rfc7231) ajánlás figyelembevételével ábrázolják
-a HTTP üzeneteket, különös tekintettel az [URI](https://hu.wikipedia.org/wiki/URI)
+[RFC 7231](http://tools.ietf.org/html/rfc7231) számú ajánlás figyelembevételével ábrázolják
+a HTTP-üzeneteket, különös tekintettel az [URI](https://hu.wikipedia.org/wiki/URI)
 komponensre, amelyet az [RFC 3986](http://tools.ietf.org/html/rfc3986) ajánlás
 határoz meg.
 
-A HTTP üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok,
-mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
+A HTTP-üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
+(gyűjtőnéven: [user agent](https://hu.wikipedia.org/wiki/User_agent)), mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
 hoznak létere és küldenek el a webszervernek, amely gondoskodik a szintén szabványos
 HTTP válaszról (Response). A szerver oldali kód tehát megkapja a HTTP kérelmet,
 majd egy HTTP válasz üzenettel reagál rá.
 
-HTTP messages are typically abstracted from the end-user consumer, but as
-developers, we typically need to know how they are structured and how to
-access or manipulate them in order to perform our tasks, whether that might be
-making a request to an HTTP API, or handling an incoming request.
+A HTTP-üzenetek általában a végfelhasználóktól származnak, ezért a fejlesztőknek
+pontosan kell ismerniük a szerkezetüket és tisztában kell lenniük azzal, hogyan
+lehet hozzáférni ezekhez az üzenetekhez, illetve manipulálni őket feladataik
+végrehajtása érdekében. Ezen felül azt sem árt tudni, hogy lehet egy kérelmet
+létrehozni egy HTTP API számára, vagy kezelni a bejövő kérelmeket.
 
 Minden HTTP kérelemnek van egy meghatározott [formája](https://hu.wikipedia.org/wiki/HTTP#K%C3%A9r%C3%A9s_(request)):
 
 ~~~http
-POST /path HTTP/1.1
-Host: example.com
-
-foo=bar&baz=bat
+POST /path HTTP/1.1\r\n
+Host: example.com\r\n
+\r\n
+foo=bar&baz=bat\r\n
 ~~~
 
-The first line of a request is the "request line", and contains, in order, the
-HTTP request method, the request target (usually either an absolute URI or a
-path on the web server), and the HTTP protocol version. This is followed by one
-or more HTTP headers, an empty line, and the message body.
+A kérelem első sora („request line”) mindig „METÓDUS ERŐFORRÁS VERZIÓ” alakú. Első
+helyen a [8 HTTP-metódus](https://hu.wikipedia.org/wiki/HTTP#Met%C3%B3dusok) egyike
+szerepel, amely a megadott erőforráson végzendő műveletet határozza meg. Ezt követi
+a kérelem célja, vagyis annak az erőforrásnak az azonosítója, amelyre a kérelem
+irányul. Ez lehet abszolút URI vagy egy relatív elérési út a kiszolgálón. A sort
+az alkalmazott HTTP protokoll verziószáma zárja. Ezt a sort követheti tetszőleges
+számú HTTP-fejléc sor („header line”) „HEADER: ÉRTÉK” alakban, majd egy üres sor
+után az üzenet törzse (ha van).
+
+A sorokat a CRLF (azaz kocsi vissza + soremelés, vagyis `\r\n`) karakterpárral kell
+elválasztani. A fejlécek végét jelző üres sor csak ezt a két karaktert tartalmazhatja,
+nem lehet benne szóköz és tabulátor sem.
 
 A [HTTP válasz](https://hu.wikipedia.org/wiki/HTTP#V%C3%A1lasz_(response)) üzenetek
 ehhez hasonló szerkezettel rendelkeznek:
