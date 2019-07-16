@@ -72,7 +72,7 @@ A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
 ### Referenciák
 
 - [RFC 2119](../related-rfcs/2119.md)
-- [RFC 3986](http://tools.ietf.org/html/rfc3986)
+- [RFC 3986](../related-rfcs/3986.md)
 - [RFC 7230](http://tools.ietf.org/html/rfc7230)
 - [RFC 7231](http://tools.ietf.org/html/rfc7231)
 
