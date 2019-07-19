@@ -6,7 +6,7 @@ Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az
 vonatkozó [RFC 7230](http://tools.ietf.org/html/rfc7230) és
 [RFC 7231](http://tools.ietf.org/html/rfc7231) számú ajánlás figyelembevételével ábrázolják
 a HTTP-üzeneteket, különös tekintettel az [URI](https://hu.wikipedia.org/wiki/URI)
-komponensre, amelyet az [RFC 3986](http://tools.ietf.org/html/rfc3986) ajánlás
+komponensre, amelyet az [RFC 3986](../related-rfcs/3986.md) ajánlás
 határoz meg.
 
 A HTTP-üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
