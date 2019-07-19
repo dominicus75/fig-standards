@@ -51,3 +51,24 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 [psr16]: accepted/PSR-16-simple-cache.md
 [psr17]: accepted/PSR-17-http-factory.md
 [psr18]: accepted/PSR-18-http-client.md
+
+
+## Kapcsolódó RFC-ajánlások
+
+A fenti listában szereplő PSR-szabványokhoz szervesen kapcsolódó, kivonatosan
+(a hivatkozó PSR jobb megértéséhez szükséges mértékben) lefordított RFC ajánlások
+listája.
+
+|           Ajánlás száma              |             Ajánlás tárgya            |
+|--------------------------------------|---------------------------------------|
+| [RFC 2119](related-rfcs/2119.md)  | Kulcsszavak az RFC-kben a követelmények szintjének jelzésére |
+| [RFC 2234](related-rfcs/2234.md)  | Bővített Backus–Naur Forma            |
+| [RFC 3986](related-rfcs/3986.md)  | Egységes Erőforrás-azonosító (URI)    |
+| [RFC 5424](related-rfcs/5424.md)  | Rendszernapló protokoll               |
+
+
+
+
+
+
+
