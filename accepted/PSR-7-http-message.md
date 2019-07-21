@@ -3,10 +3,9 @@
 # HTTP-üzenet interfészek
 
 Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az ide
-vonatkozó [RFC 7230](http://tools.ietf.org/html/rfc7230) és
-[RFC 7231](http://tools.ietf.org/html/rfc7231) számú ajánlás figyelembevételével ábrázolják
-a HTTP-üzeneteket, különös tekintettel az [URI](https://hu.wikipedia.org/wiki/URI)
-komponensre, amelyet az [RFC 3986](../related-rfcs/3986.md) ajánlás
+vonatkozó [RFC 7230](../related-rfcs/7230.md) és [RFC 7231](../related-rfcs/7231.md)
+számú szabványok figyelembevételével ábrázolják a HTTP-üzeneteket, különös tekintettel
+az [URI](https://hu.wikipedia.org/wiki/URI) komponensre, amelyet az [RFC 3986](../related-rfcs/3986.md)
 határoz meg.
 
 A HTTP-üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
@@ -66,15 +65,15 @@ csak ezt a két karaktert tartalmazhatja, nem lehet benne szóköz és tabuláto
 A jelen dokumentumban leírt interfészek a HTTP üzenetek és alkotórészeik körüli
 absztrakciók.
 
-A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
-[RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 ### Referenciák
 
 - [RFC 2119](../related-rfcs/2119.md)
 - [RFC 3986](../related-rfcs/3986.md)
-- [RFC 7230](http://tools.ietf.org/html/rfc7230)
-- [RFC 7231](http://tools.ietf.org/html/rfc7231)
+- [RFC 7230](../related-rfcs/7230.md)
+- [RFC 7231](../related-rfcs/7231.md)
 
 ## 1. Specifikáció
 
