@@ -56,15 +56,37 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 ## Kapcsolódó RFC-ajánlások
 
 A fenti listában szereplő PSR-szabványokhoz szervesen kapcsolódó, kivonatosan
-(a hivatkozó PSR jobb megértéséhez szükséges mértékben) lefordított RFC ajánlások
-listája.
+(a hivatkozó PSR jobb megértéséhez szükséges mértékben) lefordított RFC ajánlások.
 
-|           Ajánlás száma              |             Ajánlás tárgya            |
-|--------------------------------------|---------------------------------------|
-| [RFC 2119](related-rfcs/2119.md)  | Kulcsszavak az RFC-kben a követelmények szintjének jelzésére |
-| [RFC 2234](related-rfcs/2234.md)  | Bővített Backus–Naur Forma            |
-| [RFC 3986](related-rfcs/3986.md)  | Egységes Erőforrás-azonosító (URI)    |
-| [RFC 5424](related-rfcs/5424.md)  | Rendszernapló protokoll               |
+### Az internetes szabványok
+
+Az internetes szabványok leírását az egyedi számmal ellátott RFC (Request For Comments,
+kéretik megkritizálni) dokumentumok tartalmazzák. Ezek soha nem módosulnak, az esetleges
+hibajavításokat, frissítéseket, az adott szabvány újabb változatát további RFC
+dokumentumok tartalmazzák. Egy új RFC elavulttá tehet (obsolete) vagy frissíthet
+(update) korábbi RFC-ket.
+
+Az [IETF](https://hu.wikipedia.org/wiki/IETF) által gondozott RFC dokumentumok két
+nagyobb alcsoportra oszthatók:
+* **BCP** (Best Current Practice - „jelenlegi legjobb gyakorlat”)
+* **STD** (Internet Standard - internetes szabvány).
+
+Mindkét alcsoport tagjai külön (BCP-. illetve STD-,) számot kapnak, miközben megtartják
+korábbi RFC-számukat is, így egy BCP-, vagy STD-szám akár több RFC-hez is tartozhat
+(ezek ugyanis a szabványt jelölik, nem magát a dokumentumot).
+
+A szabványokat 3 érettségi szintbe sorolják:
+* **[Proposed Standard (javasolt szabvány)](https://www.rfc-editor.org/standards#PS)**
+* **[Draft Standard (szabványtervezet, 2011-től nem használják)](https://www.rfc-editor.org/standards#DS)**
+* **[Internet Standard (internet szabvány)](https://www.rfc-editor.org/standards#IS)**
+
+
+|   RFC száma          | Típus/szint |      Ajánlás/szabvány tárgya  |
+|----------------------|:---------------------:|-------------------------------|
+| [RFC 2119](related-rfcs/2119.md) | [BCP 14](https://www.rfc-editor.org/info/bcp14) leírás | Kulcsszavak az RFC-kben a követelmények szintjének jelzésére |
+| [RFC 5234](related-rfcs/5234.md) | [STD 68](https://www.rfc-editor.org/info/std68) néven internetes szabvány | Bővített Backus–Naur Forma (ABNF) |
+| [RFC 3986](related-rfcs/3986.md) | [STD 66](https://www.rfc-editor.org/info/std66) néven internetes szabvány | Egységes Erőforrás-azonosító (URI) |
+| [RFC 5424](related-rfcs/5424.md) | Javasolt szabvány | Rendszernapló protokoll |
 
 
 
