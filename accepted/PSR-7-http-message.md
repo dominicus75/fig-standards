@@ -1,26 +1,27 @@
 [Kezdőlap](../README.md)
 
-# HTTP-üzenet interfészek
+# HTTP üzenet interfészek
 
 Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az ide
 vonatkozó [RFC 7230](../related-rfcs/7230.md) és [RFC 7231](../related-rfcs/7231.md)
-számú szabványok figyelembevételével ábrázolják a HTTP-üzeneteket, különös tekintettel
-az [URI](https://hu.wikipedia.org/wiki/URI) komponensre, amelyet az [RFC 3986](../related-rfcs/3986.md)
-határoz meg.
+számú szabványok figyelembevételével ábrázolják a HTTP üzeneteket, különös tekintettel
+az [URI](https://hu.wikipedia.org/wiki/URI) komponensre, amelyet az [STD 66](../related-rfcs/3986.md)
+internetes szabvány határoz meg.
 
-A HTTP-üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
+A HTTP üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
 (gyűjtőnéven: [user agent](https://hu.wikipedia.org/wiki/User_agent)), mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
 hoznak létere és küldenek el a webszervernek, amely gondoskodik a szintén szabványos
 HTTP válaszról (Response). A szerver oldali kód tehát megkapja a HTTP kérelmet,
 majd egy HTTP válasz üzenettel reagál rá.
 
-A HTTP-üzenetek általában a végfelhasználóktól származnak, ezért a fejlesztőknek
+A HTTP üzenetek általában a végfelhasználóktól származnak, ezért a fejlesztőknek
 pontosan kell ismerniük a szerkezetüket és tisztában kell lenniük azzal, hogyan
 lehet hozzáférni ezekhez az üzenetekhez, illetve manipulálni őket feladataik
 végrehajtása érdekében. Ezen felül azt sem árt tudni, hogy lehet egy kérelmet
 létrehozni egy HTTP API számára, vagy kezelni a bejövő kérelmeket.
 
-Minden HTTP kérelemnek van egy meghatározott [formája](https://hu.wikipedia.org/wiki/HTTP#K%C3%A9r%C3%A9s_(request)):
+Minden HTTP kérelemnek van egy meghatározott
+[formája](https://hu.wikipedia.org/wiki/HTTP#K%C3%A9r%C3%A9s_(request)):
 
 ~~~http
 POST /path HTTP/1.1\r\n
@@ -35,7 +36,7 @@ szerepel, amely a megadott erőforráson végzendő műveletet határozza meg. E
 a kérelem célja, vagyis annak az erőforrásnak az azonosítója, amelyre a kérelem
 irányul. Ez lehet abszolút URI vagy egy relatív elérési út a kiszolgálón. A sort
 az alkalmazott HTTP protokoll verziószáma zárja. Ezt a sort követheti tetszőleges
-számú HTTP-fejléc sor („header line”) „HEADERNÉV: ÉRTÉK” alakban, majd egy üres sor
+számú HTTP fejléc sor („header line”) „FEJLÉCNÉV: ÉRTÉK” alakban, majd egy üres sor
 után az üzenet törzse (ha van).
 
 A [HTTP válasz](https://hu.wikipedia.org/wiki/HTTP#V%C3%A1lasz_(response)) üzenetek
@@ -54,11 +55,11 @@ nyitja, ezt követi a [HTTP-állapotkód](https://hu.wikipedia.org/wiki/HTTP-%C3
 („status code”), ami egy háromjegyű szám. Az állapotsort az indoklás
 („reason phrase”) zárja, ami egy az állapotkódot magyarázó üzenet valamilyen emberi
 nyelven, vagy esetleg angolul. A kérelemhez hasonlóan ezt a sort követheti tetszőleges
-számú HTTP-fejléc sor „HEADERNÉV: ÉRTÉK” alakban, majd egy üres sor után az üzenet
+számú HTTP fejléc sor „FEJLÉCNÉV: ÉRTÉK” alakban, majd egy üres sor után az üzenet
 törzse. A kliens elsősorban az állapotkód, másodsorban a fejléc sorok tartalma
 alapján kezeli a választ.
 
-A sorokat mind a kérelem, mind a válasz esetében a CRLF (kocsi vissza + soremelés,
+A sorokat mind a kérelem, mind a válasz esetében a `SORVÉG` (CRLF, kocsi vissza + soremelés,
 vagyis `\r\n`) karakterpárral kell elválasztani. A fejlécek végét jelző üres sor
 csak ezt a két karaktert tartalmazhatja, nem lehet benne szóköz és tabulátor sem.
 
@@ -79,59 +80,57 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 
 ### 1.1 Üzenetek
 
-An HTTP message is either a request from a client to a server or a response from
-a server to a client. This specification defines interfaces for the HTTP messages
-`Psr\Http\Message\RequestInterface` and `Psr\Http\Message\ResponseInterface` respectively.
+Egy HTTP üzenet vagy egy kérelem a klienstől a szerver felé, vagy egy válasz a
+szervertől a kliensnek. Ennek megfelelően ez a specifikáció a `Psr\Http\Message\RequestInterface` és `Psr\Http\Message\ResponseInterface` interfészeket definiálja a HTTP-üzenetek számára.
+Mindkét interfész a `Psr\Http\Message\MessageInterface`-ből származik. Miközben a
+`Psr\Http\Message\MessageInterface`-t közvetlenül LEHET implementálni, a megvalósítók
+számára AJÁNLOTT a `Psr\Http\Message\RequestInterface` és `Psr\Http\Message\ResponseInterface`
+implementálása is.
 
-Both `Psr\Http\Message\RequestInterface` and `Psr\Http\Message\ResponseInterface` extend
-`Psr\Http\Message\MessageInterface`. While `Psr\Http\Message\MessageInterface` MAY be
-implemented directly, implementors SHOULD implement
-`Psr\Http\Message\RequestInterface` and `Psr\Http\Message\ResponseInterface`.
-
-From here forward, the namespace `Psr\Http\Message` will be omitted when
-referring to these interfaces.
+Innentől kezdve a `Psr\Http\Message` névtér előtag nélkül hivatkozunk ezekre az interfészekre.
 
 ### 1.2 HTTP fejlécek
 
-#### Case-insensitive header field names
+#### A fejléc sorok nevei
 
-HTTP messages include case-insensitive header field names. Headers are retrieved
-by name from classes implementing the `MessageInterface` in a case-insensitive
-manner. For example, retrieving the `foo` header will return the same result as
-retrieving the `FoO` header. Similarly, setting the `Foo` header will overwrite
-any previously set `foo` header value.
+Egy HTTP üzenet tartalmazhat tetszőleges számú fejléc sort is, melyek nevei nem kis-,
+és nagybetű érzékenyek. A fejlécek olyan osztályokból kerülnek lekérésre, nem kis-,
+és nagybetű érzékeny módon, amelyek implementálják a `MessageInterface`-t. Például
+a `foo` fejlécet lekérve azonos eredményt fogunk kapni, mint a `FoO` lekérése
+esetén. Hasonlóképpen a `Foo` fejléc beállítása felülírja a korábban beállított `foo`
+fejléc értéket.
 
 ~~~php
 $message = $message->withHeader('foo', 'bar');
 
 echo $message->getHeaderLine('foo');
-// Outputs: bar
+// Kimenet: bar
 
 echo $message->getHeaderLine('FOO');
-// Outputs: bar
+// Kimenet: bar
 
 $message = $message->withHeader('fOO', 'baz');
 echo $message->getHeaderLine('foo');
-// Outputs: baz
+// Kimenet: baz
 ~~~
 
-Despite that headers may be retrieved case-insensitively, the original case
-MUST be preserved by the implementation, in particular when retrieved with
-`getHeaders()`.
+Annak ellenére, hogy a fejléceket nem kis-, és nagybetű érzékeny módon lehet
+lekérni, az eredeti írásmódot meg KELL őrizni az implementációban, különösen amikor
+`getHeaders()` metódussal kérjük le őket.
 
-Non-conforming HTTP applications may depend on a certain case, so it is useful
-for a user to be able to dictate the case of the HTTP headers when creating a
-request or response.
+A nem megfelelő HTTP alkalmazások függhetnek bizonyos írásmódoktól, így hasznos
+lehet, ha a felhasználó képes megszabni a HTTP fejlécek írásmódját, amikor
+kérelmet vagy válasz üzenetet hoz létre.
 
-#### Headers with multiple values
+#### Fejlécek többféle értékkel
 
-In order to accommodate headers with multiple values yet still provide the
-convenience of working with headers as strings, headers can be retrieved from
-an instance of a `MessageInterface` as an array or a string. Use the
-`getHeaderLine()` method to retrieve a header value as a string containing all
-header values of a case-insensitive header by name concatenated with a comma.
-Use `getHeader()` to retrieve an array of all the header values for a
-particular case-insensitive header by name.
+A többféle értékkel rendelkező fejlécek befogadása érdekében, biztosítandó a kényelmes
+munkát a szövegként kezelt fejlécekkel, a fejlécek szövegként vagy tömbként
+lekérhetik őket egy `MessageInterface` példányból. A `getHeaderLine()` metódus
+alkalmazásával szövegként lekérhető egy fejléc sor, amely vesszővel elválasztva
+tartalmazza a megadott fejléchez tartozó összes értéket. A `getHeader()` metódus
+ezzel szemben tömbként adja vissza ugyan azt, szintén nem kis-, és nagybetű
+érzékeny módon.
 
 ~~~php
 $message = $message
@@ -139,18 +138,18 @@ $message = $message
     ->withAddedHeader('foo', 'baz');
 
 $header = $message->getHeaderLine('foo');
-// $header contains: 'bar, baz'
+// $header tartalma: 'bar, baz'
 
 $header = $message->getHeader('foo');
 // ['bar', 'baz']
 ~~~
 
-Note: Not all header values can be concatenated using a comma (e.g.,
-`Set-Cookie`). When working with such headers, consumers of
-`MessageInterface`-based classes SHOULD rely on the `getHeader()` method
-for retrieving such multi-valued headers.
+Megjegyzés: nem minden fejléc értéket lehetséges vesszővel egymás után fűzve
+szövegként visszadni (pl. `Set-Cookie`). Amikor ilyen fejlécekkel dolgozunk,
+a `MessageInterface`-alapú osztályoknak AJÁNLOTT támaszkodni a `getHeader()`
+metódusra az ilyen többféle értékkel rendelkező fejléc sorok lekérésénél.
 
-#### Host header
+#### Gazdagép (Host) fejléc
 
 In requests, the `Host` header typically mirrors the host component of the URI, as
 well as the host used when establishing the TCP connection. However, the HTTP
@@ -635,8 +634,9 @@ stream_copy_to_stream($stream, $s3wrapper);
 
 ## 2. A csomag
 
-The interfaces and classes described are provided as part of the
-[psr/http-message](https://packagist.org/packages/psr/http-message) package.
+A szükséges interfészek és osztályok rendelkezésre állnak a [psr/http-message](https://packagist.org/packages/psr/http-message) csomag részeként.
+
+Telepítése (Composer segítségével, terminálon): `composer require psr/http-message`.
 
 ## 3. Interfészek
 
