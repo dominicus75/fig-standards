@@ -183,43 +183,44 @@ foo.com                                 | bar.com                               
 - <sup id="rhc">2</sup> Az URI végrehajtás előtt összeállított host összetevője.
 - <sup id="uhc">3</sup> Az URI `withUri()` metódussal beinjektált host összetevője.
 
-### 1.3 Adatfolyamok
+### 1.3 Adatfolyamok (stream)
 
-HTTP messages consist of a start-line, headers, and a body. The body of an HTTP
-message can be very small or extremely large. Attempting to represent the body
-of a message as a string can easily consume more memory than intended because
-the body must be stored completely in memory. Attempting to store the body of a
-request or response in memory would preclude the use of that implementation from
-being able to work with large message bodies. `StreamInterface` is used in
-order to hide the implementation details when a stream of data is read from
-or written to. For situations where a string would be an appropriate message
-implementation, built-in streams such as `php://memory` and `php://temp` may be
-used.
+A HTTP üzenetek kezdősorból (kérelem vagy állapotsor), fejlécekből és az üzenettörzsből
+állnak. Ez utóbbi lehet egészen rövid, de szerfelett nagy is. Mivel az üzenettörzs
+teljes egészében a memóriában lakik, ezért karakterláncként való ábrázolása könnyen
+több memóriát vehet igénybe, mint szeretnénk. Ezért a kérelem vagy a válasz törzsének
+memóriában tárolására tett kísérlet kizárná az olyan implementációkat, amelyek
+képesek nagyobb üzenettörzsekkel dolgozni. A `StreamInterface` elrejti a megvalósítás
+részleteit, amikor adatot olvasunk az adatfolyamból vagy írunk bele. Olyan helyzetekben,
+amikor egy karakterlánc is megfelelő megoldás lenne az üzenettörzs megvalósítására,
+a PHP beépített `php://memory` és `php://temp` adatfolyamait lehet alkalmazni.
 
-`StreamInterface` exposes several methods that enable streams to be read
-from, written to, and traversed effectively.
+A `StreamInterface` számos olyan metódust ír le, amely lehetővé teszi az adatfolyamok
+olvasását, írását és hatékony bejárást.
 
-Streams expose their capabilities using three methods: `isReadable()`,
-`isWritable()`, and `isSeekable()`. These methods can be used by stream
-collaborators to determine if a stream is capable of their requirements.
+Az adatfolyamok képességeit három metódus alkalmazásával lehet feltárni: `isReadable()`,
+`isWritable()`, és `isSeekable()`. A hívó kód ezen metódusok segítségével győződhet
+meg arról, hogy az adatfolyam valóban rendelkezik az elvárt képességekkel.
 
-Each stream instance will have various capabilities: it can be read-only,
-write-only, or read-write. It can also allow arbitrary random access (seeking
-forwards or backwards to any location), or only sequential access (for
-example in the case of a socket, pipe, or callback-based stream).
+Minden `StreamInterface` példány különböző képességekkel rendelkezhet: van, amelyik
+csak olvasható, csak írható, de akad olyan is, ami írható-olvasható. Lehetővé
+tehetnek tetszőleges véletlen (előre vagy hátra keresve, bármely helyen), vagy kizárólag
+szekvenciális (pl. csatlakozó, cső vagy callback-alapú adatfolyam esetén) hozzáférést is.
 
-Finally, `StreamInterface` defines a `__toString()` method to simplify
-retrieving or emitting the entire body contents at once.
+Végül a `StreamInterface` tartalmaz egy `__toString()` metódust is a tartalom
+egyszerű szöveges visszaadására.
 
-Unlike the request and response interfaces, `StreamInterface` does not model
-immutability. In situations where an actual PHP stream is wrapped, immutability
-is impossible to enforce, as any code that interacts with the resource can
-potentially change its state (including cursor position, contents, and more).
-Our recommendation is that implementations use read-only streams for
-server-side requests and client-side responses. Consumers should be aware of
-the fact that the stream instance may be mutable, and, as such, could alter
-the state of the message; when in doubt, create a new stream instance and attach
-it to a message to enforce state.
+A `RequestInterface` és `ResponseInterface`-től eltérően a `StreamInterface` nem
+követi az Immutable (változtathatatlan) objektum modellt. Azokban az esetekben,
+amikor egy aktuális PHP adatfolyam be van csomagolva, az immutabilitást
+lehetetlen megvalósítani, mivel bármelyik kód amelyik interakcióba lép az erőforrással,
+potenciálisan megváltoztathatja annak állapotát (ideértve a kurzor pozíciójától
+a tartalomig bármit).
+A javaslatunk az, hogy az implementációk alkalmazzanak csak olvasható adatfolyamokat
+a kiszolgáló oldali kérelmekhez és válaszokhoz. Az ügyfeleknek tisztában kell
+lenniük azzal a ténnyel, hogy az adatfolyam-példány megváltoztatható és mint ilyen
+az üzenet állapotát is megváltoztathatja. Kétség esetén új adatfolyam-példányt kell
+létrehozni és azt az üzenethez csatolni, az állapot érvényesítése érdekében.
 
 ### 1.4 A kérelmek célpontjai és az URI-k
 
