@@ -151,27 +151,27 @@ metódusra az ilyen többféle értékkel rendelkező fejléc sorok lekérésén
 
 #### Gazdagép (Host) fejléc
 
-In requests, the `Host` header typically mirrors the host component of the URI, as
-well as the host used when establishing the TCP connection. However, the HTTP
-specification allows the `Host` header to differ from each of the two.
+A kérelmekben a `Host` (gazdagép) fejlécsor jellemzően az URI
+[azonos nevű](../related-rfcs/3986.md#322-gazdagép-host) komponensét, valamint a
+a TCP kapcsolat létrehozásához használt gazdagépet tükrözi. A HTTP specifikáció
+azonban lehetővé teszi, hogy a `Host` fejléc különbözzön ezektől.
 
-During construction, implementations MUST attempt to set the `Host` header from
-a provided URI if no `Host` header is provided.
+Létrehozás közben az implementációknak meg KELL próbálni beállítani a `Host`
+fejlécet a beszerzett URI-ből, ha egyébként nem áll rendelkezésre. Ezért a
+`RequestInterface::withUri()` metódus alapértelmezés szerint kicseréli a visszaadott
+`Host` fejlécet egy olyanra, amelyik megegyezik az `UriInterface` által átadott
+`Host` komponenssel.
 
-`RequestInterface::withUri()` will, by default, replace the returned request's
-`Host` header with a `Host` header matching the host component of the passed
-`UriInterface`.
+A metódus második (`$preserveHost`) argumentumaként megadott `true` értékkel lehetséges
+megőrizni a `Host` fejléc eredeti állapotát is. Ebben az esetben a visszaadott kérelem
+nem fogja felülírni az üzenet `Host` fejlécet, kivéve, ha az üzenet nem tartalmaz
+ilyen fejlécet.
 
-You can opt-in to preserving the original state of the `Host` header by passing
-`true` for the second (`$preserveHost`) argument. When this argument is set to
-`true`, the returned request will not update the `Host` header of the returned
-message -- unless the message contains no `Host` header.
+Az alábbi táblázat azt mutatja be, hogy a `getHeaderLine('Host')` hogy fog visszatérni
+a `withUri()` metódus által visszaadott értékkel, ha a `$preserveHost` paraméter
+értéke `true`.
 
-This table illustrates what `getHeaderLine('Host')` will return for a request
-returned by `withUri()` with the `$preserveHost` argument set to `true` for
-various initial requests and URIs.
-
-Request Host header<sup>[1](#rhh)</sup> | Request host component<sup>[2](#rhc)</sup> | URI host component<sup>[3](#uhc)</sup> | Result
+Kérelem Host fejléc<sup>[1](#rhh)</sup> | Kérelem host összetevő<sup>[2](#rhc)</sup> | URI host összetevő<sup>[3](#uhc)</sup> | Eredmény
 ----------------------------------------|--------------------------------------------|----------------------------------------|--------
 ''                                      | ''                                         | ''                                     | ''
 ''                                      | foo.com                                    | ''                                     | foo.com
@@ -179,11 +179,9 @@ Request Host header<sup>[1](#rhh)</sup> | Request host component<sup>[2](#rhc)</
 foo.com                                 | ''                                         | bar.com                                | foo.com
 foo.com                                 | bar.com                                    | baz.com                                | foo.com
 
-- <sup id="rhh">1</sup> `Host` header value prior to operation.
-- <sup id="rhc">2</sup> Host component of the URI composed in the request prior
-  to the operation.
-- <sup id="uhc">3</sup> Host component of the URI being injected via
-  `withUri()`.
+- <sup id="rhh">1</sup> A `Host` fejléc értéke a végrehajtás előtt.
+- <sup id="rhc">2</sup> Az URI végrehajtás előtt összeállított host összetevője.
+- <sup id="uhc">3</sup> Az URI `withUri()` metódussal beinjektált host összetevője.
 
 ### 1.3 Adatfolyamok
 
