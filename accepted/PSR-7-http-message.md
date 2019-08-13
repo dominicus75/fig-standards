@@ -193,7 +193,8 @@ memóriában tárolására tett kísérlet kizárná az olyan implementációkat
 képesek nagyobb üzenettörzsekkel dolgozni. A `StreamInterface` elrejti a megvalósítás
 részleteit, amikor adatot olvasunk az adatfolyamból vagy írunk bele. Olyan helyzetekben,
 amikor egy karakterlánc is megfelelő megoldás lenne az üzenettörzs megvalósítására,
-a PHP beépített `php://memory` és `php://temp` adatfolyamait lehet alkalmazni.
+a PHP beépített `php://memory` és `php://temp` adatfolyam-burkolóit (wrapper)
+lehet alkalmazni.
 
 A `StreamInterface` számos olyan metódust ír le, amely lehetővé teszi az adatfolyamok
 olvasását, írását és hatékony bejárást.
@@ -224,48 +225,52 @@ létrehozni és azt az üzenethez csatolni, az állapot érvényesítése érdek
 
 ### 1.4 A kérelmek célpontjai és az URI-k
 
-Per RFC 7230, request messages contain a "request-target" as the second segment
-of the request line. The request target can be one of the following forms:
+Az [RFC 7230](../related-rfcs/7230.md#53--request-target) előírja, hogy a kérelmek
+első sorának ("request line") a metódus után tartalmaznia kell egy olyan szegmenst
+ami a kérelem célját, vagyis annak az erőforrásnak az azonosítóját tartalmazza,
+amelyre a kérelem irányul. A kérelem célját az alább felsorolt formátumokban lehet
+ábrázolni:
 
-- **origin-form**, which consists of the path, and, if present, the query
-  string; this is often referred to as a relative URL. Messages as transmitted
-  over TCP typically are of origin-form; scheme and authority data are usually
-  only present via CGI variables.
-- **absolute-form**, which consists of the scheme, authority
-  ("[user-info@]host[:port]", where items in brackets are optional), path (if
-  present), query string (if present), and fragment (if present). This is often
-  referred to as an absolute URI, and is the only form to specify a URI as
-  detailed in RFC 3986. This form is commonly used when making requests to
-  HTTP proxies.
-- **authority-form**, which consists of the authority only. This is typically
-  used in CONNECT requests only, to establish a connection between an HTTP
-  client and a proxy server.
-- **asterisk-form**, which consists solely of the string `*`, and which is used
-  with the OPTIONS method to determine the general capabilities of a web server.
+- **eredeti-formátum**, amely tartalmaz elérési útvonalat (path) és ha van, akkor
+  lekérdezési karakterláncot (query); ez az a formátum, amelyre gyakran relatív
+  URL-ként hivatkoznak. A TCP protokollon keresztül továbbított üzenetek általában
+  ilyen formátumúak; a sémára és a hitelesítésre vonatkozó adatok rendszerint csak
+  CGI változók útján jelennek meg.
+- **abszolút-formátum**, amely sémát, hitelesítési komponenst ("[user-info@]host[:port]",
+  melyben a szögletes zárójelbe tett elemek opcionálisak), útvonalat (ha van),
+  lekérdezési karakterláncot (ha van), és részerőforrás azonosítót (ha van) tartalmaz.
+  Erre szoktak abszolút URL-ként hivatkozni és ez az egyedüli formátum, ahol az
+  URI az [RFC 3986](../related-rfcs/3986.md) szabványban részletezett módon szerepel.
+  Ezt a formátumot alkalmazzák a leggyakrabban a HTTP proxiknak küldendő kérelmekben is.
+- **hitelesítési-formátum**, amely kizárólag hitelesítési komponenst tartalmaz.
+  Ezt túlnyomórészt a CONNECT metódussal küldött kérelmeknél alkalmazzák, a kapcsolat
+  felépítéséhez a HTTP kliens és a proxy szerver között.
+- **csillag-formátum**, amely kizárólag egy csillag karakterből (`*`) áll és amit
+  az OPTIONS metódussal használnak, a webszerver általános képességeinek meghatározására.
 
-Aside from these request-targets, there is often an 'effective URL' which is
-separate from the request target. The effective URL is not transmitted within
-an HTTP message, but it is used to determine the protocol (http/https), port
-and hostname for making the request.
+A kérelem célján kívül, attól elkülönülve létezik 'tényleges URL' is. Ezt nem
+szokták átküldeni a HTTP üzeneten belül, mivel a kérelem által használt
+protokoll (http/https), port és gazdagépnév meghatározására való.
 
-The effective URL is represented by `UriInterface`. `UriInterface` models HTTP
-and HTTPS URIs as specified in RFC 3986 (the primary use case). The interface
-provides methods for interacting with the various URI parts, which will obviate
-the need for repeated parsing of the URI. It also specifies a `__toString()`
-method for casting the modeled URI to its string representation.
+A tényleges URL-t az `UriInterface` reprezentálja, modellezve a HTTP és HTTPS URI-t
+az [RFC 3986](../related-rfcs/3986.md) internetes szabványnak megfelelően. Az interfész
+biztosítja a megfelelő metódusokat az URI különböző szegmenseivel történő interakciókhoz,
+elkerülendő az URI ismételt beolvasását. Ezen felül előírja a `__toString()` metódus
+megvalósítását is a modellezett URI megfelelő szöveges formátumú megjelenítése
+érdekében.
 
-When retrieving the request-target with `getRequestTarget()`, by default this
-method will use the URI object and extract all the necessary components to
-construct the _origin-form_. The _origin-form_ is by far the most common
-request-target.
+Amikor a `getRequestTarget()` metódus segítségével lekérjük a kérelem célját,
+a metódus alapértelmezés szerint egy URI objektumot fog használni, hogy kinyerje
+belőle a szükséges összetevőket az _eredeti-formátum_ban történő szöveges
+megjelenítésére. Az _eredeti-formátum_ messze a leggyakoribb a kérelem célpontok között.
 
-If it's desired by an end-user to use one of the other three forms, or if the
-user wants to explicitly override the request-target, it is possible to do so
-with `withRequestTarget()`.
+Ha a végfelhasználó használni kívánja a másik három formátum valamelyikét, vagy
+ha kifejezetten felül akarja írni a kérelem célját, ezt a `withRequestTarget()`
+metódus segítségével teheti meg. E metódus meghívása nem érinti a `getUri()` metódus
+által visszaadott URI-t.
 
-Calling this method does not affect the URI, as it is returned from `getUri()`.
-
-For example, a user may want to make an asterisk-form request to a server:
+Az alábbi példában a felhasználó egy csillag-formátumú kérelmet szeretne küldeni
+a szervernek:
 
 ~~~php
 $request = $request
@@ -274,33 +279,37 @@ $request = $request
     ->withUri(new Uri('https://example.org/'));
 ~~~
 
-This example may ultimately result in an HTTP request that looks like this:
+Ez a művelet végül ezt a HTTP kérelmet fogja eredményezni:
 
 ~~~http
 OPTIONS * HTTP/1.1
 ~~~
 
-But the HTTP client will be able to use the effective URL (from `getUri()`),
-to determine the protocol, hostname and TCP port.
+De a HTTP klienskód képes lesz használni a `getUri()` metódus által visszaadott
+tényleges URL-t a protokoll, a TCP port és a gazdagép meghatározására.
 
-An HTTP client MUST ignore the values of `Uri::getPath()` and `Uri::getQuery()`,
-and instead use the value returned by `getRequestTarget()`, which defaults
-to concatenating these two values.
+Egy HTTP klienskódnak figyelmen kívül KELL hagynia a `Uri::getPath()` és `Uri::getQuery()`
+metódushívások visszatérési értékét és helyette a `getRequestTarget()` által
+visszaadott értéket használni, ami alapértelmezés szerint előbbi kettő összefűzéséből
+áll elő.
 
-Clients that choose to not implement 1 or more of the 4 request-target forms,
-MUST still use `getRequestTarget()`. These clients MUST reject request-targets
-they do not support, and MUST NOT fall back on the values from `getUri()`.
+Azon klienskódoknak amelyek úgy döntenek, hogy nem alkalmaznak legalább egyet a
+fent felsorolt 4 kérelem-célpont formátumból, továbbra is alkalmazniuk kell a
+`getRequestTarget()` metódust. Ezen a klienseknek vissza KELL utasítani a nem
+támogatott kérelem-célpontokat és TILOS visszatérniük a `getUri()` metódusból nyert
+értékekkel.
 
-`RequestInterface` provides methods for retrieving the request-target or
-creating a new instance with the provided request-target. By default, if no
-request-target is specifically composed in the instance, `getRequestTarget()`
-will return the origin-form of the composed URI (or "/" if no URI is composed).
-`withRequestTarget($requestTarget)` creates a new instance with the
-specified request target, and thus allows developers to create request messages
-that represent the other three request-target forms (absolute-form,
-authority-form, and asterisk-form). When used, the composed URI instance can
-still be of use, particularly in clients, where it may be used to create the
-connection to the server.
+A `RequestInterface` biztosítja a kérelem-célpont kinyeréséhez vagy adott célponttal
+való új példány létrehozásához szükséges metódusokat. Alapértelmezés szerint, ha
+nincs kifejezett kérelem-célpont megadva az objektumpéldányban, akkor a `getRequestTarget()`
+metódus az összeállított URI eredeti-formátum szerinti alakjával fog visszatérni
+(vagy egy perjellel "/", ha nincs URI megadva). A `withRequestTarget($requestTarget)`
+metódus létrehoz egy új példányt a megadott célponttal és így lehetővé teszi a
+fejlesztőknek olyan kérelem üzenetek létrehozását is, amelyek a másik három
+kérelem-célpont formátumot (abszolút-, hitelesítési-, és csillag-formátum) jelenítik
+meg. Megfelelő használat esetén az összeállított URI példány továbbra is hasznos
+lehet, különösen klienskódokban, amelyekben felhasználható a szerverrel való kapcsolat
+felépítésére.
 
 ### 1.5 Kiszolgáló oldali kérelmek
 
