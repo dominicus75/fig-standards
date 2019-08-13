@@ -313,20 +313,20 @@ felépítésére.
 
 ### 1.5 Kiszolgáló oldali kérelmek
 
-`RequestInterface` provides the general representation of an HTTP request
-message. However, server-side requests need additional treatment, due to the
-nature of the server-side environment. Server-side processing needs to take into
-account Common Gateway Interface (CGI), and, more specifically, PHP's
-abstraction and extension of CGI via its Server APIs (SAPI). PHP has provided
-simplification around input marshaling via superglobals such as:
+A `RequestInterface` biztosítja egy HTTP kérelem általános ábrázolását. Azonban
+a kiszolgáló oldali üzeneteknek a környezetük jellegéből adódóan további eljárásokra
+is szükségük van. Ezért figyelembe kell venniük a [Common Gateway Interface (CGI)](http://webprogramozas.inf.elte.hu/tananyag/wf2/lecke12_lap1.html#hiv9)
+protokollt, közelebbről a PHP CGI absztrakcióit és kiterjesztéseit melyek a
+Szerver API-k (SAPI) segítségével érhetők el. A PHP az alábbi szuperglobális
+tömbjeivel jelentősen leegyszerűsítette a bejövő adatok rendezését:
 
-- `$_COOKIE`, which deserializes and provides simplified access to HTTP
-  cookies.
-- `$_GET`, which deserializes and provides simplified access to query string
-  arguments.
-- `$_POST`, which deserializes and provides simplified access for urlencoded
-  parameters submitted via HTTP POST; generically, it can be considered the
-  results of parsing the message body.
+- `$_COOKIE`, biztosítja az egyszerű hozzáférést a deszerializált HTTP sütikhez.
+- `$_GET`, biztosítja az egyszerű hozzáférést a HTTP GET metódussal érkező adatokhoz
+  (a kulcs-érték párokra bontott `QUERY_STRING`). A deszerializált adatok a `$_GET`
+  tömbben már url-dekódolva vannak
+- `$_POST`, biztosítja az egyszerű hozzáférést a deszerializált, HTTP POST metódussal
+  érkező, `application/x-www-form-urlencoded` vagy `multipart/form-data` típusú
+  URL-kódolt adatokhoz.
 - `$_FILES`, which provides serialized metadata around file uploads.
 - `$_SERVER`, which provides access to CGI/SAPI environment variables, which
   commonly include the request method, the request scheme, the request URI, and
