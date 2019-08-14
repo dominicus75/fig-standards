@@ -315,33 +315,36 @@ felépítésére.
 
 A `RequestInterface` biztosítja egy HTTP kérelem általános ábrázolását. Azonban
 a kiszolgáló oldali üzeneteknek a környezetük jellegéből adódóan további eljárásokra
-is szükségük van. Ezért figyelembe kell venniük a [Common Gateway Interface (CGI)](http://webprogramozas.inf.elte.hu/tananyag/wf2/lecke12_lap1.html#hiv9)
-protokollt, közelebbről a PHP CGI absztrakcióit és kiterjesztéseit melyek a
+is szükségük van. Figyelembe kell venniük a [Common Gateway Interface (CGI)](http://webprogramozas.inf.elte.hu/tananyag/wf2/lecke12_lap1.html#hiv9)
+protokollt is, közelebbről a PHP CGI absztrakcióit és kiterjesztéseit melyek a
 Szerver API-k (SAPI) segítségével érhetők el. A PHP az alábbi szuperglobális
-tömbjeivel jelentősen leegyszerűsítette a bejövő adatok rendezését:
+tömbjeivel jelentősen leegyszerűsíti a bejövő adatok rendezését:
 
-- `$_COOKIE`, biztosítja az egyszerű hozzáférést a deszerializált HTTP sütikhez.
-- `$_GET`, biztosítja az egyszerű hozzáférést a HTTP GET metódussal érkező adatokhoz
+- a `$_COOKIE`, biztosítja az egyszerű hozzáférést a deszerializált HTTP sütikhez.
+- a `$_GET`, biztosítja az egyszerű hozzáférést a HTTP GET metódussal érkező adatokhoz
   (a kulcs-érték párokra bontott `QUERY_STRING`). A deszerializált adatok a `$_GET`
-  tömbben már url-dekódolva vannak
-- `$_POST`, biztosítja az egyszerű hozzáférést a deszerializált, HTTP POST metódussal
+  tömbben url-dekódolva vannak jelen.
+- a `$_POST`, biztosítja az egyszerű hozzáférést a deszerializált, HTTP POST metódussal
   érkező, `application/x-www-form-urlencoded` vagy `multipart/form-data` típusú
   URL-kódolt adatokhoz.
-- `$_FILES`, which provides serialized metadata around file uploads.
-- `$_SERVER`, which provides access to CGI/SAPI environment variables, which
-  commonly include the request method, the request scheme, the request URI, and
-  headers.
+- a `$_FILES`, biztosítja a felhasználók által a HTTP POST metódussal feltöltött
+  állományok szerializált metaadatait.
+- a `$_SERVER`, hozzáférést biztosít a szerver és a futtatási környezet (CGI/SAPI)
+  változóihoz,  fejléceket, útvonalakat és a futó scriptre vonatkozó információkat
+  tartalmaz. A QUERY_STRING és REQUEST_URI kulccsal azonosított elemei az [STD
+  66](../related-rfcs/3986.md#21-url-kódolás) internetes szabvány szerint
+  url-kódolva vannak.
 
-`ServerRequestInterface` extends `RequestInterface` to provide an abstraction
-around these various superglobals. This practice helps reduce coupling to the
-superglobals by consumers, and encourages and promotes the ability to test
-request consumers.
+A `ServerRequestInterface` a `RequestInterface` kiterjesztése, amely biztosítja
+a különféle szuperglobálisokhoz szükséges absztrakciókat. Ezek segítségével
+csökkenthető a hívó kód szuperglobálisokhoz való közvetlen kapcsolódása és
+javul a tesztelhetősége.
 
-The server request provides one additional property, "attributes", to allow
-consumers the ability to introspect, decompose, and match the request against
-application-specific rules (such as path matching, scheme matching, host
-matching, etc.). As such, the server request can also provide messaging between
-multiple request consumers.
+A kiszolgáló oldali kérelem biztosít egy további "attribute" tulajdonságot is, amely
+lehetővé teszi a hívó kódnak, hogy elemezze, lebontsa és párosítsa a kérelmet az
+alkalmazás-specifikus szabályokkal (pl. útvonal, séma, gazdagép, stb. illeszkedés).
+Mint ilyen, a kiszolgáló oldali kérelem üzenetküldőt is biztosíthat a hívó kódok
+között.
 
 ### 1.6 Feltöltött állományok
 
