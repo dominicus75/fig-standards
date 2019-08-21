@@ -200,7 +200,7 @@ A `StreamInterface` számos olyan metódust ír le, amely lehetővé teszi az ad
 olvasását, írását és hatékony bejárást.
 
 Az adatfolyamok képességeit három metódus alkalmazásával lehet feltárni: `isReadable()`,
-`isWritable()`, és `isSeekable()`. A hívó kód ezen metódusok segítségével győződhet
+`isWritable()`, és `isSeekable()`. A kliens kód ezen metódusok segítségével győződhet
 meg arról, hogy az adatfolyam valóban rendelkezik az elvárt képességekkel.
 
 Minden `StreamInterface` példány különböző képességekkel rendelkezhet: van, amelyik
@@ -348,286 +348,295 @@ között.
 
 ### 1.6 Feltöltött állományok
 
-`ServerRequestInterface` specifies a method for retrieving a tree of upload
-files in a normalized structure, with each leaf an instance of
-`UploadedFileInterface`.
+A `ServerRequestInterface` többek közt előírja a `getUploadedFiles()` metódus
+megvalósítását is, amely a feltöltött állományok adatait egy normalizált struktúrában
+képes visszaadni, ahol minden egyes ágon az `UploadedFileInterface` egy-egy példánya
+reprezentálja a feltöltött állományokat.
 
-The `$_FILES` superglobal has some well-known problems when dealing with arrays
-of file inputs. As an example, if you have a form that submits an array of files
-— e.g., the input name "files", submitting `files[0]` and `files[1]` — PHP will
-represent this as:
-
-~~~php
-array(
-    'files' => array(
-        'name' => array(
-            0 => 'file0.txt',
-            1 => 'file1.html',
-        ),
-        'type' => array(
-            0 => 'text/plain',
-            1 => 'text/html',
-        ),
-        /* etc. */
-    ),
-)
-~~~
-
-instead of the expected:
+A `$_FILES` szuperglobális tömb rendelkezik néhány jól ismert hiányossággal a
+beérkező fájlok tömbjeinek kezelése kapcsán. Például, ha van egy űrlapunk, amely
+egy tömbben küldi el a feltöltött állományokat — ha az input mező neve mondjuk
+"files", akkor `files[0]` és `files[1]` kulcs alatt — akkor ezt a PHP az alábbiak
+szerint fogja megjeleníteni:
 
 ~~~php
 array(
-    'files' => array(
-        0 => array(
-            'name' => 'file0.txt',
-            'type' => 'text/plain',
-            /* etc. */
-        ),
-        1 => array(
-            'name' => 'file1.html',
-            'type' => 'text/html',
-            /* etc. */
-        ),
+  'files' => array(
+    'name' => array(
+      0 => 'file0.txt',
+      1 => 'file1.html',
     ),
+    'type' => array(
+      0 => 'text/plain',
+      1 => 'text/html',
+    ),
+    /* etc. */
+  ),
 )
 ~~~
 
-The result is that consumers need to know this language implementation detail,
-and write code for gathering the data for a given upload.
+habár mi inkább valami ilyesmire számítottunk:
 
-Additionally, scenarios exist where `$_FILES` is not populated when file uploads
-occur:
+~~~php
+array(
+  'files' => array(
+    0 => array(
+      'name' => 'file0.txt',
+      'type' => 'text/plain',
+      /* etc. */
+    ),
+    1 => array(
+      'name' => 'file1.html',
+      'type' => 'text/html',
+      /* etc. */
+    ),
+  ),
+)
+~~~
 
-- When the HTTP method is not `POST`.
-- When unit testing.
-- When operating under a non-SAPI environment, such as [ReactPHP](http://reactphp.org).
+Az eredmény az, hogy a felhasználóknak részletekbe menően ismerniük kell ezt a
+nyelvi eszközt és olyan kódot írni, amely alkalmas a feltöltött adatok kigyűjtésére.
 
-In such cases, the data will need to be seeded differently. As examples:
+Emellett léteznek olyan forgatókönyvek is, ahol a `$_FILES` tömb üres marad, annak
+ellenére, hogy fájlfeltöltés történt. Ilyen eset előfordulhat:
 
-- A process might parse the message body to discover the file uploads. In such
-  cases, the implementation may choose *not* to write the file uploads to the
-  file system, but instead wrap them in a stream in order to reduce memory,
-  I/O, and storage overhead.
-- In unit testing scenarios, developers need to be able to stub and/or mock the
-  file upload metadata in order to validate and verify different scenarios.
+- amikor a feltöltés nem a HTTP `POST` metódussal történik.
+- egységteszteléskor.
+- amikor nem SAPI környezet, hanem mondjuk [ReactPHP](http://reactphp.org) alatt
+  üzemel az alkalmazás.
 
-`getUploadedFiles()` provides the normalized structure for consumers.
-Implementations are expected to:
+Ilyen esetekben az adatokat másképpen kell kezelni. Néhány példa erre:
 
-- Aggregate all information for a given file upload, and use it to populate a
-  `Psr\Http\Message\UploadedFileInterface` instance.
-- Re-create the submitted tree structure, with each leaf being the appropriate
-  `Psr\Http\Message\UploadedFileInterface` instance for the given location in
-  the tree.
+- Egy folyamat elemezheti az üzenet törzsét fájlfeltöltések után kutatva. Ilyen
+  esetekben az implementáció dönthet úgy, hogy *nem* írja a feltöltött fájlokat
+  az állományrendszerbe, inkább becsomagolja őket egy adatfolyamba a memória és a
+  tárhelyfelhasználás csökkentése érdekében.
+- Egységtesztelés esetén a különböző forgatókönyvek érvényesítése és ellenőrzése
+  érdekében a fejlesztőknek képesnek kell lenniük [csonkolni és/vagy mókolni](https://hu.wikipedia.org/wiki/Mock_objektum) a feltöltött állományok
+  metaadatait.
 
-The tree structure referenced should mimic the naming structure in which files
-were submitted.
+A `getUploadedFiles()` metódus normalizált struktúrát biztosít a felhasználók
+számára. Az implementációktól elvárható, hogy:
 
-In the simplest example, this might be a single named form element submitted as:
+- összesítsenek minden információt egy adott fájlfeltöltésről és helyezzék el azokat
+  egy `Psr\Http\Message\UploadedFileInterface` példányba.
+- újraalkossák a feltöltött fa-struktúrát, melyben minden egyes ág egy megfelelő
+  `Psr\Http\Message\UploadedFileInterface` példány az adott helyen.
+
+A hivatkozott fa struktúrának utánoznia kell azt az elnevezési szerkezetet, mellyel
+az állományokat elküldték.
+
+Egy egyszerű példában ez lehet egy elnevezett űrlap-elem, melyet az alábbi formában
+küldenek el:
 
 ~~~html
 <input type="file" name="avatar" />
 ~~~
 
-In this case, the structure in `$_FILES` would look like:
+Ebben az esetben a `$_FILES` tömb szerkezete így nézne ki:
 
 ~~~php
 array(
-    'avatar' => array(
-        'tmp_name' => 'phpUxcOty',
-        'name' => 'my-avatar.png',
-        'size' => 90996,
-        'type' => 'image/png',
-        'error' => 0,
-    ),
+  'avatar' => array(
+    'tmp_name' => 'phpUxcOty',
+    'name' => 'my-avatar.png',
+    'size' => 90996,
+    'type' => 'image/png',
+    'error' => 0,
+  ),
 )
 ~~~
 
-The normalized form returned by `getUploadedFiles()` would be:
+A `getUploadedFiles()` metódus által visszaadott normalizált forma viszont így fog
+festeni:
 
 ~~~php
 array(
-    'avatar' => /* UploadedFileInterface instance */
+  'avatar' => /* UploadedFileInterface példánya */
 )
 ~~~
 
-In the case of an input using array notation for the name:
+Abban az esetben, ha az input mező elnevezésénél az alábbi példához hasonló
+tömb-jelölést használunk:
 
 ~~~html
 <input type="file" name="my-form[details][avatar]" />
 ~~~
 
-`$_FILES` ends up looking like this:
+a `$_FILES` a végén ehhez hasonló lesz:
 
 ~~~php
 array (
-    'my-form' => array (
-        'name' => array (
-            'details' => array (
-                'avatar' => 'my-avatar.png',
-            ),
-        ),
-        'type' => array (
-            'details' => array (
-                'avatar' => 'image/png',
-            ),
-        ),
-        'tmp_name' => array (
-            'details' => array (
-                'avatar' => 'phpmFLrzD',
-            ),
-        ),
-        'error' => array (
-            'details' => array (
-                'avatar' => 0,
-            ),
-        ),
-        'size' => array (
-            'details' => array (
-                'avatar' => 90996,
-            ),
-        ),
+  'my-form' => array (
+    'name' => array (
+      'details' => array (
+        'avatar' => 'my-avatar.png',
+      ),
     ),
+    'type' => array (
+      'details' => array (
+        'avatar' => 'image/png',
+      ),
+    ),
+    'tmp_name' => array (
+      'details' => array (
+        'avatar' => 'phpmFLrzD',
+      ),
+    ),
+    'error' => array (
+      'details' => array (
+        'avatar' => 0,
+      ),
+    ),
+    'size' => array (
+      'details' => array (
+        'avatar' => 90996,
+      ),
+    ),
+  ),
 )
 ~~~
 
-And the corresponding tree returned by `getUploadedFiles()` should be:
+És az ennek megfelelő fa, amelyet a `getUploadedFiles()` metódus visszaad:
 
 ~~~php
 array(
-    'my-form' => array(
-        'details' => array(
-            'avatar' => /* UploadedFileInterface instance */
-        ),
+  'my-form' => array(
+    'details' => array(
+      'avatar' => /* az UploadedFileInterface példánya */
     ),
+  ),
 )
 ~~~
 
-In some cases, you may specify an array of files:
+Némely esetben létrehozhatunk egy tömböt is az állományoknak:
 
 ~~~html
-Upload an avatar: <input type="file" name="my-form[details][avatars][]" />
-Upload an avatar: <input type="file" name="my-form[details][avatars][]" />
+Avatar kép feltöltése: <input type="file" name="my-form[details][avatars][]" />
+Avatar kép feltöltése: <input type="file" name="my-form[details][avatars][]" />
 ~~~
 
-(As an example, JavaScript controls might spawn additional file upload inputs to
-allow uploading multiple files at once.)
+(Megeshet, hogy a JavaScript vezérlők további input mezőket is generálnak, hogy
+lehetővé tegyék az egyszerre történő többszörös fájlfeltöltést.)
 
-In such a case, the specification implementation must aggregate all information
-related to the file at the given index. The reason is because `$_FILES` deviates
-from its normal structure in such cases:
+Ilyen esetben a specifikáció megvalósításának össze kell gyűjteni az adott indexhez
+minden a fájlhoz kapcsolódó információt. Ennek az az oka, hogy a `$_FILES` tömb
+felépítése eltér a normál struktúrától:
 
 ~~~php
 array (
-    'my-form' => array (
-        'name' => array (
-            'details' => array (
-                'avatar' => array (
-                    0 => 'my-avatar.png',
-                    1 => 'my-avatar2.png',
-                    2 => 'my-avatar3.png',
-                ),
-            ),
+  'my-form' => array (
+    'name' => array (
+      'details' => array (
+        'avatar' => array (
+          0 => 'my-avatar.png',
+          1 => 'my-avatar2.png',
+          2 => 'my-avatar3.png',
         ),
-        'type' => array (
-            'details' => array (
-                'avatar' => array (
-                    0 => 'image/png',
-                    1 => 'image/png',
-                    2 => 'image/png',
-                ),
-            ),
-        ),
-        'tmp_name' => array (
-            'details' => array (
-                'avatar' => array (
-                    0 => 'phpmFLrzD',
-                    1 => 'phpV2pBil',
-                    2 => 'php8RUG8v',
-                ),
-            ),
-        ),
-        'error' => array (
-            'details' => array (
-                'avatar' => array (
-                    0 => 0,
-                    1 => 0,
-                    2 => 0,
-                ),
-            ),
-        ),
-        'size' => array (
-            'details' => array (
-                'avatar' => array (
-                    0 => 90996,
-                    1 => 90996,
-                    3 => 90996,
-                ),
-            ),
-        ),
+      ),
     ),
+    'type' => array (
+      'details' => array (
+        'avatar' => array (
+          0 => 'image/png',
+          1 => 'image/png',
+          2 => 'image/png',
+        ),
+      ),
+    ),
+    'tmp_name' => array (
+      'details' => array (
+        'avatar' => array (
+          0 => 'phpmFLrzD',
+          1 => 'phpV2pBil',
+          2 => 'php8RUG8v',
+        ),
+      ),
+    ),
+    'error' => array (
+      'details' => array (
+        'avatar' => array (
+          0 => 0,
+          1 => 0,
+          2 => 0,
+        ),
+      ),
+    ),
+    'size' => array (
+      'details' => array (
+        'avatar' => array (
+          0 => 90996,
+          1 => 90996,
+          3 => 90996,
+        ),
+      ),
+    ),
+  ),
 )
 ~~~
 
-The above `$_FILES` array would correspond to the following structure as
-returned by `getUploadedFiles()`:
+A fenti `$_FILES` tömb megfelelne a következő struktúrának, amelyet a `getUploadedFiles()`
+metódus ad vissza:
 
 ~~~php
 array(
-    'my-form' => array(
-        'details' => array(
-            'avatars' => array(
-                0 => /* UploadedFileInterface instance */,
-                1 => /* UploadedFileInterface instance */,
-                2 => /* UploadedFileInterface instance */,
-            ),
-        ),
+  'my-form' => array(
+    'details' => array(
+      'avatars' => array(
+        0 => /* UploadedFileInterface példánya */,
+        1 => /* UploadedFileInterface példánya */,
+        2 => /* UploadedFileInterface példánya */,
+      ),
     ),
+  ),
 )
 ~~~
 
-Consumers would access index `1` of the nested array using:
+A felhasználók a beágyazott tömb `1` indexű eleméhez a következő kifejezés segítségével
+tudnak hozzáférni:
 
 ~~~php
 $request->getUploadedFiles()['my-form']['details']['avatars'][1];
 ~~~
 
-Because the uploaded files data is derivative (derived from `$_FILES` or the
-request body), a mutator method, `withUploadedFiles()`, is also present in the
-interface, allowing delegation of the normalization to another process.
+Mivel a feltöltött állományok adatai származtatottak (a `$_FILES` tömbből vagy a
+kérelem törzséből származnak), ezért az interfész `withUploadedFiles()` metódus
+implementálását is megköveteli, lehetővé a normalizáció kiszervezését más
+folyamatok részére.
 
-In the case of the original examples, consumption resembles the following:
+Az eredeti példa esetében a felhasználás a következőhöz lesz hasonló:
 
 ~~~php
 $file0 = $request->getUploadedFiles()['files'][0];
 $file1 = $request->getUploadedFiles()['files'][1];
 
 printf(
-    "Received the files %s and %s",
-    $file0->getClientFilename(),
-    $file1->getClientFilename()
+  "A %s és %s állományok feltöltve",
+  $file0->getClientFilename(),
+  $file1->getClientFilename()
 );
 
-// "Received the files file0.txt and file1.html"
+//Kimenet: "A file0.txt és file1.html állományok feltöltve"
 ~~~
 
-This proposal also recognizes that implementations may operate in non-SAPI
-environments. As such, `UploadedFileInterface` provides methods for ensuring
-operations will work regardless of environment. In particular:
+A jelen ajánlás elismeri, hogy a belőle származó implementációk működhetnek nem SAPI
+környezetben is. Ezért az `UploadedFileInterface` olyan metódusokat is előír,
+amelyek lehetővé teszik a helyes működést, függetlenül a környezettől. Ilyenek
+metódusok:
 
-- `moveTo($targetPath)` is provided as a safe and recommended alternative to calling
-  `move_uploaded_file()` directly on the temporary upload file. Implementations
-  will detect the correct operation to use based on environment.
-- `getStream()` will return a `StreamInterface` instance. In non-SAPI
-  environments, one proposed possibility is to parse individual upload files
-  into `php://temp` streams instead of directly to files; in such cases, no
-  upload file is present. `getStream()` is therefore guaranteed to work
-  regardless of environment.
+- a `moveTo($targetPath)` metódus ajánlott és biztonságos alternatívát biztosít a
+  `move_uploaded_file()` függvény átmeneti feltöltött fájlon történő meghívásával
+  szemben. Az implementációknak azonban a környezet alapján fel kell ismerniük a
+  helyes működést.
+- a `getStream()` metódus egy `StreamInterface` példánnyal tér vissza. Nem SAPI
+  környezetekben az egyik javasolt lehetőség az egyes feltöltött fájlok direkt
+  beolvasása helyett a `php://temp` adatfolyam használata; ilyen esetben nincs jelen
+  feltöltött állomány. A `getStream()` ezért garantáltan működik minden környezetben.
 
-As examples:
+Példák:
 
 ~~~
-// Move a file to an upload directory
+// Fájl mozgatása a feltöltési könyvtárba
 $filename = sprintf(
     '%s.%s',
     create_uuid(),
