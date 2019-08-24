@@ -644,10 +644,10 @@ $filename = sprintf(
 );
 $file0->moveTo(DATA_DIR . '/' . $filename);
 
-// Stream a file to Amazon S3.
-// Assume $s3wrapper is a PHP stream that will write to S3, and that
-// Psr7StreamWrapper is a class that will decorate a StreamInterface as a PHP
-// StreamWrapper.
+// Fájl streamelése Amazon S3 tárhely szolgáltatásba.
+// Feltéve, hogy a $s3wrapper egy PHP adatfolyam, amit az S3-ba fogunk írni, illetve
+// a Psr7StreamWrapper egy osztály, amit egy StreamInterface, mint PHP StreamWrapper
+// fog elfedni.
 $stream = new Psr7StreamWrapper($file1->getStream());
 stream_copy_to_stream($stream, $s3wrapper);
 ~~~
@@ -667,13 +667,14 @@ Telepítése (Composer segítségével, terminálon): `composer require psr/http
 namespace Psr\Http\Message;
 
 /**
- * HTTP messages consist of requests from a client to a server and responses
- * from a server to a client. This interface defines the methods common to
- * each.
+ * A HTTP üzenetek a kliens szervernek küldött kéréseit és a szerver ezekre adott
+ * válaszait foglalják magukba. Ez az interfész deklarálja azokat a metódusokat,
+ * amelyek mindkettőhöz szükségesek.
  *
- * Messages are considered immutable; all methods that might change state MUST
- * be implemented such that they retain the internal state of the current
- * message and return an instance that contains the changed state.
+ * Az üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan metódust, amely
+ * megváltoztathatja az objektum állapotát, úgy KELL megvalósítani, hogy megőrizze
+ * az aktuális üzenet belső állapotát és egy másik, a megváltozott állapotot
+ * tartalmazó objektumpéldánnyal térjen vissza.
  *
  * @see http://www.ietf.org/rfc/rfc7230.txt
  * @see http://www.ietf.org/rfc/rfc7231.txt
@@ -681,100 +682,104 @@ namespace Psr\Http\Message;
 interface MessageInterface
 {
     /**
-     * Retrieves the HTTP protocol version as a string.
+     * Karakterláncként adja vissza a HTTP protokoll verziószámát.
      *
-     * The string MUST contain only the HTTP version number (e.g., "1.1", "1.0").
+     * A visszaadott sztringnek kizárólag a HTTP protokoll verziószámát KELL
+     * tartalmaznia (pl., "1.1", "1.0"), semmi egyebet.
      *
-     * @return string HTTP protocol version.
+     * @return string a HTTP protokoll verziószáma
      */
     public function getProtocolVersion();
 
     /**
-     * Return an instance with the specified HTTP protocol version.
+     * A paraméterként kapott HTTP protokoll verziószámot egy új objektumpéldányban
+     * adja vissza.
      *
-     * The version string MUST contain only the HTTP version number (e.g.,
-     * "1.1", "1.0").
+     * A verzió-karakterláncnak kizárólag a HTTP protokoll verziószámát KELL
+     * tartalmaznia (pl., "1.1", "1.0").
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new protocol version.
+     * Ezt a metódust oly módon KELL implementálni, hogy az eredeti üzenet
+     * változatlanul hagyása mellett olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza az új protokoll verziót.
      *
-     * @param string $version HTTP protocol version
+     * @param string $version a HTTP protokoll verziószáma
      * @return static
      */
     public function withProtocolVersion($version);
 
     /**
-     * Retrieves all message header values.
+     * Lekérdezi az üzenet összes fejlécének értékét.
      *
-     * The keys represent the header name as it will be sent over the wire, and
-     * each value is an array of strings associated with the header.
+     * A kulcsok megfelelnek az elküldött fejlécek neveinek az értékek pedig
+     * az egyes fejlécsorok tartalmát adják vissza, szöveges tömb alakjában.
      *
-     *     // Represent the headers as a string
+     *    // Fejlécek megjelenítése szövegként
      *     foreach ($message->getHeaders() as $name => $values) {
-     *         echo $name . ': ' . implode(', ', $values);
+     *       echo $name . ': ' . implode(', ', $values);
      *     }
      *
-     *     // Emit headers iteratively:
+     *    // Fejlécek kiküldése iterációval:
      *     foreach ($message->getHeaders() as $name => $values) {
-     *         foreach ($values as $value) {
-     *             header(sprintf('%s: %s', $name, $value), false);
-     *         }
+     *       foreach ($values as $value) {
+     *         header(sprintf('%s: %s', $name, $value), false);
+     *       }
      *     }
      *
-     * While header names are not case-sensitive, getHeaders() will preserve the
-     * exact case in which headers were originally specified.
+     * Ameddig a fejlécek neve nem kis-, és nagybetű érzékeny, a getHeaders()
+     * metódus meg fogja őrizni az eredetileg meghatározott írásmódot.
      *
-     * @return string[][] Returns an associative array of the message's headers.
-     *     Each key MUST be a header name, and each value MUST be an array of
-     *     strings for that header.
+     * @return string[][] az üzenet fejléceit tartalmazó asszociatív tömbbel tér
+     *     vissza. A tömböt a fejlécek neveivel KELL indexelni, az
+     *     az értékeknek pedig az egyes fejlécsorok tartalmát szöveges formában
+     *     visszaadó tömböknek KELL lenniük.
      */
     public function getHeaders();
 
     /**
-     * Checks if a header exists by the given case-insensitive name.
+     * Ellenőrzi, hogy a kért fejléc létezik-e a megadott nem kis-, és nagybetű
+     * érzékeny néven.
      *
-     * @param string $name Case-insensitive header field name.
-     * @return bool Returns true if any header names match the given header
-     *     name using a case-insensitive string comparison. Returns false if
-     *     no matching header name is found in the message.
+     * @param string $name nem kis-, és nagybetű érzékeny fejlécmező név.
+     * @return bool true-val tér vissza, ha bármely fejlécnév illeszkedik a nem
+     *     kis-, és nagybetű érzékeny összehasonlítás során. False-ot ad vissza, ha
+     *     nem található a keresett fejlécnév az üzenetben.
      */
     public function hasHeader($name);
 
     /**
-     * Retrieves a message header value by the given case-insensitive name.
+     * Lekérdezi a nem kis-, és nagybetű érzékeny fejlécnévhez tartozó értéket.
      *
-     * This method returns an array of all the header values of the given
-     * case-insensitive header name.
+     * Ez a metódus egy olyan tömbbel tér vissza, amely tartalmazza a paraméterként
+     * átadott fejlécnévhez tartozó össze értéket.
      *
-     * If the header does not appear in the message, this method MUST return an
-     * empty array.
+     * Ha az adott fejléc nem található meg az üzenetben, ennek a metódusnak egy
+     * üres tömböt KELL visszaadni.
      *
-     * @param string $name Case-insensitive header field name.
-     * @return string[] An array of string values as provided for the given
-     *    header. If the header does not appear in the message, this method MUST
-     *    return an empty array.
+     * @param string $name nem kis-, és nagybetű érzékeny fejlécnév.
+     * @return string[] Egy szöveges értékeket tartalmazó tömb, a megadott fejlécben
+     *    megadottak szerint. Ha az adott fejléc nem található meg az üzenetben,
+     *    ennek a metódusnak egy üres tömbbel KELL visszatérni.
      */
     public function getHeader($name);
 
     /**
-     * Retrieves a comma-separated string of the values for a single header.
+     * Az adott fejléchez tartozó értékek vesszővel elválasztott felsorolása.
      *
-     * This method returns all of the header values of the given
-     * case-insensitive header name as a string concatenated together using
-     * a comma.
+     * Ez a metódus karakterláncként adja vissza a megadott nem kis-, és nagybetű
+     * érzékeny fejlécnévhez tartozó értékek vesszővel elválasztott felsorolását.
      *
-     * NOTE: Not all header values may be appropriately represented using
-     * comma concatenation. For such headers, use getHeader() instead
-     * and supply your own delimiter when concatenating.
+     * Megjegyzés: nem lehet minden fejléc-értéket megfelelően ábrázolni egy
+     * vesszővel összefűzött szöveges listában. Az ilyen fejlécek lekérdezéséhez
+     * inkább a getHeader() metódus használandó ehelyett, saját elválasztókarakter
+     * megadásával.
      *
-     * If the header does not appear in the message, this method MUST return
-     * an empty string.
+     * Ha az adott fejléc nem található meg az üzenetben, ennek a metódusnak egy
+     * üres karakterláncot ('') KELL visszaadni.
      *
-     * @param string $name Case-insensitive header field name.
-     * @return string A string of values as provided for the given header
-     *    concatenated together using a comma. If the header does not appear in
-     *    the message, this method MUST return an empty string.
+     * @param string $name nem kis-, és nagybetű érzékeny fejlécnév.
+     * @return string Az adott fejléchez tartozó értékek vesszővel elválasztott
+     *    felsorolása. Ha az adott fejléc nem található meg az üzenetben, ennek
+     *    a metódusnak egy üres karakterláncot KELL visszaadni.
      */
     public function getHeaderLine($name);
 
