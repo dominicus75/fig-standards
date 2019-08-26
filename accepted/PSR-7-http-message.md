@@ -784,74 +784,75 @@ interface MessageInterface
     public function getHeaderLine($name);
 
     /**
-     * Return an instance with the provided value replacing the specified header.
+     * A paraméterként kapott fejléc név-érték párt egy új objektumpéldányban
+     * adja vissza.
      *
-     * While header names are case-insensitive, the casing of the header will
-     * be preserved by this function, and returned from getHeaders().
+     * Ameddig a fejlécek neve nem kis-, és nagybetű érzékeny, ez a metódus a
+     * getHeaders() visszatérési értékeben alkalmazott írásmódot fogja követni.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new and/or updated header and value.
+     * Ezt a metódust oly módon KELL implementálni, hogy az eredeti üzenet
+     * változatlanul hagyása mellett olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza az új és/vagy módosított fejlécnevet és a hozzárendelt értéket.
      *
-     * @param string $name Case-insensitive header field name.
-     * @param string|string[] $value Header value(s).
+     * @param string $name nem kis-, és nagybetű érzékeny fejlécnév.
+     * @param string|string[] $value Fejléc érték(ek).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * @throws \InvalidArgumentException érvénytelen fejlécnév vagy érték esetnén.
      */
     public function withHeader($name, $value);
 
     /**
-     * Return an instance with the specified header appended with the given value.
+     * Olyan objektumpéldánnyal tér vissza, amely tartalmazza a hozzáadott fejlécet
+     * és annak értékét.
      *
-     * Existing values for the specified header will be maintained. The new
-     * value(s) will be appended to the existing list. If the header did not
-     * exist previously, it will be added.
+     * A megadott fejléc létező értéke megmarad. Az új értéke(ke)t a létező listához
+     * fűzi hozzá. Ha a megadott fejléc előtte nem létezett, akkor létrehozza.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new header and/or value.
+     * Ezt a metódust oly módon KELL implementálni, hogy az eredeti üzenet
+     * változatlanul hagyása mellett olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza az új fejlécet és/vagy a hozzárendelt értéket.
      *
-     * @param string $name Case-insensitive header field name to add.
-     * @param string|string[] $value Header value(s).
+     * @param string $name a hozzáadandó fejléc nem kis-, és nagybetű érzékeny neve.
+     * @param string|string[] $value Fejléc érték(ek).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names.
-     * @throws \InvalidArgumentException for invalid header values.
+     * @throws \InvalidArgumentException érvénytelen fejlécnév esetén.
+     * @throws \InvalidArgumentException érvénytelen fejléc érték esetén.
      */
     public function withAddedHeader($name, $value);
 
     /**
-     * Return an instance without the specified header.
+     * Visszaad egy objektumpéldányt a megadott fejléc nélkül.
      *
-     * Header resolution MUST be done without case-sensitivity.
+     * A fejléc feloldását kis-, és nagybetű érzékenység nélkül KELL elvégezni.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that removes
-     * the named header.
+     * Ezt a metódust oly módon KELL implementálni, hogy az eredeti üzenet
+     * változatlanul hagyása mellett olyan objektumpéldánnyal térjen vissza, amely
+     * nem tartalmazza a paraméterként kapott fejlécet.
      *
-     * @param string $name Case-insensitive header field name to remove.
+     * @param string $name az eltávolítandó fejléc nem kis-, és nagybetű érzékeny neve.
      * @return static
      */
     public function withoutHeader($name);
 
     /**
-     * Gets the body of the message.
+     * Lekérdezi az üzenet törzsét.
      *
-     * @return StreamInterface Returns the body as a stream.
+     * @return StreamInterface az üzenet StreamInterface-be foglalt törzsével tér vissza.
      */
     public function getBody();
 
     /**
-     * Return an instance with the specified message body.
+     * Visszaad egy objektumpéldányt a paraméterként kapott üzenettörzzsel.
      *
-     * The body MUST be a StreamInterface object.
+     * Az üzenettörzsnek StreamInterface-t megvalósító objektumnak KELL lennie.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * new body stream.
+     * Ezt a metódust oly módon KELL implementálni, hogy az eredeti üzenet
+     * változatlanul hagyása mellett olyan objektumpéldánnyal térjen vissza, amely
+     * adatfolyamként (StreamInterface) tartalmazza az új üzenettörzset.
      *
-     * @param StreamInterface $body Body.
+     * @param StreamInterface $body Üzenettörzs.
      * @return static
-     * @throws \InvalidArgumentException When the body is not valid.
+     * @throws \InvalidArgumentException az esetben, ha az üzenettörzs érvénytelen.
      */
     public function withBody(StreamInterface $body);
 }
@@ -864,16 +865,16 @@ interface MessageInterface
 namespace Psr\Http\Message;
 
 /**
- * Representation of an outgoing, client-side request.
+ * Kimenő, kliensoldali üzenetek ábrázolása.
  *
- * Per the HTTP specification, this interface includes properties for
- * each of the following:
+ * A HTTp specifikációnak megfelelően az interfész az alábbi komponenseket
+ * tartalmazza:
  *
- * - Protocol version
- * - HTTP method
+ * - Protokoll verzió
+ * - HTTP metódus
  * - URI
- * - Headers
- * - Message body
+ * - Fejlécek
+ * - Üzenettörzs
  *
  * During construction, implementations MUST attempt to set the Host header from
  * a provided URI if no Host header is provided.
