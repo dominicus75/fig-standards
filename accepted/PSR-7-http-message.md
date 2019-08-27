@@ -867,7 +867,7 @@ namespace Psr\Http\Message;
 /**
  * Kimenő, kliensoldali üzenetek ábrázolása.
  *
- * A HTTp specifikációnak megfelelően az interfész az alábbi komponenseket
+ * A HTTP specifikációnak megfelelően az interfész az alábbi komponenseket
  * tartalmazza:
  *
  * - Protokoll verzió
@@ -876,12 +876,13 @@ namespace Psr\Http\Message;
  * - Fejlécek
  * - Üzenettörzs
  *
- * During construction, implementations MUST attempt to set the Host header from
- * a provided URI if no Host header is provided.
+ * A létrehozás során az implementációknak meg KELL próbálni beállítani a Gazdagép
+ * (Host) fejlécet a rendelkezésre álló URI-ből, ha nincs külön megadva.
  *
- * Requests are considered immutable; all methods that might change state MUST
- * be implemented such that they retain the internal state of the current
- * message and return an instance that contains the changed state.
+ * A kérelmek megváltoztathatatlanok (immutable) ezért az összes olyan metódust, amely
+ * megváltoztathatja az objektum állapotát, úgy KELL megvalósítani, hogy megőrizze
+ * az aktuális üzenet belső állapotát és egy másik, a megváltozott állapotot
+ * tartalmazó objektumpéldánnyal térjen vissza.
  */
 interface RequestInterface extends MessageInterface
 {
@@ -1000,14 +1001,14 @@ namespace Psr\Http\Message;
 /**
  * Representation of an incoming, server-side HTTP request.
  *
- * Per the HTTP specification, this interface includes properties for
- * each of the following:
+ * A HTTP specifikációnak megfelelően az interfész az alábbi komponenseket
+ * tartalmazza:
  *
- * - Protocol version
- * - HTTP method
+ * - Protokoll verzió
+ * - HTTP metódus
  * - URI
- * - Headers
- * - Message body
+ * - Fejlécek
+ * - Üzenettörzs
  *
  * Additionally, it encapsulates all data as it has arrived at the
  * application from the CGI and/or PHP environment, including:
@@ -1031,9 +1032,10 @@ namespace Psr\Http\Message;
  * content, matching authorization headers to users, etc). These parameters
  * are stored in an "attributes" property.
  *
- * Requests are considered immutable; all methods that might change state MUST
- * be implemented such that they retain the internal state of the current
- * message and return an instance that contains the changed state.
+ * A kérelem üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
+ * metódust, amely megváltoztathatja az objektum állapotát, úgy KELL megvalósítani,
+ * hogy megőrizze az aktuális üzenet belső állapotát és egy másik, a megváltozott
+ * állapotot tartalmazó objektumpéldánnyal térjen vissza.
  */
 interface ServerRequestInterface extends RequestInterface
 {
@@ -1263,19 +1265,20 @@ interface ServerRequestInterface extends RequestInterface
 namespace Psr\Http\Message;
 
 /**
- * Representation of an outgoing, server-side response.
+ * Kimenő, szerver-oldali üzenet ábrázolása
  *
- * Per the HTTP specification, this interface includes properties for
- * each of the following:
+ * A HTTP specifikációnak megfelelően az interfész az alábbi komponenseket
+ * tartalmazza:
  *
- * - Protocol version
- * - Status code and reason phrase
- * - Headers
- * - Message body
+ * - Protokoll verzió
+ * - Állapotkód és indoklás
+ * - Fejlécek
+ * - Üzenettörzs
  *
- * Responses are considered immutable; all methods that might change state MUST
- * be implemented such that they retain the internal state of the current
- * message and return an instance that contains the changed state.
+ * A válasz üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
+ * metódust, amely megváltoztathatja az objektum állapotát, úgy KELL megvalósítani,
+ * hogy megőrizze az aktuális üzenet belső állapotát és egy másik, a megváltozott
+ * állapotot tartalmazó objektumpéldánnyal térjen vissza.
  */
 interface ResponseInterface extends MessageInterface
 {
@@ -1828,10 +1831,10 @@ namespace Psr\Http\Message;
 /**
  * Value object representing a file uploaded through an HTTP request.
  *
- * Instances of this interface are considered immutable; all methods that
- * might change state MUST be implemented such that they retain the internal
- * state of the current instance and return an instance that contains the
- * changed state.
+ * A jelen interfészt megvalósító objektumok megváltoztathatatlanok (immutable)
+ * ezért az összes olyan metódust, amely megváltoztathatja az objektum állapotát,
+ * úgy KELL megvalósítani, hogy megőrizze az aktuális üzenet belső állapotát és
+ * egy másik, a megváltozott állapotot tartalmazó objektumpéldánnyal térjen vissza.
  */
 interface UploadedFileInterface
 {
