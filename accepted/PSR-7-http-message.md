@@ -887,105 +887,105 @@ namespace Psr\Http\Message;
 interface RequestInterface extends MessageInterface
 {
     /**
-     * Retrieves the message's request target.
+     * Lekérdezi a kérelem célpontját.
      *
-     * Retrieves the message's request-target either as it will appear (for
-     * clients), as it appeared at request (for servers), or as it was
-     * specified for the instance (see withRequestTarget()).
+     * Lekérdezi a kérelem célpontját, akárhogy is jelenik meg (a klienseknek),
+     * ahogy (a kiszolgálóknak) megjelent, vagy ahogy az adott objektumpéldányban
+     * meg van adva (lásd: withRequestTarget()).
      *
-     * In most cases, this will be the origin-form of the composed URI,
-     * unless a value was provided to the concrete implementation (see
-     * withRequestTarget() below).
+     * A legtöbb esetben ez az összeállított URI eredeti-formátuma lesz, hacsak
+     * az érték nem áll rendelkezésre a konkrét implementáció számára (lásd:
+     * withRequestTarget() metódus, alább).
      *
-     * If no URI is available, and no request-target has been specifically
-     * provided, this method MUST return the string "/".
+     * Ha nincs elérhető URI, sem kérelem-célpont megadva, akkor ennek a metódusnak
+     * egy perjellel ("/") kell visszatérnie.
      *
      * @return string
      */
     public function getRequestTarget();
 
     /**
-     * Return an instance with the specific request-target.
+     * A megadott kérelem-célponttal rendelkező objektum-példánnyal tér vissza.
      *
-     * If the request needs a non-origin-form request-target — e.g., for
-     * specifying an absolute-form, authority-form, or asterisk-form —
-     * this method may be used to create an instance with the specified
-     * request-target, verbatim.
+     * Ha a kérelemnek szüksége van egy nem eredeti-formátumú kérelem-célpontra
+     *  — pl. abszolút-formátum, hitelesítési-, vagy csillag-formátum meghatározásához —
+     * ez a metódus használható egy olyan példány létrehozásához, amely rendelkezik
+     * a kért kérelem-célponttal.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * changed request target.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza az új kérelem-célpontot.
      *
-     * @see http://tools.ietf.org/html/rfc7230#section-5.3 (for the various
-     *     request-target forms allowed in request messages)
+     * @see http://tools.ietf.org/html/rfc7230#section-5.3 (a kérelem üzenetekben
+     *     engedélyezett kérelem-célpont formátumokról)
      * @param mixed $requestTarget
      * @return static
      */
     public function withRequestTarget($requestTarget);
 
     /**
-     * Retrieves the HTTP method of the request.
+     * Lekérdezi a kérelem HTTP metódusát.
      *
-     * @return string Returns the request method.
+     * @return string Szöveges formában adja vissza a kérelem HTTP metódusát.
      */
     public function getMethod();
 
     /**
-     * Return an instance with the provided HTTP method.
+     * Visszaad egy új példányt a megadott HTTP metódussal.
      *
-     * While HTTP method names are typically all uppercase characters, HTTP
-     * method names are case-sensitive and thus implementations SHOULD NOT
-     * modify the given string.
+     * Noha a HTTP metódusok neve jellemzően csupa nagybetűkből áll, a nevek ennek
+     * ellenére kis-, és nagybetű érzékenyek és ezért az implementációknak
+     * NEM KELLENE módosítani a paraméterként átvett szöveges érték írásmódján.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * changed request method.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely tartalmazza
+     * az új HTTP metódust.
      *
-     * @param string $method Case-sensitive method.
+     * @param string $method kis-, és nagybetű érzékeny metódusnév.
      * @return static
-     * @throws \InvalidArgumentException for invalid HTTP methods.
+     * @throws \InvalidArgumentException érvénytelen HTTP metódus esetén.
      */
     public function withMethod($method);
 
     /**
-     * Retrieves the URI instance.
+     * Lekéri az URI objektumpéldányt.
      *
-     * This method MUST return a UriInterface instance.
+     * E metódusnak egy UriInterface példánnyal KELL visszatérnie.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriInterface Returns a UriInterface instance
-     *     representing the URI of the request.
+     * @return UriInterface A kérelemhez tartozó URI-t reprezentáló UriInterface
+     *      példánnyal tér vissza.
      */
     public function getUri();
 
     /**
-     * Returns an instance with the provided URI.
+     * Visszaad egy új objektumpéldányt a megadott URI-vel.
      *
-     * This method MUST update the Host header of the returned request by
-     * default if the URI contains a host component. If the URI does not
-     * contain a host component, any pre-existing Host header MUST be carried
-     * over to the returned request.
+     * Ennek a metódusnak alapértelmezetten frissítenie KELL a gazdagép fejlécet
+     * a visszaadott kérelemben, ha az URI tartalmaz gazdagépnév komponenst. Ha
+     * nem tartalmaz ilyet, akkor minden létező gazdagép fejlécet át KELL vinni
+     * a visszaadott kérelempéldányba.
      *
-     * You can opt-in to preserving the original state of the Host header by
-     * setting `$preserveHost` to `true`. When `$preserveHost` is set to
-     * `true`, this method interacts with the Host header in the following ways:
+     * A `$preserveHost` paraméter `true`-ra állításával engedélyezhető a gazdagép
+     * fejléc eredeti állapotának megőrzése is. Ebben az esetben a jelen metódus
+     * az alábbi módokon léphet kölcsönhatásba a gazdagép fejléccel:
      *
-     * - If the Host header is missing or empty, and the new URI contains
-     *   a host component, this method MUST update the Host header in the returned
-     *   request.
-     * - If the Host header is missing or empty, and the new URI does not contain a
-     *   host component, this method MUST NOT update the Host header in the returned
-     *   request.
-     * - If a Host header is present and non-empty, this method MUST NOT update
-     *   the Host header in the returned request.
+     * - Ha a gazdagép fejléc hiányzik vagy üres és az új URI tartalmaz gazdagépnév
+     *   komponenst, ennek a metódusnak frissítenie KELL a gazdagép fejlécet a
+     *   visszaadott kérelemben.
+     * - Ha a gazdagép fejléc hiányzik vagy üres és az új URI nem tartalmaz gazdagépnév
+     *   komponenst, ennek a metódusnak TILOS frissítenie a gazdagép fejlécet a
+     *   visszaadott kérelemben.
+     * - Ha a gazdagép fejléc létezik és nem üres, ennek a metódusnak TILOS frissítenie
+     *   a gazdagép fejlécet a visszaadott kérelemben.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new UriInterface instance.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely tartalmazza
+     * az új UriInterface példányt.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri New request URI to use.
-     * @param bool $preserveHost Preserve the original state of the Host header.
+     * @param UriInterface $uri Az új kérelemhez tartozó URI.
+     * @param bool $preserveHost Az eredeti gazdagép fejlécsor állapotának megőrzése.
      * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false);
@@ -999,7 +999,7 @@ interface RequestInterface extends MessageInterface
 namespace Psr\Http\Message;
 
 /**
- * Representation of an incoming, server-side HTTP request.
+ * Beérkező, kiszolgáló-oldali HTTP kérelem ábrázolása.
  *
  * A HTTP specifikációnak megfelelően az interfész az alábbi komponenseket
  * tartalmazza:
@@ -1010,27 +1010,29 @@ namespace Psr\Http\Message;
  * - Fejlécek
  * - Üzenettörzs
  *
- * Additionally, it encapsulates all data as it has arrived at the
- * application from the CGI and/or PHP environment, including:
+ * Emellett becsomagolja az alkalmazáshoz a CGI és/vagy PHP környezettől beérkező
+ * összes adatot, ideértve különösen:
  *
- * - The values represented in $_SERVER.
- * - Any cookies provided (generally via $_COOKIE)
- * - Query string arguments (generally via $_GET, or as parsed via parse_str())
- * - Upload files, if any (as represented by $_FILES)
- * - Deserialized body parameters (generally from $_POST)
+ * - A $_SERVER szuper globális által tárolt értékeket
+ * - A sütik által (általában a $_COOKIE tömbben) biztosított értékeket
+ * - A lekérdezési komponensben átadott argumentumok (általában a $_GET tömbbe
+ *   kerülnek, vagy a parse_str() függvény szolgáltatja őket)
+ * - Feltöltött állományok, ha vannak (a $_FILES tömb által megjelenítve)
+ * - Deszerializált üzenettörzs paraméterek (általában a $_POST tömbből)
  *
- * $_SERVER values MUST be treated as immutable, as they represent application
- * state at the time of request; as such, no methods are provided to allow
- * modification of those values. The other values provide such methods, as they
- * can be restored from $_SERVER or the request body, and may need treatment
- * during the application (e.g., body parameters may be deserialized based on
- * content type).
+ * A $_SERVER értékeit megváltoztathatatlanként KELL kezelni, mivel ezek jelenítik
+ * meg az alkalmazás állapotát a kérelem beérkezésének időpontjában; ezért egy
+ * metódusnak sem szabad lehetővé tenni, hogy módosítsa ezeket az értékeket.
+ * A többi érték olyan metódusokat igényel, amelyek helyre tudják állítani őket
+ * a $_SERVER tömbből vagy a kérelem üzenettörzséből és biztosítják az alkalmazás
+ * futása során szükségessé váló eljárásokat (pl. az üzenettörzs paramétereit a
+ * tartalomtípus alapján is lehetséges deszerializálni).
  *
- * Additionally, this interface recognizes the utility of introspecting a
- * request to derive and match additional parameters (e.g., via URI path
- * matching, decrypting cookie values, deserializing non-form-encoded body
- * content, matching authorization headers to users, etc). These parameters
- * are stored in an "attributes" property.
+ * Ezen felül a jelen interfész felismeri a kérelem önellenőrzésének hasznosságát
+ * a további paraméterek leszármaztatásában és összeillesztésében (pl. útvonal
+ * összehasonlítás URI segítségével, süti értékek visszafejtése, nem űrlap kódolt
+ * üzenettörzs deszerializálása, a felhasználók azonosítási fejléceinek ellenőrzése.
+ * Mindezek a paraméterek egy "attributes" nevű tulajdonságban vannak elraktározva.
  *
  * A kérelem üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
  * metódust, amely megváltoztathatja az objektum állapotát, úgy KELL megvalósítani,
@@ -1040,81 +1042,83 @@ namespace Psr\Http\Message;
 interface ServerRequestInterface extends RequestInterface
 {
     /**
-     * Retrieve server parameters.
+     * A kiszolgáló paramétereinek lekérdezése..
      *
-     * Retrieves data related to the incoming request environment,
-     * typically derived from PHP's $_SERVER superglobal. The data IS NOT
-     * REQUIRED to originate from $_SERVER.
+     * A bejövő kérelem környezeti adatainak lekérdezése, jellemzően a PHP
+     * $_SERVER szuperglobális tömbjéből kinyerve. Az adatokat máshonnan is
+     * be LEHET szerezni, nem szükséges feltétlenül a $_SERVER tömbből származniuk.
      *
      * @return array
      */
     public function getServerParams();
 
     /**
-     * Retrieve cookies.
+     * Sütiadatok lekérdezése.
      *
-     * Retrieves cookies sent by the client to the server.
+     * Lekérdezi azokat a sütiket, amelyeket a kliens küldött a kiszolgálónak.
      *
-     * The data MUST be compatible with the structure of the $_COOKIE
-     * superglobal.
+     * A visszatérési értéknek kompatibilisnek KELL lennie a $_COOKIE
+     * szuperglobális tömbbel.
      *
      * @return array
      */
     public function getCookieParams();
 
     /**
-     * Return an instance with the specified cookies.
+     * Visszaad egy példányt a megadott sütikkel.
      *
-     * The data IS NOT REQUIRED to come from the $_COOKIE superglobal, but MUST
-     * be compatible with the structure of $_COOKIE. Typically, this data will
-     * be injected at instantiation.
+     * Az adatokat máshonnan is be LEHET szerezni, nem szükséges feltétlenül a
+     * $_COOKIE tömbből származniuk, de kompatibilisnek KELL lenniük vele. Ezeket
+     * az adatokat jellemzően a példányosításnál fecskendezik be.
      *
-     * This method MUST NOT update the related Cookie header of the request
-     * instance, nor related values in the server params.
+     * Ennek a metódusnak TILOS frissítenie a vonatkozó kérelempéldány Cookie
+     * fejlécét, sem a kapcsolódó szerver paramétereket.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated cookie values.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített süti paramétereket.
      *
-     * @param array $cookies Array of key/value pairs representing cookies.
+     * @param array $cookies Sütiket reprezentáló kulcs/érték párokból álló tömb.
      * @return static
      */
     public function withCookieParams(array $cookies);
 
     /**
-     * Retrieve query string arguments.
+     * Lekéri a lekérdezési karakterláncból kinyert változókat.
      *
-     * Retrieves the deserialized query string arguments, if any.
+     * Lekéri a deszerializált lekérdezési karakterlánc változóit, ha vannak.
      *
-     * Note: the query params might not be in sync with the URI or server
-     * params. If you need to ensure you are only getting the original
-     * values, you may need to parse the query string from `getUri()->getQuery()`
-     * or from the `QUERY_STRING` server param.
+     * Megjegyzés: előfordulhat, hogy a query paraméterek nincsenek szinkronban
+     * az URI vagy a szerver paramétereivel. Ha csupán az eredeti értékek kinyerését
+     * kell biztosítani, akkor szükség lehet a lekérdezési karakterlánc elemzésére
+     * a `getUri()->getQuery()` visszatérési értékéből, vagy a `QUERY_STRING`
+     * környezeti változóból.
      *
      * @return array
      */
     public function getQueryParams();
 
     /**
-     * Return an instance with the specified query string arguments.
+     * Visszaad egy új objektumpéldányt a megadott lekérdezési karakterlánc
+     * (query string) változókkal.
      *
-     * These values SHOULD remain immutable over the course of the incoming
-     * request. They MAY be injected during instantiation, such as from PHP's
-     * $_GET superglobal, or MAY be derived from some other value such as the
-     * URI. In cases where the arguments are parsed from the URI, the data
-     * MUST be compatible with what PHP's parse_str() would return for
-     * purposes of how duplicate query parameters are handled, and how nested
-     * sets are handled.
+     * Ezen értékeket AJÁNLOTT változatlanul hagyni a bejövő kérelem folyamán.
+     * Ezeket be LEHET injektálni példányosítás közben, például a PHP $_GET
+     * szuperglobális tömbjéből, vagy származtatni LEHET más értékekből, úgymint
+     * az URI. Olyan esetekben, amikor a változók az URI-ből lettek kinyerve, az
+     * adatnak kompatibilisnek KELL lennie azzal, amivel a PHP parse_str() függvénye
+     * visszatérne, a duplikált lekérdezési paraméterek és beágyazott adatkollekciók
+     * kezelése érdekében.
      *
-     * Setting query string arguments MUST NOT change the URI stored by the
-     * request, nor the values in the server params.
+     * A lekérdezési karakterlánc változóinak beállításakor TILOS megváltoztatni
+     * a kérelem által tárolt URI-t, sem a kiszolgáló paramétereinek értékét.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated query string arguments.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített lekérdezési paramétereket (query string).
      *
-     * @param array $query Array of query string arguments, typically from
-     *     $_GET.
+     * @param array $query A lekérdezési karakterláncot reprezentáló, jellemzően
+     *           a $_GET szuperglobálisból nyert kulcs/érték párokból álló tömb.
      * @return static
      */
     public function withQueryParams(array $query);
@@ -1136,9 +1140,9 @@ interface ServerRequestInterface extends RequestInterface
     /**
      * Create a new instance with the specified uploaded files.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated body parameters.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített üzenettörzs paramétereket.
      *
      * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
      * @return static
@@ -1181,9 +1185,9 @@ interface ServerRequestInterface extends RequestInterface
      * is a JSON payload, this method could be used to create a request
      * instance with the deserialized parameters.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated body parameters.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített üzenettörzs paramétereket.
      *
      * @param null|array|object $data The deserialized body data. This will
      *     typically be in an array or object.
@@ -1229,9 +1233,9 @@ interface ServerRequestInterface extends RequestInterface
      * This method allows setting a single derived request attribute as
      * described in getAttributes().
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated attribute.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített attribútumokat.
      *
      * @see getAttributes()
      * @param string $name The attribute name.
@@ -1246,9 +1250,9 @@ interface ServerRequestInterface extends RequestInterface
      * This method allows removing a single derived request attribute as
      * described in getAttributes().
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that removes
-     * the attribute.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * nem tartalmazza az eltávolított attribútumot.
      *
      * @see getAttributes()
      * @param string $name The attribute name.
@@ -1299,9 +1303,9 @@ interface ResponseInterface extends MessageInterface
      * to the RFC 7231 or IANA recommended reason phrase for the response's
      * status code.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * updated status and reason phrase.
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * tartalmazza a frissített állapotkódot és indoklást.
      *
      * @see http://tools.ietf.org/html/rfc7231#section-6
      * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
@@ -1674,8 +1678,9 @@ interface UriInterface
     /**
      * Return an instance with the specified scheme.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified scheme.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott sémát.
      *
      * Implementations MUST support the schemes "http" and "https" case
      * insensitively, and MAY accommodate other schemes if required.
@@ -1692,8 +1697,9 @@ interface UriInterface
     /**
      * Return an instance with the specified user information.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified user information.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott felhasználói információkat.
      *
      * Password is optional, but the user information MUST include the
      * user; an empty string for the user is equivalent to removing user
@@ -1708,8 +1714,9 @@ interface UriInterface
     /**
      * Return an instance with the specified host.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified host.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott gazdagépnevet.
      *
      * An empty host value is equivalent to removing the host.
      *
@@ -1722,8 +1729,9 @@ interface UriInterface
     /**
      * Return an instance with the specified port.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified port.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott portszámot.
      *
      * Implementations MUST raise an exception for ports outside the
      * established TCP and UDP port ranges.
@@ -1741,8 +1749,9 @@ interface UriInterface
     /**
      * Return an instance with the specified path.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified path.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott elérési útvonalat.
      *
      * The path can either be empty or absolute (starting with a slash) or
      * rootless (not starting with a slash). Implementations MUST support all
@@ -1765,8 +1774,9 @@ interface UriInterface
     /**
      * Return an instance with the specified query string.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified query string.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott lekérdezési karakterláncot.
      *
      * Users can provide both encoded and decoded query characters.
      * Implementations ensure the correct encoding as outlined in getQuery().
@@ -1782,8 +1792,9 @@ interface UriInterface
     /**
      * Return an instance with the specified URI fragment.
      *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified URI fragment.
+     * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
+     * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
+     * átadott részerőforrás azonosítót.
      *
      * Users can provide both encoded and decoded fragment characters.
      * Implementations ensure the correct encoding as outlined in getFragment().
