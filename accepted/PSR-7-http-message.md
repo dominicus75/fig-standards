@@ -1032,7 +1032,7 @@ namespace Psr\Http\Message;
  * a további paraméterek leszármaztatásában és összeillesztésében (pl. útvonal
  * összehasonlítás URI segítségével, süti értékek visszafejtése, nem űrlap kódolt
  * üzenettörzs deszerializálása, a felhasználók azonosítási fejléceinek ellenőrzése.
- * Mindezek a paraméterek egy "attributes" nevű tulajdonságban vannak elraktározva.
+ * Mindezek a paraméterek "attributes" néven vannak elraktározva az objektumban.
  *
  * A kérelem üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
  * metódust, amely megváltoztathatja az objektum állapotát, úgy KELL megvalósítani,
@@ -1042,7 +1042,7 @@ namespace Psr\Http\Message;
 interface ServerRequestInterface extends RequestInterface
 {
     /**
-     * A kiszolgáló paramétereinek lekérdezése..
+     * A kiszolgáló paramétereinek lekérdezése.
      *
      * A bejövő kérelem környezeti adatainak lekérdezése, jellemzően a PHP
      * $_SERVER szuperglobális tömbjéből kinyerve. Az adatokat máshonnan is
@@ -1124,138 +1124,145 @@ interface ServerRequestInterface extends RequestInterface
     public function withQueryParams(array $query);
 
     /**
-     * Retrieve normalized file upload data.
+     * Normalizált formában lekéri a feltöltött fájlok adatait.
      *
-     * This method returns upload metadata in a normalized tree, with each leaf
-     * an instance of Psr\Http\Message\UploadedFileInterface.
+     * Ez a metódus a feltöltött fájlok metaadataival tér vissza, amelyeket egy
+     * normalizált fastruktúrában helyez el, ahol minden levél a
+     * Psr\Http\Message\UploadedFileInterface egy példánya.
      *
-     * These values MAY be prepared from $_FILES or the message body during
-     * instantiation, or MAY be injected via withUploadedFiles().
+     * Ezeket az értékeket ki LEHET nyerni a $_FILES tömbből vagy az üzenettörzsből
+     * példányosításkor vagy be LEHET őket fecskendezni a withUploadedFiles()
+     * metóduson keresztül.
      *
-     * @return array An array tree of UploadedFileInterface instances; an empty
-     *     array MUST be returned if no data is present.
+     * @return array Egy tömb, mely fastruktúrában tárolja a UploadedFileInterface
+     *             példányokat. Üres tömböt KELL visszaadni, ha nincsenek adatok.
      */
     public function getUploadedFiles();
 
     /**
-     * Create a new instance with the specified uploaded files.
+     * Új példány létrehozása a megadott feltöltött állományokkal.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
      * tartalmazza a frissített üzenettörzs paramétereket.
      *
-     * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
+     * @param array $uploadedFiles Egy tömb, mely fastruktúrában tárolja a
+     *             UploadedFileInterface példányokat.
      * @return static
-     * @throws \InvalidArgumentException if an invalid structure is provided.
+     * @throws \InvalidArgumentException ha a bemeneti tömb struktúrája érvénytelen.
      */
     public function withUploadedFiles(array $uploadedFiles);
 
     /**
-     * Retrieve any parameters provided in the request body.
+     * Lekérdezi az üzenettörzsben tárolt paramétereket.
      *
-     * If the request Content-Type is either application/x-www-form-urlencoded
-     * or multipart/form-data, and the request method is POST, this method MUST
-     * return the contents of $_POST.
+     * Ha a kérelem Content-Type fejlécében a típus application/x-www-form-urlencoded
+     * vagy multipart/form-data és a HTTP kérelem metódusa POST, akkor ennek a
+     * metódusnak a $_POST szuperglobális tömb tartalmát KELL visszaadni.
      *
-     * Otherwise, this method may return any results of deserializing
-     * the request body content; as parsing returns structured content, the
-     * potential types MUST be arrays or objects only. A null value indicates
-     * the absence of body content.
+     * Egyébként ez a metódus a kérelem üzenettörzsének deszerializált tartalmával
+     * térhet vissza; mivel a lekérdezés strukturált tartalmat eredményezhet, a
+     * visszatérési érték lehetséges típusának tömbnek vagy objektumnak KELL lennie.
+     * A null visszatérési érték a tartalom hiányát jelzi az üzenettörzsben.
      *
-     * @return null|array|object The deserialized body parameters, if any.
-     *     These will typically be an array or object.
+     * @return null|array|object A deszerializált üzenettörzs paraméterek, ha vannak.
+     *              Ezek jellemzően egy tömbben vagy egy objektumban találhatók.
      */
     public function getParsedBody();
 
     /**
-     * Return an instance with the specified body parameters.
+     * Új példány létrehozása a megadott üzenettörzs paraméterekkel.
      *
-     * These MAY be injected during instantiation.
+     * Ezeket a példányosításkor LEHET beinjektálni.
      *
-     * If the request Content-Type is either application/x-www-form-urlencoded
-     * or multipart/form-data, and the request method is POST, use this method
-     * ONLY to inject the contents of $_POST.
+     * Ha a kérelem Content-Type fejlécében a típus application/x-www-form-urlencoded
+     * vagy multipart/form-data és a HTTP kérelem metódusa POST, akkor ennek a
+     * metódusnak a $_POST szuperglobális tömb tartalmát KELL visszaadni.
      *
-     * The data IS NOT REQUIRED to come from $_POST, but MUST be the results of
-     * deserializing the request body content. Deserialization/parsing returns
-     * structured data, and, as such, this method ONLY accepts arrays or objects,
-     * or a null value if nothing was available to parse.
+     * Az adatot ki LEHET nyerni máshonnan is, mint a $_POST tömbből, viszont ez
+     * az üzenettörzs deszerializálásának eredménye kell, hogy legyen.
+     * A deszerializáció/elemzés strukturált adattal tér vissza, ezért ez a metódus
+     * kizárólag tömböket és objektumokat fogad el, esetleg null értéket, ha
+     * nincs mit elemezni.
      *
-     * As an example, if content negotiation determines that the request data
-     * is a JSON payload, this method could be used to create a request
-     * instance with the deserialized parameters.
+     * Mint például ha a tartalom egyeztetés meghatározza, hogy a kérelem adat
+     * egy JSON legyen, ez a metódus felhasználható egy új kérelem példány
+     * létrehozására a deszerializált paraméterekkel.
      *
-     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
-     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
+     * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti
+     * üzenet immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
      * tartalmazza a frissített üzenettörzs paramétereket.
      *
-     * @param null|array|object $data The deserialized body data. This will
-     *     typically be in an array or object.
+     * @param null|array|object $data A deszerializált üzenettörzs paraméterek,
+     *    ha vannak. Ezek jellemzően egy tömbben vagy egy objektumban találhatók.
      * @return static
-     * @throws \InvalidArgumentException if an unsupported argument type is
-     *     provided.
+     * @throws \InvalidArgumentException nem támogatott argumentumtípus esetén
      */
     public function withParsedBody($data);
 
     /**
-     * Retrieve attributes derived from the request.
+     * Lekérdezi a kérelem származtatott tulajdonságait.
      *
-     * The request "attributes" may be used to allow injection of any
-     * parameters derived from the request: e.g., the results of path
-     * match operations; the results of decrypting cookies; the results of
-     * deserializing non-form-encoded message bodies; etc. Attributes
-     * will be application and request specific, and CAN be mutable.
+     * A kérelem "attributes" név alatt tárolt tulajdonságai lehetővé teszik
+     * bármilyen a kérelemből származtatott paraméter beinjektálását: például,
+     * az elérési útvonal összehasonlítás művelet eredményét; a sütik dekódolásának
+     * eredményét; a nem Űrlap-kódolt üzenettörzs deszerializálásának eredményét,
+     * stb. A tulajdonságok alkalmazás-, és kérelemfüggők lesznek, ezen felül
+     * LEHETNEK megváltoztathatók is.
      *
-     * @return mixed[] Attributes derived from the request.
+     * @return mixed[] A kérelemből származtatott attribútumok.
      */
     public function getAttributes();
 
     /**
-     * Retrieve a single derived request attribute.
+     * Lekérdezi a kérelem egy megadott származtatott tulajdonságát.
      *
-     * Retrieves a single derived request attribute as described in
-     * getAttributes(). If the attribute has not been previously set, returns
-     * the default value as provided.
+     * Visszaadja a kérelem egy adott származtatott tulajdonságát a getAttributes()
+     * metódusnál leírt módon. Ha a tulajdonság előzőleg nem volt beállítva, akkor
+     * egy alapértelmezett értékkel tér vissza, ha be van állítva ilyen.
      *
-     * This method obviates the need for a hasAttribute() method, as it allows
-     * specifying a default value to return if the attribute is not found.
+     * Ez a metódus fölöslegessé teszi a hasAttribute() metódust azzal, hogy
+     * lehetővé teszi az alapértelmezett érték beállítását arra az esetre, ha a
+     * kért tulajdonság nem létezik.
      *
      * @see getAttributes()
-     * @param string $name The attribute name.
-     * @param mixed $default Default value to return if the attribute does not exist.
+     * @param string $name A tulajdonság neve.
+     * @param mixed $default Alapértelmezett érték, ha a tulajdonság nem létezik.
      * @return mixed
      */
     public function getAttribute($name, $default = null);
 
     /**
-     * Return an instance with the specified derived request attribute.
+     * Egy olyan új objektumpéldánnyal tér vissza, amely tartalmazza a kérelem
+     * paraméterként megadott származtatott tulajdonságát.
      *
-     * This method allows setting a single derived request attribute as
-     * described in getAttributes().
+     * Ez a metódus lehetővé teszi a kérelem egyes származtatott tulajdonságának
+     * beállítását a getAttributes() metódusnál leírt módon.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
-     * tartalmazza a frissített attribútumokat.
+     * tartalmazza a tulajdonság frissített értékét.
      *
      * @see getAttributes()
-     * @param string $name The attribute name.
-     * @param mixed $value The value of the attribute.
+     * @param string $name A tulajdonság neve.
+     * @param mixed $value A tulajdonság értéke.
      * @return static
      */
     public function withAttribute($name, $value);
 
     /**
-     * Return an instance that removes the specified derived request attribute.
+     * Egy olyan új objektumpéldánnyal tér vissza, amely már nem tartalmazza a
+     * kérelem paraméterként megadott származtatott tulajdonságát.
      *
-     * This method allows removing a single derived request attribute as
-     * described in getAttributes().
+     * Ez a metódus lehetővé teszi a kérelem adott származtatott tulajdonságának
+     * eltávolítását a getAttributes() metódusnál leírt módon.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
-     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
-     * nem tartalmazza az eltávolított attribútumot.
+     * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely nem
+     * tartalmazza az eltávolított attribútumot.
      *
      * @see getAttributes()
-     * @param string $name The attribute name.
+     * @param string $name A tulajdonság neve.
      * @return static
      */
     public function withoutAttribute($name);
@@ -1287,21 +1294,22 @@ namespace Psr\Http\Message;
 interface ResponseInterface extends MessageInterface
 {
     /**
-     * Gets the response status code.
+     * Lekéri a válaszüzenet állapotkódját.
      *
-     * The status code is a 3-digit integer result code of the server's attempt
-     * to understand and satisfy the request.
+     * Az állapotkód egy háromjegyű egész szám, amely jelzi a kiszolgáló kísérletét,
+     * hogy megértse és teljesítse a kérelmet.
      *
-     * @return int Status code.
+     * @return int Állapotkód.
      */
     public function getStatusCode();
 
     /**
-     * Return an instance with the specified status code and, optionally, reason phrase.
+     * Visszaad egy új objektumpéldányt a megadott állapotkóddal és opcionálisan
+     * megadható szöveges indoklással.
      *
-     * If no reason phrase is specified, implementations MAY choose to default
-     * to the RFC 7231 or IANA recommended reason phrase for the response's
-     * status code.
+     * Ha nincs indoklás beállítva, akkor az implementációknak LEHET választani
+     * az RFC 7231 vagy az IANA által a válaszokhoz ajánlott alapértelmezett
+     * állapotkódok közül.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
@@ -1309,27 +1317,28 @@ interface ResponseInterface extends MessageInterface
      *
      * @see http://tools.ietf.org/html/rfc7231#section-6
      * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @param int $code The 3-digit integer result code to set.
-     * @param string $reasonPhrase The reason phrase to use with the
-     *     provided status code; if none is provided, implementations MAY
-     *     use the defaults as suggested in the HTTP specification.
+     * @param int $code A beállítandó 3 jegyű állapotkód.
+     * @param string $reasonPhrase Az indoklás együtt használható a megadott
+     *     állapotkóddal; ha ilyen nincs megadva, akkor az implementációknak LEHET
+     *     a HTTP specifikáció által ajánlott, az adott állapotkódhoz tartozó
+     *     alapértelmezett indoklást is alkalmazni.
      * @return static
-     * @throws \InvalidArgumentException For invalid status code arguments.
+     * @throws \InvalidArgumentException Érvénytelen állapotkód argumentum esetén.
      */
     public function withStatus($code, $reasonPhrase = '');
 
     /**
-     * Gets the response reason phrase associated with the status code.
+     * A kérelem állapotkódjához társított indoklás lekérdezése.
      *
-     * Because a reason phrase is not a required element in a response
-     * status line, the reason phrase value MAY be empty. Implementations MAY
-     * choose to return the default RFC 7231 recommended reason phrase (or those
-     * listed in the IANA HTTP Status Code Registry) for the response's
-     * status code.
+     * Mivel az indoklás nem kötelező eleme a válasz állapotsorának, ezért az
+     * értéke LEHET akár üres is (''). Az implementációknak LEHET azt is választani,
+     * hogy az alapértelmezett RFC 7231 által ajánlott indoklást (melyek felsorolása
+     * megtalálható az IANA HTTP állapotkód regiszterében, a mellékelt linken)
+     * adják vissza a válasz állapotkódjához.
      *
      * @see http://tools.ietf.org/html/rfc7231#section-6
      * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @return string Reason phrase; must return an empty string if none present.
+     * @return string Indoklás; üres karakterláncot kell visszaadni, ha nincs ilyen.
      */
     public function getReasonPhrase();
 }
@@ -1342,24 +1351,25 @@ interface ResponseInterface extends MessageInterface
 namespace Psr\Http\Message;
 
 /**
- * Describes a data stream.
+ * Leír egy adatfolyamot.
  *
- * Typically, an instance will wrap a PHP stream; this interface provides
- * a wrapper around the most common operations, including serialization of
- * the entire stream to a string.
+ * Jellemzően egy objektumpéldányba csomagol egy PHP adatfolyamot; ez az interfész
+ * biztosítja a wrapper-t a leggyakoribb műveletek körül, ideértve a bejövő
+ * adatfolyamok karakterlánccá történő szerializációját is.
  */
 interface StreamInterface
 {
     /**
-     * Reads all data from the stream into a string, from the beginning to end.
+     * Beolvassa az összes adatot az adatfolyamból egy karakterláncba, elejétől
+     * a végéig.
      *
-     * This method MUST attempt to seek to the beginning of the stream before
-     * reading data and read the stream until the end is reached.
+     * E metódusnak meg KELL kísérelnie megkeresni az adatfolyam kezdetét, az adatok
+     * beolvasása előtt és addig olvasni az adatfolyamot, amíg a végére nem ér.
      *
-     * Warning: This could attempt to load a large amount of data into memory.
+     * Figyelmeztetés: ez nagyobb mennyiségű adatot tölthet a memóriába.
      *
-     * This method MUST NOT raise an exception in order to conform with PHP's
-     * string casting operations.
+     * Ennek a metódusnak TILOS kivételt dobni azért, hogy megerősítse a PHP
+     * típuskonverziót (casting).
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
      * @return string
@@ -1367,131 +1377,135 @@ interface StreamInterface
     public function __toString();
 
     /**
-     * Closes the stream and any underlying resources.
+     * Letárja az adatfolyamot és minden mögöttes erőforrást.
      *
      * @return void
      */
     public function close();
 
     /**
-     * Separates any underlying resources from the stream.
+     * Elkülönít minden mögöttes erőforrást az adatfolyamból.
      *
-     * After the stream has been detached, the stream is in an unusable state.
+     * Miután az adatfolyamot elkülönítették, az használhatatlan állapotba kerül.
      *
-     * @return resource|null Underlying PHP stream, if any
+     * @return resource|null Mögöttes PHP adatfolyam, ha van ilyen
      */
     public function detach();
 
     /**
-     * Get the size of the stream if known.
+     * Lekérdezi az adatfolyam méretét, ha az ismert.
      *
-     * @return int|null Returns the size in bytes if known, or null if unknown.
+     * @return int|null Az adatfolyam byte-okban megadott méretével tér vissza,
+     *                  ha az ismert, ha nem, akkor null-t kell vissza adnia.
      */
     public function getSize();
 
     /**
-     * Returns the current position of the file read/write pointer
+     * Visszaadja az írási/olvasási fájl mutató aktuális pozícióját
      *
-     * @return int Position of the file pointer
-     * @throws \RuntimeException on error.
+     * @return int A fájl mutató (pointer) pozíciója
+     * @throws \RuntimeException ha hiba történik.
      */
     public function tell();
 
     /**
-     * Returns true if the stream is at the end of the stream.
+     * True értékkel tér vissza, ha az adatfolyam a végéhez ért.
      *
      * @return bool
      */
     public function eof();
 
     /**
-     * Returns whether or not the stream is seekable.
+     * Ellenőrzi, hogy az adatfolyam kereshető-e vagy sem.
      *
      * @return bool
      */
     public function isSeekable();
 
     /**
-     * Seek to a position in the stream.
+     * Beállítja a fájlmutatót egy adott pozícióra az adatfolyamon belül.
      *
      * @see http://www.php.net/manual/en/function.fseek.php
-     * @param int $offset Stream offset
-     * @param int $whence Specifies how the cursor position will be calculated
-     *     based on the seek offset. Valid values are identical to the built-in
-     *     PHP $whence values for `fseek()`.  SEEK_SET: Set position equal to
-     *     offset bytes SEEK_CUR: Set position to current location plus offset
-     *     SEEK_END: Set position to end-of-stream plus offset.
-     * @throws \RuntimeException on failure.
+     * @param int $offset Adatfolyam eltolás
+     * @param int $whence Meghatározza, hogy a kurzor pozíciója hogy legyen
+     *     kiszámítva az eltolás (offset) alapján. Az érvényes értékek megegyeznek
+     *     a PHP beépített `fseek()`függvényének $whence ($honnan) argumentumának
+     *     értékeivel.
+     *     SEEK_SET: Állítsa a pozíciót az $offset-ben megadott bájtra
+     *     SEEK_CUR: Állítsa a pozíciót a fájlmutató aktuális helye + $offset értékre
+     *     SEEK_END: Állítsa a pozíciót az adatfolyam vége + $offset értékre.
+     * @throws \RuntimeException kudarc esetén.
      */
     public function seek($offset, $whence = SEEK_SET);
 
     /**
-     * Seek to the beginning of the stream.
+     * Megkeresi az adatfolyam kezdetét.
      *
-     * If the stream is not seekable, this method will raise an exception;
-     * otherwise, it will perform a seek(0).
+     * Ha az adatfolyam nem kereshető, ez a metódus kivételt fog dobni; egyébként
+     * visszaállítja a fájlmutatót az adatfolyam elejére (seek(0)).
      *
      * @see seek()
      * @see http://www.php.net/manual/en/function.fseek.php
-     * @throws \RuntimeException on failure.
+     * @throws \RuntimeException kudarc esetén.
      */
     public function rewind();
 
     /**
-     * Returns whether or not the stream is writable.
+     * Ellenőrzi, hogy az adatfolyam írható-e vagy sem.
      *
      * @return bool
      */
     public function isWritable();
 
     /**
-     * Write data to the stream.
+     * Szöveges adatot ír az adatfolyamba.
      *
-     * @param string $string The string that is to be written.
-     * @return int Returns the number of bytes written to the stream.
-     * @throws \RuntimeException on failure.
+     * @param string $string A karakterlánc, amit írni kell.
+     * @return int Az adatfolymba írt bájtok számával tér vissza.
+     * @throws \RuntimeException kudarc esetén.
      */
     public function write($string);
 
     /**
-     * Returns whether or not the stream is readable.
+     * Ellenőrzi, hogy az adatfolyam olvasható-e vagy sem.
      *
      * @return bool
      */
     public function isReadable();
 
     /**
-     * Read data from the stream.
+     * Megadott hosszúságú adatot olvas ki az adatfolyamból.
      *
-     * @param int $length Read up to $length bytes from the object and return
-     *     them. Fewer than $length bytes may be returned if underlying stream
-     *     call returns fewer bytes.
-     * @return string Returns the data read from the stream, or an empty string
-     *     if no bytes are available.
-     * @throws \RuntimeException if an error occurs.
+     * @param int $length Kiolvas legfeljebb $length byte adatot az objektumból
+     *     és visszaadja azt. Kevesebb, mint $length byte-ot is visszaadhat, ha
+     *     a meghívott mögöttes adatfolyam kevesebbet ad vissza.
+     * @return string Visszaadja az adatfolyamból kiolvasott adatot, vagy egy
+     *     üres karakterláncot, ha nincs elérhető adat.
+     * @throws \RuntimeException ha hiba történik.
      */
     public function read($length);
 
     /**
-     * Returns the remaining contents in a string
+     * Karakterláncként visszaadja az adatfolyam fennmaradó tartalmát.
      *
      * @return string
-     * @throws \RuntimeException if unable to read.
-     * @throws \RuntimeException if error occurs while reading.
+     * @throws \RuntimeException ha nem tudja olvasni.
+     * @throws \RuntimeException ha hiba történt olvasás közben.
      */
     public function getContents();
 
     /**
-     * Get stream metadata as an associative array or retrieve a specific key.
+     * Asszociatív tömbként vagy megadott kulcs alapján visszaadja az adatfolyam
+     * metaadatait.
      *
-     * The keys returned are identical to the keys returned from PHP's
-     * stream_get_meta_data() function.
+     * A visszaadott tömb kulcsai megegyeznek a PHP stream_get_meta_data() függvény
+     * által visszaadott kulcsokkal.
      *
      * @see http://php.net/manual/en/function.stream-get-meta-data.php
-     * @param string $key Specific metadata to retrieve.
-     * @return array|mixed|null Returns an associative array if no key is
-     *     provided. Returns a specific key value if a key is provided and the
-     *     value is found, or null if the key is not found.
+     * @param string $key Meghatározott metaadat lekérése.
+     * @return array|mixed|null Egy asszociatív tömböt ad vissza, ha nincs kulcs
+     *     megadva. A megadott kulcshoz tartozó metaadattal tér vissza, ha a kulcs
+     *     létezik és van értéke, vagy nullával, ha a kulcs nem található.
      */
     public function getMetadata($key = null);
 }
