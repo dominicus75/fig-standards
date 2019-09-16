@@ -1904,111 +1904,116 @@ namespace Psr\Http\Message;
 interface UploadedFileInterface
 {
     /**
-     * Retrieve a stream representing the uploaded file.
+     * Lekéri a feltöltött állományt reprezentáló adatfolyamot.
      *
-     * This method MUST return a StreamInterface instance, representing the
-     * uploaded file. The purpose of this method is to allow utilizing native PHP
-     * stream functionality to manipulate the file upload, such as
-     * stream_copy_to_stream() (though the result will need to be decorated in a
-     * native PHP stream wrapper to work with such functions).
+     * Ennek a metódusnak egy a feltöltött állományt reprezentáló StreamInterface
+     * objektumpéldányt KELL visszaadnia. E metódus célja, hogy lehetővé tegye
+     * a natív PHP adatfolyamokhoz kapcsolódó funkcionalitásának, mint például a
+     * stream_copy_to_stream() függvény kihasználását az állományfeltöltés
+     * manipulálására (bár ahhoz, hogy ezek a függvények működjenek, az eredményt
+     * egy natív PHP stream wrapper-be kell csomagolni).
      *
-     * If the moveTo() method has been called previously, this method MUST raise
-     * an exception.
+     * Ha korábban meghívásra került a moveTo() metódus, ennek a metódusnak
+     * kivételt KELL dobnia.
      *
-     * @return StreamInterface Stream representation of the uploaded file.
-     * @throws \RuntimeException in cases when no stream is available.
-     * @throws \RuntimeException in cases when no stream can be created.
+     * @return StreamInterface A feltöltött állományt reprezentáló adatfolyam.
+     * @throws \RuntimeException abban az esetben, amikor nem érhető el adatfolyam.
+     * @throws \RuntimeException abban az esetben, amikor nem hozható létre adatfolyam.
      */
     public function getStream();
 
     /**
-     * Move the uploaded file to a new location.
+     * Áthelyezi a feltöltött állományt egy új helyre.
      *
-     * Use this method as an alternative to move_uploaded_file(). This method is
-     * guaranteed to work in both SAPI and non-SAPI environments.
-     * Implementations must determine which environment they are in, and use the
-     * appropriate method (move_uploaded_file(), rename(), or a stream
-     * operation) to perform the operation.
+     * Ez a metódus a move_uploaded_file() alternatívájaként is használható.
+     * Garantáltan működni kell SAPI és nem SAPI környezetekben is.
+     * Az implementációknak meg kell határozniuk, hogy melyik környezetben vannak
+     * és ez alapján alkalmazni a megfelelő metódust (move_uploaded_file(),
+     * rename(), vagy valamilyen stream művelet) a művelet végrehajtásához.
      *
-     * $targetPath may be an absolute path, or a relative path. If it is a
-     * relative path, resolution should be the same as used by PHP's rename()
-     * function.
+     * A $targetPath paraméterben megadható relatív és abszolút útvonal is.
+     * Relatív útvonal esetén az eredménynek azonosanak kell lennie a PHP rename()
+     * függvényének kimenetével.
      *
-     * The original file or stream MUST be removed on completion.
+     * Az eredeti állományt vagy adatfolyamot az eljárás befejezése után törölni
+     * KELL.
      *
-     * If this method is called more than once, any subsequent calls MUST raise
-     * an exception.
+     * Ha ez a metódus egynél többször kerül meghívásra, bármely későbbi hívásnak
+     * kivételt KELL dobnia.
      *
-     * When used in an SAPI environment where $_FILES is populated, when writing
-     * files via moveTo(), is_uploaded_file() and move_uploaded_file() SHOULD be
-     * used to ensure permissions and upload status are verified correctly.
+     * SAPI környezetben való alkalmazás esetén, ahol a $_FILES szuperglobális
+     * tömb adatokkal van feltöltve, amikor állományt kell írni a moveTo(),
+     * is_uploaded_file() és a move_uploaded_file() függvény segítségével, ezt a
+     * metódust AJÁNLOTT a jogosultságok és a feltöltési állapot megfelelő
+     * ellenőrzésének biztosítására használni.
      *
-     * If you wish to move to a stream, use getStream(), as SAPI operations
-     * cannot guarantee writing to stream destinations.
+     * Adatfolyamba történő átmozgatáshoz ajánlott a getStream() metódust
+     * használni, mert a SAPI műveletek nem garantálják az adatfolyamba való írást.
      *
      * @see http://php.net/is_uploaded_file
      * @see http://php.net/move_uploaded_file
-     * @param string $targetPath Path to which to move the uploaded file.
-     * @throws \InvalidArgumentException if the $targetPath specified is invalid.
-     * @throws \RuntimeException on any error during the move operation.
-     * @throws \RuntimeException on the second or subsequent call to the method.
+     * @param string $targetPath útvonal, ahová a feltöltött állománynak kerülni kell.
+     * @throws \InvalidArgumentException ha a $targetPath érvénytelen.
+     * @throws \RuntimeException ha bármilyen hiba lép fel áthelyezés közben.
+     * @throws \RuntimeException a metódus második vagy sokadik hívása esetén.
      */
     public function moveTo($targetPath);
 
     /**
-     * Retrieve the file size.
+     * Lekéri a feltöltött állomány méretét.
      *
-     * Implementations SHOULD return the value stored in the "size" key of
-     * the file in the $_FILES array if available, as PHP calculates this based
-     * on the actual size transmitted.
+     * Az implementációknak (amennyiben elérhető) a $_FILES szuperglobális tömb
+     * jelen állományhoz tartozó "size" kulcsa alatt tárolt, a PHP által az átvitt
+     * tényleges méret alapján számított értéket KELLENE visszaadni.
      *
-     * @return int|null The file size in bytes or null if unknown.
+     * @return int|null Az állomány mérete byte-ban, vagy null, ha ismeretlen.
      */
     public function getSize();
 
     /**
-     * Retrieve the error associated with the uploaded file.
+     * Lekéri a feltöltött állományhoz kapcsolódó hibákat.
      *
-     * The return value MUST be one of PHP's UPLOAD_ERR_XXX constants.
+     * A visszatérési értéknek a PHP UPLOAD_ERR_XXX konstansaiban tároltak közül
+     * KELL kikerülnie.
      *
-     * If the file was uploaded successfully, this method MUST return
-     * UPLOAD_ERR_OK.
+     * Ha az állomány feltöltése sikeres volt, akkor ennek a metódusnak az
+     * UPLOAD_ERR_OK konstans értékével KELL visszatérnie.
      *
-     * Implementations SHOULD return the value stored in the "error" key of
-     * the file in the $_FILES array.
+     * Az implementációknak a $_FILES szuperglobális tömb jelen állományhoz
+     * tartozó "error" kulcsa alatt tárolt értéket KELLENE visszaadni.
      *
      * @see http://php.net/manual/en/features.file-upload.errors.php
-     * @return int One of PHP's UPLOAD_ERR_XXX constants.
+     * @return int Egy szám a PHP UPLOAD_ERR_XXX konstansaiban tároltak közül.
      */
     public function getError();
 
     /**
-     * Retrieve the filename sent by the client.
+     * Lekérdezi a kliens által küldött fájl eredeti nevét.
      *
-     * Do not trust the value returned by this method. A client could send
-     * a malicious filename with the intention to corrupt or hack your
-     * application.
+     * Nem igazán ajánlott megbízni a jelen metódus által visszaadott értékben.
+     * A kliens küldhet akár egy rosszindulatú kódot tartalmazó állománynevet is,
+     * azzal a szándékkal, hogy meghekkelje az alkalmazást.
      *
-     * Implementations SHOULD return the value stored in the "name" key of
-     * the file in the $_FILES array.
+     * Az implementációknak a $_FILES szuperglobális tömb jelen állományhoz
+     * tartozó "name" kulcsa alatt tárolt értéket KELLENE visszaadni.
      *
-     * @return string|null The filename sent by the client or null if none
-     *     was provided.
+     * @return string|null A kliens által küldött fájl eredeti neve, vagy null,
+     *                     ha nem érkezett ilyen.
      */
     public function getClientFilename();
 
     /**
-     * Retrieve the media type sent by the client.
+     * Lekérdezi a kliens által küldött média típusát.
      *
-     * Do not trust the value returned by this method. A client could send
-     * a malicious media type with the intention to corrupt or hack your
-     * application.
+     * Nem igazán ajánlott megbízni a jelen metódus által visszaadott értékben.
+     * A kliens küldhet akár egy rosszindulatú kódot tartalmazó média típust is,
+     * azzal a szándékkal, hogy meghekkelje az alkalmazást.
      *
-     * Implementations SHOULD return the value stored in the "type" key of
-     * the file in the $_FILES array.
+     * Az implementációknak a $_FILES szuperglobális tömb jelen állományhoz
+     * tartozó "type" kulcsa alatt tárolt értéket KELLENE visszaadni.
      *
-     * @return string|null The media type sent by the client or null if none
-     *     was provided.
+     * @return string|null A kliens által küldött fájl média típusa, vagy null,
+     *                     ha nem érkezett ilyen.
      */
     public function getClientMediaType();
 }
