@@ -1518,329 +1518,369 @@ interface StreamInterface
 namespace Psr\Http\Message;
 
 /**
- * Value object representing a URI.
+ * Az URI-t reprezentáló értékobjektum.
  *
- * This interface is meant to represent URIs according to RFC 3986 and to
- * provide methods for most common operations. Additional functionality for
- * working with URIs can be provided on top of the interface or externally.
- * Its primary use is for HTTP requests, but may also be used in other
- * contexts.
+ * Ez az interfész arra van szánva, hogy az RFC 3986 dokumentumban foglalt STD 66
+ * internetes szabvány alapján biztosítsa a leggyakoribb műveletekhez szükséges
+ * metódusokat. Az URI-kkel való munkához szükséges további funkcionalitás
+ * biztosítható az interfészben leírtakon felül is. Az interfész elsődlegesen a
+ * HTTP kérelmekhez használható, de más kontextusban is hasznos lehet.
  *
- * Instances of this interface are considered immutable; all methods that
- * might change state MUST be implemented such that they retain the internal
- * state of the current instance and return an instance that contains the
- * changed state.
+ * Az ezen interfészt megvalósító osztályok objektumpéldányai megváltoztathatatlanok;
+ * minden olyan metódust, amelyik megváltoztathatja az objektum állapotát,
+ * úgy KELL megvalósítani, hogy megőrizze az aktuális üzenet belső állapotát és
+ * egy másik, a megváltozott állapotot tartalmazó objektumpéldánnyal térjen vissza.
  *
- * Typically the Host header will also be present in the request message.
- * For server-side requests, the scheme will typically be discoverable in the
- * server parameters.
+ * Jellemzően a gazdagép (Host) fejléc lesz szintén jelen a kérelem üzenetben. A
+ * kiszolgáló oldali kérelmekben a séma komponens általában kinyerhető a szerver
+ * paramétereiből.
  *
- * @see http://tools.ietf.org/html/rfc3986 (the URI specification)
+ * @see http://tools.ietf.org/html/rfc3986 (URI specifikáció)
+ * @see https://github.com/dominicus75/fig-standards/blob/master/related-rfcs/3986.md
+ * (URI specifikáció magyarul)
  */
 interface UriInterface
 {
     /**
-     * Retrieve the scheme component of the URI.
+     * Lekéri az URI séma (scheme) komponensét.
      *
-     * If no scheme is present, this method MUST return an empty string.
+     * Ha a séma komponens nincs jelen, ennek a metódusnak üres karakterlánccal
+     * KELL visszatérnie.
      *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.1.
+     * A visszaadott értéket mindig kisbetűs írásmódúra KELL alakítani, az RFC
+     * 3986 3.1 fejezetének megfelelően.
      *
-     * The trailing ":" character is not part of the scheme and MUST NOT be
-     * added.
+     * A sémát lezáró kettőspont (":") határoló karakter, nem része a sémának,
+     * ezért TILOS hozzáadni.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.1
-     * @return string The URI scheme.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#31-s%C3%A9ma-scheme1
+     * @return string Az URI séma komponense.
      */
     public function getScheme();
 
     /**
-     * Retrieve the authority component of the URI.
+     * Lekéri az URI hitelesítési (authority) komponensét.
      *
-     * If no authority information is present, this method MUST return an empty
-     * string.
+     * Ha a hitelesítési komponens nincs jelen, ennek a metódusnak üres
+     * karakterlánccal KELL visszatérnie.
      *
-     * The authority syntax of the URI is:
+     * Az URI hitelesítési komponensének szintaxisa:
      *
      * <pre>
      * [user-info@]host[:port]
      * </pre>
      *
-     * If the port component is not set or is the standard port for the current
-     * scheme, it SHOULD NOT be included.
+     * Ha a port komponens nincs beállítva, vagy a jelenlegi séma szabványos
+     * portja az, akkor ezt NEM KELLENE belevenni a kimenetbe.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.2
-     * @return string The URI authority, in "[user-info@]host[:port]" format.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#32-hiteles%C3%ADt%C3%A9s-authority
+     * @return string Az URI hitelesítési komponense,
+     *                "[user-info@]host[:port]" formátumban.
      */
     public function getAuthority();
 
     /**
-     * Retrieve the user information component of the URI.
+     * Lekéri az URI felhasználói információ (userinfo) komponensét.
      *
-     * If no user information is present, this method MUST return an empty
-     * string.
+     * Ha a felhasználói információ komponens nincs jelen, ennek a metódusnak üres
+     * karakterlánccal KELL visszatérnie.
      *
-     * If a user is present in the URI, this will return that value;
-     * additionally, if the password is also present, it will be appended to the
-     * user value, with a colon (":") separating the values.
+     * Ha az URI tartalmaz felhasználói komponenst, ez a metódus visszaadja annak
+     * értékét; ezen felül ha a jelszó is meg van adva, az hozzá lesz fűzve a
+     * felhasználónévhez, egy kettőspont (":") karakterrel elválasztva tőle.
      *
-     * The trailing "@" character is not part of the user information and MUST
-     * NOT be added.
+     * A felhasználói információt lezáró kukac ("@") határoló karakter, nem része
+     * a felhasználói információnak, ezért TILOS hozzáadni.
      *
-     * @return string The URI user information, in "username[:password]" format.
+     * @return string Az URI felhasználói információ komponense,
+     *                "username[:password]" formátumban.
      */
     public function getUserInfo();
 
     /**
-     * Retrieve the host component of the URI.
+     * Lekéri az URI gazdagép (Host) komponensét.
      *
-     * If no host is present, this method MUST return an empty string.
+     * Ha a gazdagép komponens nincs jelen, ennek a metódusnak üres
+     * karakterlánccal KELL visszatérnie.
      *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.2.2.
+     * A visszaadott értéket mindig kisbetűs írásmódúra KELL alakítani, az RFC
+     * 3986 3.2.2 fejezetének megfelelően.
      *
-     * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
-     * @return string The URI host.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#322-gazdag%C3%A9p-host
+     * @return string Az URI gazdagép komponense.
      */
     public function getHost();
 
     /**
-     * Retrieve the port component of the URI.
+     * Lekéri az URI port komponensét.
      *
-     * If a port is present, and it is non-standard for the current scheme,
-     * this method MUST return it as an integer. If the port is the standard port
-     * used with the current scheme, this method SHOULD return null.
+     * Ha a port jelen van és nem az aktuális HTTP-sémához rendelt szabványos port,
+     * akkor ennek a metódusnak integer-ként KELL visszaadnia. Ha a port az
+     * aktuális séma szabványos portja, akkor ennek a metódusnak null értékkel
+     * KELL visszatérnie.
      *
-     * If no port is present, and no scheme is present, this method MUST return
-     * a null value.
+     * Ugyanígy null értéket KELL visszaadni, ha a port vagy a séma nincs jelen
+     * az objektumban.
      *
-     * If no port is present, but a scheme is present, this method MAY return
-     * the standard port for that scheme, but SHOULD return null.
+     * Ha a port nincs jelen, de a séma igen, akkor ennek a metódusnak a sémához
+     * tartozó szabványos (alapértelmezett) portot is vissza LEHET adni, vagy
+     * esetleg null értéket.
      *
-     * @return null|int The URI port.
+     * @return null|int Az URI port komponense.
      */
     public function getPort();
 
     /**
-     * Retrieve the path component of the URI.
+     * Lekéri az URI útvonal (path) komponensét.
      *
-     * The path can either be empty or absolute (starting with a slash) or
-     * rootless (not starting with a slash). Implementations MUST support all
-     * three syntaxes.
+     * Az útvonal komponens lehet akár üres vagy abszolút (perjellel kezdve) esetleg
+     * relatív (perjel nélkül az elején). Az implementációknak támogatniuk KELL
+     * mindhárom szintaxist.
      *
-     * Normally, the empty path "" and absolute path "/" are considered equal as
-     * defined in RFC 7230 Section 2.7.3. But this method MUST NOT automatically
-     * do this normalization because in contexts with a trimmed base path, e.g.
-     * the front controller, this difference becomes significant. It's the task
-     * of the user to handle both "" and "/".
+     * Általában az üres ("") és az abszolút ("/") útvonal egyenlőnek tekinthető
+     * az RFC 7230 ajánlás 2.7.3. fejezete alapján. De ennek a metódusnak TILOS
+     * automatikusan megejteni ezt a normalizálást, mert a megtisztított bázis
+     * útvonal (base path) kontextusában, pl. a front controller esetében ez a
+     * különbség jelentőssé válhat. Ezért a "" és a "/" kezelését a felhasználóra
+     * kell hagyni.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.3.
+     * A visszaadott értéket url-kódolni KELL, de TILOS duplán kódolni bármely
+     * karaktert. Azt, hogy mely karaktereket kell url-kódolni, az RFC 3986
+     * 2, és 3.3. fejezete határozza meg.
      *
-     * As an example, if the value should include a slash ("/") not intended as
-     * delimiter between path segments, that value MUST be passed in encoded
-     * form (e.g., "%2F") to the instance.
+     * Például ha az értéknek perjelet ("/") is tartalmaznia kell, amit nem az
+     * útvonal komponens szegmensei közötti határolókarakternek szántak, akkor
+     * azt az értéket url-kódolni kell (pl. "%2F") az objektumpéldányban.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.3
-     * @return string The URI path.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#2-karakterk%C3%A9szlet
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#33-%C3%BAtvonal-path
+     * @return string Az URI útvonal komponense.
      */
     public function getPath();
 
     /**
-     * Retrieve the query string of the URI.
+     * Lekéri az URI lekérdezési (query string) komponensét.
      *
-     * If no query string is present, this method MUST return an empty string.
+     * Ha a lekérdezési komponens nincs jelen, ennek a metódusnak üres
+     * karakterlánccal KELL visszatérnie.
      *
-     * The leading "?" character is not part of the query and MUST NOT be
-     * added.
+     * A lekérdezési komponenst nyitó kérdőjel ("?") határoló karakter, nem része
+     * a komponensnek, ezért TILOS hozzáadni.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.4.
+     * A visszaadott értéket url-kódolni KELL, de TILOS duplán kódolni bármely
+     * karaktert. Azt, hogy mely karaktereket kell url-kódolni, az RFC 3986
+     * 2, és 3.4. fejezete határozza meg.
      *
-     * As an example, if a value in a key/value pair of the query string should
-     * include an ampersand ("&") not intended as a delimiter between values,
-     * that value MUST be passed in encoded form (e.g., "%26") to the instance.
+     * Például, ha az érték a lekérdezési komponens egy kulcs/érték párja, ami
+     * és jelet ("&") is tartalmaz, amelyet nem az értékek közti határolókarakternek
+     * szántak, akkor azt az értéket url-kódolni kell (pl. "%26") az objektumpéldányban.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.4
-     * @return string The URI query string.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#2-karakterk%C3%A9szlet
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#34-lek%C3%A9rdez%C3%A9s-query
+     * @return string Az URI lekérdezési komponense.
      */
     public function getQuery();
 
     /**
-     * Retrieve the fragment component of the URI.
+     * Lekéri az URI részerőforrás azonosító (fragment) komponensét.
      *
-     * If no fragment is present, this method MUST return an empty string.
+     * Ha a részerőforrás azonosító nincs jelen, ennek a metódusnak üres
+     * karakterlánccal KELL visszatérnie.
      *
-     * The leading "#" character is not part of the fragment and MUST NOT be
-     * added.
+     * A részerőforrás azonosítót nyitó kettős kereszt ("#") határoló karakter,
+     * nem része a komponensnek, ezért TILOS hozzáadni.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.5.
+     * A visszaadott értéket url-kódolni KELL, de TILOS duplán kódolni bármely
+     * karaktert. Azt, hogy mely karaktereket kell url-kódolni, az RFC 3986
+     * 2, és 3.5. fejezete határozza meg.
      *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.5
-     * @return string The URI fragment.
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#2-karakterk%C3%A9szlet
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#35-r%C3%A9szer%C5%91forr%C3%A1s-fragment
+     * @return string Az URI részerőforrás azonosító komponense.
      */
     public function getFragment();
 
     /**
-     * Return an instance with the specified scheme.
+     * Meghatározott séma komponenst tartalmazó új objektumpéldánnyal tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott sémát.
      *
-     * Implementations MUST support the schemes "http" and "https" case
-     * insensitively, and MAY accommodate other schemes if required.
+     * Az implementációknak tekintet nélkül a kis-, és nagybetűs írásmódra,
+     * támogatniuk KELL a "http" és a "https" sémákat, de LEHET alkalmazni más
+     * sémákat is, ha szükséges.
      *
-     * An empty scheme is equivalent to removing the scheme.
+     * Ha ezt a metódust üresen hagyott séma paraméterrel hívják meg, az a séma
+     * komponens eltávolításával egyenértékű.
      *
-     * @param string $scheme The scheme to use with the new instance.
-     * @return static A new instance with the specified scheme.
-     * @throws \InvalidArgumentException for invalid schemes.
-     * @throws \InvalidArgumentException for unsupported schemes.
+     * @param string $scheme Az új példányhoz rendelt séma komponens.
+     * @return static Az új példány a megadott séma komponenssel.
+     * @throws \InvalidArgumentException érvénytelen séma esetén.
+     * @throws \InvalidArgumentException nem támogatott séma esetén.
      */
     public function withScheme($scheme);
 
     /**
-     * Return an instance with the specified user information.
+     * Meghatározott felhasználói információ komponenst tartalmazó új
+     * objektumpéldánnyal tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott felhasználói információkat.
      *
-     * Password is optional, but the user information MUST include the
-     * user; an empty string for the user is equivalent to removing user
-     * information.
+     * A jelszó elhagyható, viszont a felhasználó információ komponensnek
+     * tartalmaznia KELL a felhasználónevet; ha az $user argumentumban üres
+     * karakterlánc ("") kerül megadásra, az egyenértékű a felhasználói információ
+     * törlésével.
      *
-     * @param string $user The user name to use for authority.
-     * @param null|string $password The password associated with $user.
-     * @return static A new instance with the specified user information.
+     * @param string $user A hitelesítéshez rendelt felhasználónév.
+     * @param null|string $password A $user felhasználóhoz társított jelszó.
+     * @return static Az új példány a megadott felhasználói információkkal.
      */
     public function withUserInfo($user, $password = null);
 
     /**
-     * Return an instance with the specified host.
+     * Meghatározott gazdagép komponenst tartalmazó új objektumpéldánnyal
+     * tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott gazdagépnevet.
      *
-     * An empty host value is equivalent to removing the host.
+     * Ha ezt a metódust üresen hagyott gazdagép paraméterrel hívják meg, az a
+     * gazdagép komponens eltávolításával egyenértékű.
      *
-     * @param string $host The hostname to use with the new instance.
-     * @return static A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
+     * @param string $host Az új példányhoz rendelt gazdagép komponens.
+     * @return static Az új példány a megadott gazdagép komponenssel.
+     * @throws \InvalidArgumentException érvénytelen gazdagépnév esetén.
      */
     public function withHost($host);
 
     /**
-     * Return an instance with the specified port.
+     * Meghatározott port komponenst tartalmazó új objektumpéldánnyal tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott portszámot.
      *
-     * Implementations MUST raise an exception for ports outside the
-     * established TCP and UDP port ranges.
+     * Az implementációknak kivételt KELL dobniuk, ha a paraméterként átadott port
+     * kívül esik a TCP és UDP számára fenntartott port tartományon.
      *
-     * A null value provided for the port is equivalent to removing the port
-     * information.
+     * Null érték megadása a $port argumentumban egyenértékű a port információ
+     * eltávolításával.
      *
-     * @param null|int $port The port to use with the new instance; a null value
-     *     removes the port information.
-     * @return static A new instance with the specified port.
-     * @throws \InvalidArgumentException for invalid ports.
+     * @param null|int $port Az új példányhoz rendelt port komponens; null
+     *                       érték a port információ eltávolításához.
+     * @return static Az új példány a megadott port komponenssel.
+     * @throws \InvalidArgumentException érvénytelen port argumentum esetén.
      */
     public function withPort($port);
 
     /**
-     * Return an instance with the specified path.
+     * Meghatározott útvonal komponenst tartalmazó új objektumpéldánnyal
+     * tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott elérési útvonalat.
      *
-     * The path can either be empty or absolute (starting with a slash) or
-     * rootless (not starting with a slash). Implementations MUST support all
-     * three syntaxes.
+     * Az útvonal komponens lehet akár üres vagy abszolút (perjellel kezdve) esetleg
+     * relatív (perjel nélkül az elején). Az implementációknak támogatniuk KELL
+     * mindhárom szintaxist.
      *
-     * If an HTTP path is intended to be host-relative rather than path-relative
-     * then it must begin with a slash ("/"). HTTP paths not starting with a slash
-     * are assumed to be relative to some base path known to the application or
-     * consumer.
+     * Ha egy HTTP útvonalat inkább a gazdagéphez viszonyítva adnak meg, akkor
+     * perjellel ("/") kell kezdődnie. A relatív HTTP útvonalak nem kezdődnek
+     * perjellel feltételezve, hogy az alkalmazás vagy a felhasználó számára
+     * ismert valamely kiindulási ponthoz (base path) viszonyítjuk őket.
      *
-     * Users can provide both encoded and decoded path characters.
-     * Implementations ensure the correct encoding as outlined in getPath().
+     * A felhasználók url-kódolt vagy dekódolt szöveget is megadhatnak itt.
+     * Az implementációk a getPath() metódus leírásában vázoltak szerint
+     * biztosíthatják a helyes kódolást.
      *
-     * @param string $path The path to use with the new instance.
-     * @return static A new instance with the specified path.
-     * @throws \InvalidArgumentException for invalid paths.
+     * @param string $path Az új példányhoz rendelt útvonal komponens.
+     * @return static Az új példány a megadott útvonallal.
+     * @throws \InvalidArgumentException érvénytelen útvonal argumentum esetén.
      */
     public function withPath($path);
 
     /**
-     * Return an instance with the specified query string.
+     * Meghatározott lekérdezési komponenst tartalmazó új objektumpéldánnyal
+     * tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott lekérdezési karakterláncot.
      *
-     * Users can provide both encoded and decoded query characters.
-     * Implementations ensure the correct encoding as outlined in getQuery().
+     * A felhasználók url-kódolt vagy dekódolt szöveget is megadhatnak itt.
+     * Az implementációk a getQuery() metódus leírásában vázoltak szerint
+     * biztosíthatják a helyes kódolást.
      *
-     * An empty query string value is equivalent to removing the query string.
+     * Ha ezt a metódust üresen hagyott lekérdezési komponens paraméterrel
+     * hívják meg, az a komponens eltávolításával egyenértékű.
      *
-     * @param string $query The query string to use with the new instance.
-     * @return static A new instance with the specified query string.
-     * @throws \InvalidArgumentException for invalid query strings.
+     * @param string $query Az új példányhoz rendelt lekérdezési komponens.
+     * @return static Az új példány a megadott lekérdezési komponenssel.
+     * @throws \InvalidArgumentException érvénytelen lekérdezési komponens esetén.
      */
     public function withQuery($query);
 
     /**
-     * Return an instance with the specified URI fragment.
+     * Meghatározott részerőforrás azonosító komponenst tartalmazó új
+     * objektumpéldánnyal tér vissza.
      *
      * Ennek a metódusnak meg KELL őriznie az eredeti példány állapotát és
      * olyan objektumpéldánnyal visszatérni, amely tartalmazza a paraméterként
      * átadott részerőforrás azonosítót.
      *
-     * Users can provide both encoded and decoded fragment characters.
-     * Implementations ensure the correct encoding as outlined in getFragment().
+     * A felhasználók url-kódolt vagy dekódolt szöveget is megadhatnak itt.
+     * Az implementációk a getFragment() metódus leírásában vázoltak szerint
+     * biztosíthatják a helyes kódolást.
      *
-     * An empty fragment value is equivalent to removing the fragment.
+     * Ha ezt a metódust üresen hagyott részerőforrás azonosító paraméterrel
+     * hívják meg, az a részerőforrás azonosító eltávolításával egyenértékű.
      *
-     * @param string $fragment The fragment to use with the new instance.
-     * @return static A new instance with the specified fragment.
+     * @param string $fragment Az új példányhoz rendelt részerőforrás azonosító.
+     * @return static Az új példány a megadott részerőforrás azonosítóval.
      */
     public function withFragment($fragment);
 
     /**
-     * Return the string representation as a URI reference.
+     * Egy karakterláncként ábrázolt URI hivatkozással tér vissza.
      *
-     * Depending on which components of the URI are present, the resulting
-     * string is either a full URI or relative reference according to RFC 3986,
-     * Section 4.1. The method concatenates the various components of the URI,
-     * using the appropriate delimiters:
+     * Attól függően, hogy melyik URI komponens van jelen, a kapott karakterlánc
+     * vagy a teljes URI-t magában foglalja, vagy relatív hivatkozást tartalmaz
+     * az RFC 3986 4.1. fejezetének megfelelően. A metódus a megfelelő elválasztó
+     * karakterek alkalmazásával egymáshoz fűzi az URI különféle komponenseit:
      *
-     * - If a scheme is present, it MUST be suffixed by ":".
-     * - If an authority is present, it MUST be prefixed by "//".
-     * - The path can be concatenated without delimiters. But there are two
-     *   cases where the path has to be adjusted to make the URI reference
-     *   valid as PHP does not allow to throw an exception in __toString():
-     *     - If the path is rootless and an authority is present, the path MUST
-     *       be prefixed by "/".
-     *     - If the path is starting with more than one "/" and no authority is
-     *       present, the starting slashes MUST be reduced to one.
-     * - If a query is present, it MUST be prefixed by "?".
-     * - If a fragment is present, it MUST be prefixed by "#".
+     * - Ha a séma jelen van, azt kettősponttal (":") KELL lezárni (pl. "http:").
+     * - Ha a hitelesítési komponens jelen van, az elé kettős perjelet ("//")
+     *   KELL tenni (pl. "//password:user").
+     * - Az útvonal elválasztó karakter nélkül is hozzáfűzhető az URI már meglévő
+     *   részéhez. De létezik két olyan eset is, ahol az útvonalat megfelelően be
+     *   kell állítani az érvényes URI hivatkozás létrehozásához, mivel a PHP a
+     *   __toString() metódusban nem engedélyezi kivétel dobását:
+     *     - Ha az útvonal relatív és a hitelesítési komponens is jelen van, akkor
+     *       az útvonalat perjellel ("/") KELL kezdeni.
+     *     - Ha az útvonal egynél több perjellel kezdődik és nincs jelen a
+     *       hitelesítési komponens, akkor a kezdő dupla perjelet egyre KELL
+     *       csökkenteni.
+     * - Ha a lekérdezési komponens jelen van, az kérdőjellel ("?") KELL kezdeni
+     *   (pl. "?key=value").
+     * - Ha a részerőforrás azonosító jelen van, azt kettős kereszttel ("#") KELL
+     *   kezdeni (pl. "#fragment").
      *
-     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @see https://github.com/dominicus75/fig-standards/blob/master/
+     *      related-rfcs/3986.md#41-uri-hivatkoz%C3%A1s
      * @return string
      */
     public function __toString();
@@ -1854,7 +1894,7 @@ interface UriInterface
 namespace Psr\Http\Message;
 
 /**
- * Value object representing a file uploaded through an HTTP request.
+ * Egy HTTP kérelmen keresztül feltöltött állományt reprezentáló érték objektum.
  *
  * A jelen interfészt megvalósító objektumok megváltoztathatatlanok (immutable)
  * ezért az összes olyan metódust, amely megváltoztathatja az objektum állapotát,
