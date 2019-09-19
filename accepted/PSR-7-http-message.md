@@ -20,7 +20,7 @@ lehet hozzáférni ezekhez az üzenetekhez, illetve manipulálni őket feladatai
 végrehajtása érdekében. Ezen felül azt sem árt tudni, hogy lehet egy kérelmet
 létrehozni egy HTTP API számára, vagy kezelni a bejövő kérelmeket.
 
-Minden HTTP kérelemnek van egy meghatározott
+Minden HTTP kérésnek van egy meghatározott
 [formája](https://hu.wikipedia.org/wiki/HTTP#K%C3%A9r%C3%A9s_(request)):
 
 ~~~http
@@ -54,7 +54,7 @@ A HTTP válasz első sora az állapotsor („status line”), amely
 nyitja, ezt követi a [HTTP-állapotkód](https://hu.wikipedia.org/wiki/HTTP-%C3%A1llapotk%C3%B3dok)
 („status code”), ami egy háromjegyű szám. Az állapotsort az indoklás
 („reason phrase”) zárja, ami egy az állapotkódot magyarázó üzenet valamilyen emberi
-nyelven, vagy esetleg angolul. A kérelemhez hasonlóan ezt a sort követheti tetszőleges
+nyelven, vagy esetleg angolul. A kéréshez hasonlóan ezt a sort követheti tetszőleges
 számú HTTP fejléc sor „FEJLÉCNÉV: ÉRTÉK” alakban, majd egy üres sor után az üzenet
 törzse. A kliens elsősorban az állapotkód, másodsorban a fejléc sorok tartalma
 alapján kezeli a választ.
@@ -907,7 +907,7 @@ interface RequestInterface extends MessageInterface
     /**
      * A megadott kérés-célponttal rendelkező objektum-példánnyal tér vissza.
      *
-     * Ha a kérelemnek szüksége van egy nem eredeti-formátumú kérés-célpontra
+     * Ha a kérésnek szüksége van egy nem eredeti-formátumú kérés-célpontra
      *  — pl. abszolút-formátum, hitelesítési-, vagy csillag-formátum meghatározásához —
      * ez a metódus használható egy olyan példány létrehozásához, amely rendelkezik
      * a kért kérés-célponttal.
@@ -953,7 +953,7 @@ interface RequestInterface extends MessageInterface
      * E metódusnak egy UriInterface példánnyal KELL visszatérnie.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriInterface A kérelemhez tartozó URI-t reprezentáló UriInterface
+     * @return UriInterface A kéréshez tartozó URI-t reprezentáló UriInterface
      *      példánnyal tér vissza.
      */
     public function getUri();
@@ -962,9 +962,9 @@ interface RequestInterface extends MessageInterface
      * Visszaad egy új objektumpéldányt a megadott URI-vel.
      *
      * Ennek a metódusnak alapértelmezetten frissítenie KELL a gazdagép fejlécet
-     * a visszaadott kérelemben, ha az URI tartalmaz gazdagépnév komponenst. Ha
+     * a visszaadott kérésben, ha az URI tartalmaz gazdagépnév komponenst. Ha
      * nem tartalmaz ilyet, akkor minden létező gazdagép fejlécet át KELL vinni
-     * a visszaadott kérelempéldányba.
+     * a visszaadott kéréspéldányba.
      *
      * A `$preserveHost` paraméter `true`-ra állításával engedélyezhető a gazdagép
      * fejléc eredeti állapotának megőrzése is. Ebben az esetben a jelen metódus
@@ -972,19 +972,19 @@ interface RequestInterface extends MessageInterface
      *
      * - Ha a gazdagép fejléc hiányzik vagy üres és az új URI tartalmaz gazdagépnév
      *   komponenst, ennek a metódusnak frissítenie KELL a gazdagép fejlécet a
-     *   visszaadott kérelemben.
+     *   visszaadott kérésben.
      * - Ha a gazdagép fejléc hiányzik vagy üres és az új URI nem tartalmaz gazdagépnév
      *   komponenst, ennek a metódusnak TILOS frissítenie a gazdagép fejlécet a
-     *   visszaadott kérelemben.
+     *   visszaadott kérésben.
      * - Ha a gazdagép fejléc létezik és nem üres, ennek a metódusnak TILOS frissítenie
-     *   a gazdagép fejlécet a visszaadott kérelemben.
+     *   a gazdagép fejlécet a visszaadott kérésben.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely tartalmazza
      * az új UriInterface példányt.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri Az új kérelemhez tartozó URI.
+     * @param UriInterface $uri Az új kéréshez tartozó URI.
      * @param bool $preserveHost Az eredeti gazdagép fejlécsor állapotának megőrzése.
      * @return static
      */
@@ -1071,7 +1071,7 @@ interface ServerRequestInterface extends RequestInterface
      * $_COOKIE tömbből származniuk, de kompatibilisnek KELL lenniük vele. Ezeket
      * az adatokat jellemzően a példányosításnál fecskendezik be.
      *
-     * Ennek a metódusnak TILOS frissítenie a vonatkozó kérelempéldány Cookie
+     * Ennek a metódusnak TILOS frissítenie a vonatkozó kéréspéldány Cookie
      * fejlécét, sem a kapcsolódó szerver paramétereket.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
@@ -1204,13 +1204,13 @@ interface ServerRequestInterface extends RequestInterface
      * Lekérdezi a kérés származtatott tulajdonságait.
      *
      * A kérés "attributes" név alatt tárolt tulajdonságai lehetővé teszik
-     * bármilyen a kérelemből származtatott paraméter beinjektálását: például,
+     * bármilyen a kérésből származtatott paraméter beinjektálását: például,
      * az elérési útvonal összehasonlítás művelet eredményét; a sütik dekódolásának
      * eredményét; a nem Űrlap-kódolt üzenettörzs deszerializálásának eredményét,
-     * stb. A tulajdonságok alkalmazás-, és kérelemfüggők lesznek, ezen felül
+     * stb. A tulajdonságok alkalmazás-, és kérésfüggők lesznek, ezen felül
      * LEHETNEK megváltoztathatók is.
      *
-     * @return mixed[] A kérelemből származtatott attribútumok.
+     * @return mixed[] A kérésből származtatott attribútumok.
      */
     public function getAttributes();
 
