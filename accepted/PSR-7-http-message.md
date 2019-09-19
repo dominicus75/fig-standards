@@ -30,10 +30,10 @@ Host: example.com\r\n
 foo=bar&baz=bat\r\n
 ~~~
 
-A kérelem első sora („request line”) mindig „METÓDUS ERŐFORRÁS VERZIÓ” alakú. Első
+A kérés első sora („request line”) mindig „METÓDUS ERŐFORRÁS VERZIÓ” alakú. Első
 helyen a [8 HTTP-metódus](https://hu.wikipedia.org/wiki/HTTP#Met%C3%B3dusok) egyike
 szerepel, amely a megadott erőforráson végzendő műveletet határozza meg. Ezt követi
-a kérelem célja, vagyis annak az erőforrásnak az azonosítója, amelyre a kérelem
+a kérés célja, vagyis annak az erőforrásnak az azonosítója, amelyre a kérés
 irányul. Ez lehet abszolút URI vagy egy relatív elérési út a kiszolgálón. A sort
 az alkalmazott HTTP protokoll verziószáma zárja. Ezt a sort követheti tetszőleges
 számú HTTP fejléc sor („header line”) „FEJLÉCNÉV: ÉRTÉK” alakban, majd egy üres sor
@@ -59,7 +59,7 @@ számú HTTP fejléc sor „FEJLÉCNÉV: ÉRTÉK” alakban, majd egy üres sor 
 törzse. A kliens elsősorban az állapotkód, másodsorban a fejléc sorok tartalma
 alapján kezeli a választ.
 
-A sorokat mind a kérelem, mind a válasz esetében a `SORVÉG` (CRLF, kocsi vissza + soremelés,
+A sorokat mind a kérés, mind a válasz esetében a `SORVÉG` (CRLF, kocsi vissza + soremelés,
 vagyis `\r\n`) karakterpárral kell elválasztani. A fejlécek végét jelző üres sor
 csak ezt a két karaktert tartalmazhatja, nem lehet benne szóköz és tabulátor sem.
 
@@ -80,7 +80,7 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 
 ### 1.1 Üzenetek
 
-Egy HTTP üzenet vagy egy kérelem a klienstől a szerver felé, vagy egy válasz a
+Egy HTTP üzenet vagy egy kérés a klienstől a szerver felé, vagy egy válasz a
 szervertől a kliensnek. Ennek megfelelően ez a specifikáció a `Psr\Http\Message\RequestInterface` és `Psr\Http\Message\ResponseInterface` interfészeket definiálja a HTTP-üzenetek számára.
 Mindkét interfész a `Psr\Http\Message\MessageInterface`-ből származik. Miközben a
 `Psr\Http\Message\MessageInterface`-t közvetlenül LEHET implementálni, a megvalósítók
@@ -163,7 +163,7 @@ fejlécet a beszerzett URI-ből, ha egyébként nem áll rendelkezésre. Ezért 
 `Host` komponenssel.
 
 A metódus második (`$preserveHost`) argumentumaként megadott `true` értékkel lehetséges
-megőrizni a `Host` fejléc eredeti állapotát is. Ebben az esetben a visszaadott kérelem
+megőrizni a `Host` fejléc eredeti állapotát is. Ebben az esetben a visszaadott kérés
 nem fogja felülírni az üzenet `Host` fejlécet, kivéve, ha az üzenet nem tartalmaz
 ilyen fejlécet.
 
@@ -171,7 +171,7 @@ Az alábbi táblázat azt mutatja be, hogy a `getHeaderLine('Host')` hogy fog vi
 a `withUri()` metódus által visszaadott értékkel, ha a `$preserveHost` paraméter
 értéke `true`.
 
-Kérelem Host fejléc<sup>[1](#rhh)</sup> | Kérelem host összetevő<sup>[2](#rhc)</sup> | URI host összetevő<sup>[3](#uhc)</sup> | Eredmény
+Kérés Host fejléc<sup>[1](#rhh)</sup> | Kérés host összetevő<sup>[2](#rhc)</sup> | URI host összetevő<sup>[3](#uhc)</sup> | Eredmény
 ----------------------------------------|--------------------------------------------|----------------------------------------|--------
 ''                                      | ''                                         | ''                                     | ''
 ''                                      | foo.com                                    | ''                                     | foo.com
@@ -185,10 +185,10 @@ foo.com                                 | bar.com                               
 
 ### 1.3 Adatfolyamok (stream)
 
-A HTTP üzenetek kezdősorból (kérelem vagy állapotsor), fejlécekből és az üzenettörzsből
+A HTTP üzenetek kezdősorból (kérés vagy állapotsor), fejlécekből és az üzenettörzsből
 állnak. Ez utóbbi lehet egészen rövid, de szerfelett nagy is. Mivel az üzenettörzs
 teljes egészében a memóriában lakik, ezért karakterláncként való ábrázolása könnyen
-több memóriát vehet igénybe, mint szeretnénk. Ezért a kérelem vagy a válasz törzsének
+több memóriát vehet igénybe, mint szeretnénk. Ezért a kérés vagy a válasz törzsének
 memóriában tárolására tett kísérlet kizárná az olyan implementációkat, amelyek
 képesek nagyobb üzenettörzsekkel dolgozni. A `StreamInterface` elrejti a megvalósítás
 részleteit, amikor adatot olvasunk az adatfolyamból vagy írunk bele. Olyan helyzetekben,
@@ -227,8 +227,8 @@ létrehozni és azt az üzenethez csatolni, az állapot érvényesítése érdek
 
 Az [RFC 7230](../related-rfcs/7230.md#53--request-target) előírja, hogy a kérelmek
 első sorának ("request line") a metódus után tartalmaznia kell egy olyan szegmenst
-ami a kérelem célját, vagyis annak az erőforrásnak az azonosítóját tartalmazza,
-amelyre a kérelem irányul. A kérelem célját az alább felsorolt formátumokban lehet
+ami a kérés célját, vagyis annak az erőforrásnak az azonosítóját tartalmazza,
+amelyre a kérés irányul. A kérés célját az alább felsorolt formátumokban lehet
 ábrázolni:
 
 - **eredeti-formátum**, amely tartalmaz elérési útvonalat (path) és ha van, akkor
@@ -248,8 +248,8 @@ amelyre a kérelem irányul. A kérelem célját az alább felsorolt formátumok
 - **csillag-formátum**, amely kizárólag egy csillag karakterből (`*`) áll és amit
   az OPTIONS metódussal használnak, a webszerver általános képességeinek meghatározására.
 
-A kérelem célján kívül, attól elkülönülve létezik 'tényleges URL' is. Ezt nem
-szokták átküldeni a HTTP üzeneten belül, mivel a kérelem által használt
+A kérés célján kívül, attól elkülönülve létezik 'tényleges URL' is. Ezt nem
+szokták átküldeni a HTTP üzeneten belül, mivel a kérés által használt
 protokoll (http/https), port és gazdagépnév meghatározására való.
 
 A tényleges URL-t az `UriInterface` reprezentálja, modellezve a HTTP és HTTPS URI-t
@@ -259,13 +259,13 @@ elkerülendő az URI ismételt beolvasását. Ezen felül előírja a `__toStrin
 megvalósítását is a modellezett URI megfelelő szöveges formátumú megjelenítése
 érdekében.
 
-Amikor a `getRequestTarget()` metódus segítségével lekérjük a kérelem célját,
+Amikor a `getRequestTarget()` metódus segítségével lekérjük a kérés célját,
 a metódus alapértelmezés szerint egy URI objektumot fog használni, hogy kinyerje
 belőle a szükséges összetevőket az _eredeti-formátum_ban történő szöveges
-megjelenítésére. Az _eredeti-formátum_ messze a leggyakoribb a kérelem célpontok között.
+megjelenítésére. Az _eredeti-formátum_ messze a leggyakoribb a kérés célpontok között.
 
 Ha a végfelhasználó használni kívánja a másik három formátum valamelyikét, vagy
-ha kifejezetten felül akarja írni a kérelem célját, ezt a `withRequestTarget()`
+ha kifejezetten felül akarja írni a kérés célját, ezt a `withRequestTarget()`
 metódus segítségével teheti meg. E metódus meghívása nem érinti a `getUri()` metódus
 által visszaadott URI-t.
 
@@ -294,26 +294,26 @@ visszaadott értéket használni, ami alapértelmezés szerint előbbi kettő ö
 áll elő.
 
 Azon klienskódoknak amelyek úgy döntenek, hogy nem alkalmaznak legalább egyet a
-fent felsorolt 4 kérelem-célpont formátumból, továbbra is alkalmazniuk kell a
+fent felsorolt 4 kérés-célpont formátumból, továbbra is alkalmazniuk kell a
 `getRequestTarget()` metódust. Ezen a klienseknek vissza KELL utasítani a nem
-támogatott kérelem-célpontokat és TILOS visszatérniük a `getUri()` metódusból nyert
+támogatott kérés-célpontokat és TILOS visszatérniük a `getUri()` metódusból nyert
 értékekkel.
 
-A `RequestInterface` biztosítja a kérelem-célpont kinyeréséhez vagy adott célponttal
+A `RequestInterface` biztosítja a kérés-célpont kinyeréséhez vagy adott célponttal
 való új példány létrehozásához szükséges metódusokat. Alapértelmezés szerint, ha
-nincs kifejezett kérelem-célpont megadva az objektumpéldányban, akkor a `getRequestTarget()`
+nincs kifejezett kérés-célpont megadva az objektumpéldányban, akkor a `getRequestTarget()`
 metódus az összeállított URI eredeti-formátum szerinti alakjával fog visszatérni
 (vagy egy perjellel "/", ha nincs URI megadva). A `withRequestTarget($requestTarget)`
 metódus létrehoz egy új példányt a megadott célponttal és így lehetővé teszi a
-fejlesztőknek olyan kérelem üzenetek létrehozását is, amelyek a másik három
-kérelem-célpont formátumot (abszolút-, hitelesítési-, és csillag-formátum) jelenítik
+fejlesztőknek olyan kérés üzenetek létrehozását is, amelyek a másik három
+kérés-célpont formátumot (abszolút-, hitelesítési-, és csillag-formátum) jelenítik
 meg. Megfelelő használat esetén az összeállított URI példány továbbra is hasznos
 lehet, különösen klienskódokban, amelyekben felhasználható a szerverrel való kapcsolat
 felépítésére.
 
 ### 1.5 Kiszolgáló oldali kérelmek
 
-A `RequestInterface` biztosítja egy HTTP kérelem általános ábrázolását. Azonban
+A `RequestInterface` biztosítja egy HTTP kérés általános ábrázolását. Azonban
 a kiszolgáló oldali üzeneteknek a környezetük jellegéből adódóan további eljárásokra
 is szükségük van. Figyelembe kell venniük a [Common Gateway Interface (CGI)](http://webprogramozas.inf.elte.hu/tananyag/wf2/lecke12_lap1.html#hiv9)
 protokollt is, közelebbről a PHP CGI absztrakcióit és kiterjesztéseit melyek a
@@ -340,10 +340,10 @@ a különféle szuperglobálisokhoz szükséges absztrakciókat. Ezek segítség
 csökkenthető a hívó kód szuperglobálisokhoz való közvetlen kapcsolódása és
 javul a tesztelhetősége.
 
-A kiszolgáló oldali kérelem biztosít egy további "attribute" tulajdonságot is, amely
+A kiszolgáló oldali kérés biztosít egy további "attribute" tulajdonságot is, amely
 lehetővé teszi a hívó kódnak, hogy elemezze, lebontsa és párosítsa a kérelmet az
 alkalmazás-specifikus szabályokkal (pl. útvonal, séma, gazdagép, stb. illeszkedés).
-Mint ilyen, a kiszolgáló oldali kérelem üzenetküldőt is biztosíthat a hívó kódok
+Mint ilyen, a kiszolgáló oldali kérés üzenetküldőt is biztosíthat a hívó kódok
 között.
 
 ### 1.6 Feltöltött állományok
@@ -600,7 +600,7 @@ $request->getUploadedFiles()['my-form']['details']['avatars'][1];
 ~~~
 
 Mivel a feltöltött állományok adatai származtatottak (a `$_FILES` tömbből vagy a
-kérelem törzséből származnak), ezért az interfész `withUploadedFiles()` metódus
+kérés törzséből származnak), ezért az interfész `withUploadedFiles()` metódus
 implementálását is megköveteli, lehetővé a normalizáció kiszervezését más
 folyamatok részére.
 
@@ -887,9 +887,9 @@ namespace Psr\Http\Message;
 interface RequestInterface extends MessageInterface
 {
     /**
-     * Lekérdezi a kérelem célpontját.
+     * Lekérdezi a kérés célpontját.
      *
-     * Lekérdezi a kérelem célpontját, akárhogy is jelenik meg (a klienseknek),
+     * Lekérdezi a kérés célpontját, akárhogy is jelenik meg (a klienseknek),
      * ahogy (a kiszolgálóknak) megjelent, vagy ahogy az adott objektumpéldányban
      * meg van adva (lásd: withRequestTarget()).
      *
@@ -897,7 +897,7 @@ interface RequestInterface extends MessageInterface
      * az érték nem áll rendelkezésre a konkrét implementáció számára (lásd:
      * withRequestTarget() metódus, alább).
      *
-     * Ha nincs elérhető URI, sem kérelem-célpont megadva, akkor ennek a metódusnak
+     * Ha nincs elérhető URI, sem kérés-célpont megadva, akkor ennek a metódusnak
      * egy perjellel ("/") kell visszatérnie.
      *
      * @return string
@@ -905,28 +905,28 @@ interface RequestInterface extends MessageInterface
     public function getRequestTarget();
 
     /**
-     * A megadott kérelem-célponttal rendelkező objektum-példánnyal tér vissza.
+     * A megadott kérés-célponttal rendelkező objektum-példánnyal tér vissza.
      *
-     * Ha a kérelemnek szüksége van egy nem eredeti-formátumú kérelem-célpontra
+     * Ha a kérelemnek szüksége van egy nem eredeti-formátumú kérés-célpontra
      *  — pl. abszolút-formátum, hitelesítési-, vagy csillag-formátum meghatározásához —
      * ez a metódus használható egy olyan példány létrehozásához, amely rendelkezik
-     * a kért kérelem-célponttal.
+     * a kért kérés-célponttal.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
-     * tartalmazza az új kérelem-célpontot.
+     * tartalmazza az új kérés-célpontot.
      *
-     * @see http://tools.ietf.org/html/rfc7230#section-5.3 (a kérelem üzenetekben
-     *     engedélyezett kérelem-célpont formátumokról)
+     * @see http://tools.ietf.org/html/rfc7230#section-5.3 (a kérés üzenetekben
+     *     engedélyezett kérés-célpont formátumokról)
      * @param mixed $requestTarget
      * @return static
      */
     public function withRequestTarget($requestTarget);
 
     /**
-     * Lekérdezi a kérelem HTTP metódusát.
+     * Lekérdezi a kérés HTTP metódusát.
      *
-     * @return string Szöveges formában adja vissza a kérelem HTTP metódusát.
+     * @return string Szöveges formában adja vissza a kérés HTTP metódusát.
      */
     public function getMethod();
 
@@ -999,7 +999,7 @@ interface RequestInterface extends MessageInterface
 namespace Psr\Http\Message;
 
 /**
- * Beérkező, kiszolgáló-oldali HTTP kérelem ábrázolása.
+ * Beérkező, kiszolgáló-oldali HTTP kérés ábrázolása.
  *
  * A HTTP specifikációnak megfelelően az interfész az alábbi komponenseket
  * tartalmazza:
@@ -1021,20 +1021,20 @@ namespace Psr\Http\Message;
  * - Deszerializált üzenettörzs paraméterek (általában a $_POST tömbből)
  *
  * A $_SERVER értékeit megváltoztathatatlanként KELL kezelni, mivel ezek jelenítik
- * meg az alkalmazás állapotát a kérelem beérkezésének időpontjában; ezért egy
+ * meg az alkalmazás állapotát a kérés beérkezésének időpontjában; ezért egy
  * metódusnak sem szabad lehetővé tenni, hogy módosítsa ezeket az értékeket.
  * A többi érték olyan metódusokat igényel, amelyek helyre tudják állítani őket
- * a $_SERVER tömbből vagy a kérelem üzenettörzséből és biztosítják az alkalmazás
+ * a $_SERVER tömbből vagy a kérés üzenettörzséből és biztosítják az alkalmazás
  * futása során szükségessé váló eljárásokat (pl. az üzenettörzs paramétereit a
  * tartalomtípus alapján is lehetséges deszerializálni).
  *
- * Ezen felül a jelen interfész felismeri a kérelem önellenőrzésének hasznosságát
+ * Ezen felül a jelen interfész felismeri a kérés önellenőrzésének hasznosságát
  * a további paraméterek leszármaztatásában és összeillesztésében (pl. útvonal
  * összehasonlítás URI segítségével, süti értékek visszafejtése, nem űrlap kódolt
  * üzenettörzs deszerializálása, a felhasználók azonosítási fejléceinek ellenőrzése.
  * Mindezek a paraméterek "attributes" néven vannak elraktározva az objektumban.
  *
- * A kérelem üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
+ * A kérés üzenetek megváltoztathatatlanok (immutable) ezért az összes olyan
  * metódust, amely megváltoztathatja az objektum állapotát, úgy KELL megvalósítani,
  * hogy megőrizze az aktuális üzenet belső állapotát és egy másik, a megváltozott
  * állapotot tartalmazó objektumpéldánnyal térjen vissza.
@@ -1044,7 +1044,7 @@ interface ServerRequestInterface extends RequestInterface
     /**
      * A kiszolgáló paramétereinek lekérdezése.
      *
-     * A bejövő kérelem környezeti adatainak lekérdezése, jellemzően a PHP
+     * A bejövő kérés környezeti adatainak lekérdezése, jellemzően a PHP
      * $_SERVER szuperglobális tömbjéből kinyerve. Az adatokat máshonnan is
      * be LEHET szerezni, nem szükséges feltétlenül a $_SERVER tömbből származniuk.
      *
@@ -1102,7 +1102,7 @@ interface ServerRequestInterface extends RequestInterface
      * Visszaad egy új objektumpéldányt a megadott lekérdezési karakterlánc
      * (query string) változókkal.
      *
-     * Ezen értékeket AJÁNLOTT változatlanul hagyni a bejövő kérelem folyamán.
+     * Ezen értékeket AJÁNLOTT változatlanul hagyni a bejövő kérés folyamán.
      * Ezeket be LEHET injektálni példányosítás közben, például a PHP $_GET
      * szuperglobális tömbjéből, vagy származtatni LEHET más értékekből, úgymint
      * az URI. Olyan esetekben, amikor a változók az URI-ből lettek kinyerve, az
@@ -1111,7 +1111,7 @@ interface ServerRequestInterface extends RequestInterface
      * kezelése érdekében.
      *
      * A lekérdezési karakterlánc változóinak beállításakor TILOS megváltoztatni
-     * a kérelem által tárolt URI-t, sem a kiszolgáló paramétereinek értékét.
+     * a kérés által tárolt URI-t, sem a kiszolgáló paramétereinek értékét.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
      * immutabilitását és olyan objektumpéldánnyal térjen vissza, amely
@@ -1156,11 +1156,11 @@ interface ServerRequestInterface extends RequestInterface
     /**
      * Lekérdezi az üzenettörzsben tárolt paramétereket.
      *
-     * Ha a kérelem Content-Type fejlécében a típus application/x-www-form-urlencoded
-     * vagy multipart/form-data és a HTTP kérelem metódusa POST, akkor ennek a
+     * Ha a kérés Content-Type fejlécében a típus application/x-www-form-urlencoded
+     * vagy multipart/form-data és a HTTP kérés metódusa POST, akkor ennek a
      * metódusnak a $_POST szuperglobális tömb tartalmát KELL visszaadni.
      *
-     * Egyébként ez a metódus a kérelem üzenettörzsének deszerializált tartalmával
+     * Egyébként ez a metódus a kérés üzenettörzsének deszerializált tartalmával
      * térhet vissza; mivel a lekérdezés strukturált tartalmat eredményezhet, a
      * visszatérési érték lehetséges típusának tömbnek vagy objektumnak KELL lennie.
      * A null visszatérési érték a tartalom hiányát jelzi az üzenettörzsben.
@@ -1175,8 +1175,8 @@ interface ServerRequestInterface extends RequestInterface
      *
      * Ezeket a példányosításkor LEHET beinjektálni.
      *
-     * Ha a kérelem Content-Type fejlécében a típus application/x-www-form-urlencoded
-     * vagy multipart/form-data és a HTTP kérelem metódusa POST, akkor ennek a
+     * Ha a kérés Content-Type fejlécében a típus application/x-www-form-urlencoded
+     * vagy multipart/form-data és a HTTP kérés metódusa POST, akkor ennek a
      * metódusnak a $_POST szuperglobális tömb tartalmát KELL visszaadni.
      *
      * Az adatot ki LEHET nyerni máshonnan is, mint a $_POST tömbből, viszont ez
@@ -1185,8 +1185,8 @@ interface ServerRequestInterface extends RequestInterface
      * kizárólag tömböket és objektumokat fogad el, esetleg null értéket, ha
      * nincs mit elemezni.
      *
-     * Mint például ha a tartalom egyeztetés meghatározza, hogy a kérelem adat
-     * egy JSON legyen, ez a metódus felhasználható egy új kérelem példány
+     * Mint például ha a tartalom egyeztetés meghatározza, hogy a kérés adat
+     * egy JSON legyen, ez a metódus felhasználható egy új kérés példány
      * létrehozására a deszerializált paraméterekkel.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti
@@ -1201,9 +1201,9 @@ interface ServerRequestInterface extends RequestInterface
     public function withParsedBody($data);
 
     /**
-     * Lekérdezi a kérelem származtatott tulajdonságait.
+     * Lekérdezi a kérés származtatott tulajdonságait.
      *
-     * A kérelem "attributes" név alatt tárolt tulajdonságai lehetővé teszik
+     * A kérés "attributes" név alatt tárolt tulajdonságai lehetővé teszik
      * bármilyen a kérelemből származtatott paraméter beinjektálását: például,
      * az elérési útvonal összehasonlítás művelet eredményét; a sütik dekódolásának
      * eredményét; a nem Űrlap-kódolt üzenettörzs deszerializálásának eredményét,
@@ -1215,9 +1215,9 @@ interface ServerRequestInterface extends RequestInterface
     public function getAttributes();
 
     /**
-     * Lekérdezi a kérelem egy megadott származtatott tulajdonságát.
+     * Lekérdezi a kérés egy megadott származtatott tulajdonságát.
      *
-     * Visszaadja a kérelem egy adott származtatott tulajdonságát a getAttributes()
+     * Visszaadja a kérés egy adott származtatott tulajdonságát a getAttributes()
      * metódusnál leírt módon. Ha a tulajdonság előzőleg nem volt beállítva, akkor
      * egy alapértelmezett értékkel tér vissza, ha be van állítva ilyen.
      *
@@ -1233,10 +1233,10 @@ interface ServerRequestInterface extends RequestInterface
     public function getAttribute($name, $default = null);
 
     /**
-     * Egy olyan új objektumpéldánnyal tér vissza, amely tartalmazza a kérelem
+     * Egy olyan új objektumpéldánnyal tér vissza, amely tartalmazza a kérés
      * paraméterként megadott származtatott tulajdonságát.
      *
-     * Ez a metódus lehetővé teszi a kérelem egyes származtatott tulajdonságának
+     * Ez a metódus lehetővé teszi a kérés egyes származtatott tulajdonságának
      * beállítását a getAttributes() metódusnál leírt módon.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
@@ -1252,9 +1252,9 @@ interface ServerRequestInterface extends RequestInterface
 
     /**
      * Egy olyan új objektumpéldánnyal tér vissza, amely már nem tartalmazza a
-     * kérelem paraméterként megadott származtatott tulajdonságát.
+     * kérés paraméterként megadott származtatott tulajdonságát.
      *
-     * Ez a metódus lehetővé teszi a kérelem adott származtatott tulajdonságának
+     * Ez a metódus lehetővé teszi a kérés adott származtatott tulajdonságának
      * eltávolítását a getAttributes() metódusnál leírt módon.
      *
      * Ezt a metódust oly módon KELL implementálni, hogy megőrizze az eredeti üzenet
@@ -1328,7 +1328,7 @@ interface ResponseInterface extends MessageInterface
     public function withStatus($code, $reasonPhrase = '');
 
     /**
-     * A kérelem állapotkódjához társított indoklás lekérdezése.
+     * A kérés állapotkódjához társított indoklás lekérdezése.
      *
      * Mivel az indoklás nem kötelező eleme a válasz állapotsorának, ezért az
      * értéke LEHET akár üres is (''). Az implementációknak LEHET azt is választani,
@@ -1531,7 +1531,7 @@ namespace Psr\Http\Message;
  * úgy KELL megvalósítani, hogy megőrizze az aktuális üzenet belső állapotát és
  * egy másik, a megváltozott állapotot tartalmazó objektumpéldánnyal térjen vissza.
  *
- * Jellemzően a gazdagép (Host) fejléc lesz szintén jelen a kérelem üzenetben. A
+ * Jellemzően a gazdagép (Host) fejléc lesz szintén jelen a kérés üzenetben. A
  * kiszolgáló oldali kérelmekben a séma komponens általában kinyerhető a szerver
  * paramétereiből.
  *
