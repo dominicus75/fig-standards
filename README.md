@@ -29,6 +29,7 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 6   | [Gyorsítótár interfész][psr6]            | Larry Garfield                 | elfogadott   | magyar |
 | 7   | [HTTP-üzenet interfész][psr7]       | Matthew Weier O'Phinney        | elfogadott   | magyar |
 | 11  | [Tároló interfész][psr11]         | Matthieu Napoli, David Négrier | elfogadott   | fordítás folyamatban |
+| 12  | [Kiterjesztett kódstílus útmutató][psr12]         | Korvin Szanto | elfogadott   | angol |
 | 13  | [Hypermédia hivatkozások][psr13]            | Larry Garfield                 | elfogadott   | angol |
 | 14  | [Esemény-kezelő][psr14]            | Larry Garfield                 | elfogadott   | angol |
 | 15  | [HTTP-kezelők][psr15]               | Woody Gilk                     | elfogadott   | angol |
@@ -45,6 +46,7 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 [psr6]: accepted/PSR-6-cache.md
 [psr7]: accepted/PSR-7-http-message.md
 [psr11]: accepted/PSR-11-container.md
+[psr12]: accepted/PSR-12-extended-coding-style-guide.md
 [psr13]: accepted/PSR-13-links.md
 [psr14]: accepted/PSR-14-event-dispatcher.md
 [psr15]: accepted/PSR-15-request-handlers.md
