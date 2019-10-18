@@ -179,7 +179,7 @@ Kérés Host fejléc<sup>[1](#rhh)</sup> | Kérés host összetevő<sup>[2](#rhc
 foo.com                                 | ''                                         | bar.com                                | foo.com
 foo.com                                 | bar.com                                    | baz.com                                | foo.com
 
-- <sup id="rhh">1</sup> A `Host` fejléc értéke a végrehajtás előtt.
+- <span id="rhh">1</span> A `Host` fejléc értéke a végrehajtás előtt.
 - <sup id="rhc">2</sup> Az URI végrehajtás előtt összeállított host összetevője.
 - <sup id="uhc">3</sup> Az URI `withUri()` metódussal beinjektált host összetevője.
 
