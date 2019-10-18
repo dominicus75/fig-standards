@@ -179,9 +179,9 @@ Kérés Host fejléc<sup>[1](#rhh)</sup> | Kérés host összetevő<sup>[2](#rhc
 foo.com                                 | ''                                         | bar.com                                | foo.com
 foo.com                                 | bar.com                                    | baz.com                                | foo.com
 
-- <span id="rhh">1</span> A `Host` fejléc értéke a végrehajtás előtt.
-- <span id="rhc">2</span> Az URI végrehajtás előtt összeállított host összetevője.
-- <span id="uhc">3</span> Az URI `withUri()` metódussal beinjektált host összetevője.
+- <span id="rhh">\[1]</span> A `Host` fejléc értéke a végrehajtás előtt.
+- <span id="rhc">\[2]</span> Az URI végrehajtás előtt összeállított host összetevője.
+- <span id="uhc">\[3]</span> Az URI `withUri()` metódussal beinjektált host összetevője.
 
 ### 1.3 Adatfolyamok (stream)
 
