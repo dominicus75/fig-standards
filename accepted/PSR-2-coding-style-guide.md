@@ -487,28 +487,29 @@ try {
 általánosan elfogadott magyar megfelelője. A jelen fordításban a **záradékos
 névtelen függvény** elnevezés szerepel.*
 
-*A záradékos névtelen függvény (closure) olyan névtelen (más néven lambda) függvény, ami
-a paraméterlistában átadott argumentumok mellett hozzáférhet a hatókörén kívül
+*A záradékos névtelen függvény (closure) olyan névtelen (más néven lambda) függvény,
+ami a paraméterlistában átadott argumentumok mellett hozzáférhet a hatókörén kívül
 létrehozott azon változókhoz is, amelyek a függvénydeklaráció záradékában
 (a `use` kulcsszó utáni kerek zárójelben, innen a neve) vannak felsorolva.*
 
-Záradékos névtelen függvény létrehozásánál a `function` kulcsszó után szóközt KELL tenni,
-ahogy a záradékot jelölő `use` kulcsszó előtt és után is.
+Záradékos névtelen függvény létrehozásánál a `function` kulcsszó után szóközt KELL
+tenni, ahogy a záradékot jelölő `use` kulcsszó előtt és után is.
 
 A függvénytörzset megnyitó kapcsos zárójelnek (az 5. fejezetben taglalt vezérlési
 szerkezetekhez hasonlóan) egy sorban KELL lennie a függvényfejléccel, a törzset
 lezáró kapcsos zárójelnek viszont a törzs utáni sorban KELL lennie.
 
-A záradékos névtelen függvény paraméter-, és váltózólistáját tartalmazó kerek zárójelek
-nyitó eleme után és záró eleme előtt NEM SZABAD szóközt hagyni.
+A záradékos névtelen függvény paraméter-, és váltózólistáját tartalmazó kerek
+zárójelek nyitó eleme után és záró eleme előtt NEM SZABAD szóközt hagyni.
 
-A záradékos névtelen függvény paraméter-, és váltózólistájában az egyes változónevek utáni
-vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
+A záradékos névtelen függvény paraméter-, és váltózólistájában az egyes változónevek
+utáni vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
 Az alapértelmezett értéket tartalmazó paramétereknek a lista végére KELL kerülni.
 
-Egy záradékos névtelen függvény deklarációjának az alábbi kódhoz hasonlóan kell kinéznie.
-Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére:
+Egy záradékos névtelen függvény deklarációjának az alábbi kódhoz hasonlóan kell
+kinéznie. Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő
+elhelyezésére:
 
 ~~~php
 <?php
@@ -522,18 +523,18 @@ $closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2) {
 ~~~
 
 
-A záradékos névtelen függvény paraméter-, és váltózólistáját több sorba is szét LEHET tördelni,
-ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
-a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
-paramétert/változót KELL feltüntetni.
+A záradékos névtelen függvény paraméter-, és váltózólistáját több sorba is szét
+LEHET tördelni, ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél
+a megoldásnál a lista első elemének a következő sorba KELL kerülnie és soronként
+csak egyetlen paramétert/változót KELL feltüntetni.
 
 Ha a paraméter-, és váltózólistát külön sorokba tördeljük, akkor a listát lezáró
 kerek zárójelet és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet azonos
- sorba KELL írni, szóközzel elválasztva.
+sorba KELL írni, szóközzel elválasztva.
 
-A következő példakódok olyan záradékos névtelen függvény-deklarációkat mutatnak be, amelyek
-a paraméterlista mellett rendelkezhetnek változólistával (záradék) is, s ezek a
-listák több sorba vannak tördelve, a fenti szabályok szerint.
+A következő példakódok olyan záradékos névtelen függvény-deklarációkat mutatnak
+be, amelyek a paraméterlista mellett rendelkezhetnek változólistával (záradék)
+is, s ezek a listák több sorba vannak tördelve, a fenti szabályok szerint.
 
 ~~~php
 <?php

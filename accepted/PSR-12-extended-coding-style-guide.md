@@ -1,40 +1,41 @@
-# Extended Coding Style Guide
+[Kezdőlap](../README.md)
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][].
+# Bővített kódstílus útmutató
 
-[RFC 2119]: http://tools.ietf.org/html/rfc2119
+A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az [RFC 2119]
+szerint értelmezendők.
 
-## Overview
+## Áttekintés
 
-This specification extends, expands and replaces [PSR-2][], the coding style guide and
-requires adherence to [PSR-1][], the basic coding standard.
+Ez a specifikáció kibővíti és leváltja a [PSR-2] kódstílus útmutatót, de ugyanúgy
+igényli a [PSR-1] alapvető kódolási szabvány betartását. A [PSR-2] útmutatóhoz
+hasonlóan az a célja, hogy csökkentse az értelmezési nehézségeket a különböző
+szerzőktől származó kódok olvasása közben. Ennek érdekében a PHP kód formázására
+vonatkozó közös szabály-, és elvárásrendszert állít fel.
 
-Like [PSR-2][], the intent of this specification is to reduce cognitive friction when
-scanning code from different authors. It does so by enumerating a shared set of rules
-and expectations about how to format PHP code. This PSR seeks to provide a set way that
-coding style tools can implement, projects can declare adherence to and developers
-can easily relate to between different projects. When various authors collaborate
-across multiple projects, it helps to have one set of guidelines to be used among
-all those projects. Thus, the benefit of this guide is not in the rules themselves
-but the sharing of those rules.
+E PSR egy meghatározott módszert próbál biztosítani, amit a kódstílus-eszközök
+implementálhatnak, a projektek pedig deklarálhatják annak betartását, hogy a
+fejlesztők könnyen össze tudják kapcsolni a különböző projekteket. Amikor különböző
+szerzők többféle projektben működnek együtt, ez elősegítheti, hogy legyen egy
+egységesen minden projektben használható útmutató. Ezért ennek az útmutatónak a
+haszna nem magukban a szabályokban, hanem azok megosztásában rejlik.
 
-[PSR-2][] was accepted in 2012 and since then a number of changes have been made to PHP
-which has implications for coding style guidelines. Whilst [PSR-2] is very comprehensive
-of PHP functionality that existed at the time of writing, new functionality is very
-open to interpretation. This PSR, therefore, seeks to clarify the content of PSR-2 in
-a more modern context with new functionality available, and make the errata to PSR-2
-binding.
+A [PSR-2] ajánlást 2012-ben fogadták el és azóta számos változtatást eszközöltek
+a PHP-ban, amelyek kihatással lehetnek a kódstílus útmutatókra. Míg a [PSR-2]
+nagyon alaposan leírja az írás idején létező PHP funkcionalitást, az új funkciók
+értelmezését nyitva hagyta. Ez a PSR következésképpen a PSR-2 tartalmának tisztázását
+és hibáinak javítását kísérli meg egy korszerűbb kontextusban, ahol már új
+funkcionalitások is elérhetővé váltak.
 
-### Previous language versions
+### Korábbi programnyelv változatok
 
-Throughout this document, any instructions MAY be ignored if they do not exist in versions
-of PHP supported by your project.
+Jelen dokumentum egészében bármely utasításokat figyelmen kívül LEHET hagyni, ha
+azok nem léteztek a projekt által támogatott PHP változatban.
 
-### Example
+### Példakód
 
-This example encompasses some of the rules below as a quick overview:
+Az alábbi példa a gyors áttekinthetőség érdekében néhány fontosabb szabályt
+foglal össze:
 
 ~~~php
 <?php
@@ -65,57 +66,59 @@ class Foo extends Bar implements FooInterface
 
     final public static function bar()
     {
-        // method body
+        // a metódus törzse
     }
 }
 ~~~
 
-## 2. General
+## 2. Általános szabályok
 
-### 2.1 Basic Coding Standard
+### 2.1. Alapvető kódolási szabvány
 
-Code MUST follow all rules outlined in [PSR-1].
+A kódnak követnie KELL a [PSR-1] alapvető kódolási szabvány összes rendelkezését.
 
-The term 'StudlyCaps' in PSR-1 MUST be interpreted as PascalCase where the first letter of
-each word is capitalized including the very first letter.
+A PSR-1 ajánlásban szereplő `StudlyCaps` kifejezés alatt mindig[PascalCase-t](https://hu.wikipedia.org/wiki/CamelCase) KELL érteni, ahol minden
+egyes szó (a camelCase írásmódtól eltérően ideértve a legelső szót is) nagy
+kezdőbetűvel írandó.
 
-### 2.2 Files
+### 2.2 Állományok
 
-All PHP files MUST use the Unix LF (linefeed) line ending only.
+Minden PHP fájlban Unix LF (soremelés, `\n`) karaktereket KELL használni a sorok
+lezárására.
 
-All PHP files MUST end with a non-blank line, terminated with a single LF.
+Minden PHP fájlnak egy üres sorral KELL véget érnie, amelyet egy LF (soremelés,
+`\n`) karakter zár le.
 
-The closing `?>` tag MUST be omitted from files containing only PHP.
+A záró `?>` php-címkét el KELL hagyni a kizárólag PHP-kódot tartalmazó fájlokból.
 
-### 2.3 Lines
+### 2.3 Sorok
 
-There MUST NOT be a hard limit on line length.
+A sorhossz tekintetében NEM SZABAD merev korlátokat felállítani.
 
-The soft limit on line length MUST be 120 characters.
+A rugalmas korlátot 120 karakternél KELL meghúzni.
 
-Lines SHOULD NOT be longer than 80 characters; lines longer than that SHOULD
-be split into multiple subsequent lines of no more than 80 characters each.
+Az egyes soroknak NEM KELLENE hosszabbnak lennie 80 karakternél; az ennél
+hosszabbakat AJÁNLOTT felosztani 80 karakternél nem hosszabb egymást követő sorokra.
 
-There MUST NOT be trailing whitespace at the end of lines.
+A nem üres sorok végére TILOS szóközt tenni.
 
-Blank lines MAY be added to improve readability and to indicate related
-blocks of code except where explicitly forbidden.
+Az olvashatóság javítása és a kapcsolódó kódblokkok jelzése érdekében üres sorokat
+LEHET alkalmazni.
 
-There MUST NOT be more than one statement per line.
+Soronként NEM LEHET egynél több utasítás.
 
-### 2.4 Indenting
+### 2.4 Behúzás
 
-Code MUST use an indent of 4 spaces for each indent level, and MUST NOT use
-tabs for indenting.
+A kódban szintenként 4 szóközt KELL használni a sorok behúzására, tabulátort TILOS.
 
-### 2.5 Keywords and Types
+### 2.5 Kulcsszavak és adattípusok
 
-All PHP reserved keywords and types [[1]][keywords][[2]][types] MUST be in lower case.
+A fenntartott PHP [kulcsszavak]at és [adattípusok]at kisbetűvel KELL írni. Ez
+vonatkozik az eljövendő PHP változatokban bevezetendő új kulcsszavakra és
+típusokra is, melyeket szintén kisbetűvel KELL írni.
 
-Any new types and keywords added to future PHP versions MUST be in lower case.
-
-Short form of type keywords MUST be used i.e. `bool` instead of `boolean`,
-`int` instead of `integer` etc.
+Az adattípusok nevének rövidített alakját KELL alkalmazni, például `boolean`
+helyett `bool`, `integer` helyett `int`, stb.
 
 ## 3. Declare Statements, Namespace, and Import Statements
 
@@ -145,13 +148,13 @@ opening and closing tags.
 Import statements MUST never begin with a leading backslash as they
 must always be fully qualified.
 
-The following example illustrates a complete list of all blocks:
+Példa a fenti szabályok alkalmazásra:
 
 ~~~php
 <?php
 
 /**
- * This file contains an example of coding styles.
+ * Ez a fájl kódstílus példákat tartalmaz.
  */
 
 declare(strict_types=1);
@@ -169,17 +172,18 @@ use const Vendor\Package\{CONSTANT_A, CONSTANT_B, CONSTANT_C};
 use const Another\Vendor\CONSTANT_D;
 
 /**
- * FooBar is an example class.
+ * FooBar egy minta osztály.
  */
 class FooBar
 {
-    // ... additional PHP code ...
+    // ... további PHP kód ...
 }
 
 ~~~
 
 Compound namespaces with a depth of more than two MUST NOT be used. Therefore the
 following is the maximum compounding depth allowed:
+
 ~~~php
 <?php
 
@@ -224,15 +228,17 @@ Declare statements MUST contain no spaces and MUST be exactly `declare(strict_ty
 
 Block declare statements are allowed and MUST be formatted as below. Note position of
 braces and spacing:
+
 ~~~php
 declare(ticks=1) {
     // some code
 }
 ~~~
 
-## 4. Classes, Properties, and Methods
+## 4. Osztályok, tulajdonságok és metódusok
 
-The term "class" refers to all classes, interfaces, and traits.
+Az "osztály" kifejezés ebben a dokumentumban egyaránt vonatkozik osztályokra,
+interfészekre vagy trait-ekre.
 
 Any closing brace MUST NOT be followed by any comment or statement on the
 same line.
@@ -244,19 +250,20 @@ there are no arguments passed to the constructor.
 new Foo();
 ~~~
 
-### 4.1 Extends and Implements
+### 4.1 Az `extends` és az `implements` kulcsszavak
 
-The `extends` and `implements` keywords MUST be declared on the same line as
-the class name.
+Az `extends` és az `implements` kulcsszavaknak az osztálynévvel egy sorban KELL
+lenniük.
 
-The opening brace for the class MUST go on its own line; the closing brace
-for the class MUST go on the next line after the body.
+Az osztálydeklarációk nyitó kapcsos zárójelét külön sorban KELL elhelyezni
+(az osztályfejléc után), az osztálytörzset befejező zárójelet pedig a törzs utáni
+sorban (BSD kódolási stílus).
 
-Opening braces MUST be on their own line and MUST NOT be preceded or followed
-by a blank line.
+A nyitó kapcsos zárójeleknek egy saját sorban KELL lenniük, amely előtt és után
+TILOS üres sort hagyni.
 
-Closing braces MUST be on their own line and MUST NOT be preceded by a blank
-line.
+A záró kapcsos zárójeleknek egy saját sorban KELL lenniük, amely előtt és után
+TILOS üres sort hagyni.
 
 ~~~php
 <?php
@@ -269,7 +276,7 @@ use OtherVendor\OtherPackage\BazClass;
 
 class ClassName extends ParentClass implements \ArrayAccess, \Countable
 {
-    // constants, properties, methods
+    // állandók, tulajdonságok, metódusok
 }
 ~~~
 
@@ -292,7 +299,7 @@ class ClassName extends ParentClass implements
     \Countable,
     \Serializable
 {
-    // constants, properties, methods
+    // állandók, tulajdonságok, metódusok
 }
 ~~~
 
@@ -644,43 +651,50 @@ $app->get('/hello/{name}', function ($name) use ($app) {
 });
 ~~~
 
-## 5. Control Structures
+## 5. Vezérlési szerkezetek
 
-The general style rules for control structures are as follows:
+A vezérlési szerkezetekre vonatkozó általános szabályok a következők:
 
-- There MUST be one space after the control structure keyword
-- There MUST NOT be a space after the opening parenthesis
-- There MUST NOT be a space before the closing parenthesis
-- There MUST be one space between the closing parenthesis and the opening
-  brace
-- The structure body MUST be indented once
-- The body MUST be on the next line after the opening brace
-- The closing brace MUST be on the next line after the body
+- A vezérlési szerkezet kulcsszava után egy szóközt KELL tenni
+- A vezérlési szerkezetnek átadandó paramétereket tartalmazó kerek zárójelek nyitó
+eleme után és befejező eleme előtt NEM LEHET szóköz.
+- A paraméterlistát lezáró kerek zárójelet és a függvénytörzs kezdetét jelző nyitó
+kapcsos zárójelet szóközzel KELL elválasztani
+- A vezérlési szerkezet törzsét egyszeres behúzással KELL tagolni
+- A törzset lezáró kapcsos zárójelnek a törzset követő sorban KELL lennie
 
-The body of each structure MUST be enclosed by braces. This standardizes how
-the structures look and reduces the likelihood of introducing errors as new
-lines get added to the body.
+Minden egyes vezérlési szerkezet törzsét kapcsos zárójelekkel KELL határolni.
+Ez egységesíti a szerkezetek megjelenését, új sorok törzshöz adásakor pedig
+csökkenti a hibák felbukkanásának valószínűségét.
 
-### 5.1 `if`, `elseif`, `else`
+### 5.1. `if`, `elseif`, `else`
 
-An `if` structure looks like the following. Note the placement of parentheses,
-spaces, and braces; and that `else` and `elseif` are on the same line as the
-closing brace from the earlier body.
+Egy `if` elágazásnak az alábbi példakódhoz hasonlóan kell kinéznie. Különösen
+figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és szóközök
+elhelyezésére; valamint arra, hogy az `else` és `elseif` kulcsszavak ugyan abban
+a sorban legyenek, mint az őket megelőző kifejezés törzsét lezáró kapcsos zárójel.
 
 ~~~php
 <?php
-
 if ($expr1) {
-    // if body
+    // if törzs
 } elseif ($expr2) {
-    // elseif body
+    // elseif törzs
 } else {
-    // else body;
+    // else törzs;
 }
 ~~~
 
-The keyword `elseif` SHOULD be used instead of `else if` so that all control
-keywords look like single words.
+Az `elseif` kulcsszót KELLENE használni az `else if` alak helyett, hogy minden
+vezérlő kulcsszó egységesen egybe legyen írva.
+
+A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
+sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
+feltételnek a következő sorban KELL helyet foglalnia. A befejező kerek zárójelnek
+és a törzset nyitó kapcsos zárójelnek egyazon sorban KELL lennie, egy szóközzel
+elválasztva. A feltételek közötti esetleges logikai operátoroknak következetesen
+mindig vagy az adott sor elején, vagy a végén kell lenniük, ezt nem ajánlott
+keverni.
 
 Expressions in parentheses MAY be split across multiple lines, where each
 subsequent line is indented at least once. When doing so, the first condition
@@ -705,13 +719,15 @@ if (
 }
 ~~~
 
-### 5.2 `switch`, `case`
+### 5.2. A `switch` szerkezet és a `case` elágazás
 
-A `switch` structure looks like the following. Note the placement of
-parentheses, spaces, and braces. The `case` statement MUST be indented once
-from `switch`, and the `break` keyword (or other terminating keywords) MUST be
-indented at the same level as the `case` body. There MUST be a comment such as
-`// no break` when fall-through is intentional in a non-empty `case` body.
+A `switch` szerkezetnek az alábbi példakódhoz hasonlóan kell kinéznie. Különösen
+figyeljünk oda a kerek és kapcsos zárójelek, szóközök elhelyezésére.
+A `case` elágazást a `switch`-hez viszonyítva egy behúzással beljebb KELL kezdeni,
+a `break` kulcsszót (vagy más lezáró kulcsszót) a `case` törzsével azonos szinten
+KELL elhelyezni. Amikor egy nem üres `case`-törzsben a továbblépés szándékos,
+akkor olyan megjegyzéseket KELL elhelyezni, mint az alábbi példában is szereplő
+`// no break`.
 
 ~~~php
 <?php
@@ -734,12 +750,13 @@ switch ($expr) {
 }
 ~~~
 
-Expressions in parentheses MAY be split across multiple lines, where each
-subsequent line is indented at least once. When doing so, the first condition
-MUST be on the next line. The closing parenthesis and opening brace MUST be
-placed together on their own line with one space between them. Boolean
-operators between conditions MUST always be at the beginning or at the end of
-the line, not a mix of both.
+A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
+sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
+feltételnek a következő sorban KELL helyet foglalnia. A befejező kerek zárójelnek
+és a törzset nyitó kapcsos zárójelnek egyazon sorban KELL lennie, egy szóközzel
+elválasztva. A feltételek közötti esetleges logikai operátoroknak következetesen
+mindig vagy az adott sor elején, vagy a végén kell lenniük, ezt nem ajánlott
+keverni.
 
 ~~~php
 <?php
@@ -765,12 +782,13 @@ while ($expr) {
 }
 ~~~
 
-Expressions in parentheses MAY be split across multiple lines, where each
-subsequent line is indented at least once. When doing so, the first condition
-MUST be on the next line. The closing parenthesis and opening brace MUST be
-placed together on their own line with one space between them. Boolean
-operators between conditions MUST always be at the beginning or at the end of
-the line, not a mix of both.
+A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
+sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
+feltételnek a következő sorban KELL helyet foglalnia. A befejező kerek zárójelnek
+és a törzset nyitó kapcsos zárójelnek egyazon sorban KELL lennie, egy szóközzel
+elválasztva. A feltételek közötti esetleges logikai operátoroknak következetesen
+mindig vagy az adott sor elején, vagy a végén kell lenniük, ezt nem ajánlott
+keverni.
 
 ~~~php
 <?php
@@ -794,10 +812,11 @@ do {
 } while ($expr);
 ~~~
 
-Expressions in parentheses MAY be split across multiple lines, where each
-subsequent line is indented at least once. When doing so, the first condition
-MUST be on the next line. Boolean operators between conditions MUST
-always be at the beginning or at the end of the line, not a mix of both.
+A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
+sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
+feltételnek a következő sorban KELL helyet foglalnia. A feltételek közötti
+esetleges logikai operátoroknak következetesen mindig vagy az adott sor elején,
+vagy a végén kell lenniük, ezt nem ajánlott keverni.
 
 ~~~php
 <?php
@@ -812,8 +831,8 @@ do {
 
 ### 5.4 `for`
 
-A `for` statement looks like the following. Note the placement of parentheses,
-spaces, and braces.
+A `for` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -823,10 +842,11 @@ for ($i = 0; $i < 10; $i++) {
 }
 ~~~
 
-Expressions in parentheses MAY be split across multiple lines, where each
-subsequent line is indented at least once. When doing so, the first expression
-MUST be on the next line. The closing parenthesis and opening brace MUST be
-placed together on their own line with one space between them.
+A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
+sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
+feltételnek a következő sorban KELL helyet foglalnia. A feltételek közötti
+esetleges logikai operátoroknak következetesen mindig vagy az adott sor elején,
+vagy a végén kell lenniük, ezt nem ajánlott keverni.
 
 ~~~php
 <?php
@@ -842,8 +862,8 @@ for (
 
 ### 5.5 `foreach`
 
-A `foreach` statement looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `foreach` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -855,8 +875,8 @@ foreach ($iterable as $key => $value) {
 
 ### 5.6 `try`, `catch`, `finally`
 
-A `try-catch-finally` block looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `try-catch-finally` blokknak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
@@ -872,7 +892,7 @@ try {
 }
 ~~~
 
-## 6. Operators
+## 6. Operátorok
 
 Style rules for operators are grouped by arity (the number of operands they take).
 
@@ -881,7 +901,7 @@ used for readability purposes.
 
 All operators not described here are left undefined.
 
-### 6.1. Unary operators
+### 6.1. Egyoperandusú operátorok
 
 The increment/decrement operators MUST NOT have any space between
 the operator and operand.
@@ -895,11 +915,12 @@ Type casting operators MUST NOT have any space within the parentheses:
 $intValue = (int) $input;
 ~~~
 
-### 6.2. Binary operators
+### 6.2. Kétoperandusú operátorok
 
-All binary [arithmetic][], [comparison][], [assignment][], [bitwise][],
-[logical][], [string][], and [type][] operators MUST be preceded and
+Minden kétoperandusú ([aritmetikai], [összehasonlító], [értékadó], [bitorientált],
+[logikai], [karakterlánc], és [típus]) operátort MUST be preceded and
 followed by at least one space:
+
 ~~~php
 if ($a === $b) {
     $foo = $bar ?? $a ?? $b;
@@ -908,7 +929,7 @@ if ($a === $b) {
 }
 ~~~
 
-### 6.3. Ternary operators
+### 6.3. Feltételes (háromoperandusú, ternális) operátor
 
 The conditional operator, also known simply as the ternary operator, MUST be
 preceded and followed by at least one space around both the `?`
@@ -918,7 +939,8 @@ $variable = $foo ? 'foo' : 'bar';
 ~~~
 
 When the middle operand of the conditional operator is omitted, the operator
-MUST follow the same style rules as other binary [comparison][] operators:
+MUST follow the same style rules as other binary [comparison] operators:
+
 ~~~php
 $variable = $foo ?: 'bar';
 ~~~
@@ -1039,7 +1061,7 @@ $foo->bar(
 );
 ~~~
 
-## 8. Anonymous Classes
+## 8. Névtelen osztályok
 
 Anonymous Classes MUST follow the same guidelines and principles as closures
 in the above section.
@@ -1073,14 +1095,17 @@ $instance = new class extends \Foo implements
 };
 ~~~
 
-[PSR-1]: http://www.php-fig.org/psr/psr-1/
-[PSR-2]: http://www.php-fig.org/psr/psr-2/
-[keywords]: http://php.net/manual/en/reserved.keywords.php
-[types]: http://php.net/manual/en/reserved.other-reserved-words.php
-[arithmetic]: http://php.net/manual/en/language.operators.arithmetic.php
-[assignment]: http://php.net/manual/en/language.operators.assignment.php
-[comparison]: http://php.net/manual/en/language.operators.comparison.php
-[bitwise]: http://php.net/manual/en/language.operators.bitwise.php
-[logical]: http://php.net/manual/en/language.operators.logical.php
-[string]: http://php.net/manual/en/language.operators.string.php
-[type]: http://php.net/manual/en/language.operators.type.php
+[PSR-1]: PSR-1-basic-coding-standard.md
+[PSR-2]: PSR-2-coding-style-guide.md
+[RFC 2119] ../related-rfcs/2119.md
+[kulcsszavak]: http://php.net/manual/en/reserved.keywords.php
+[adattípusok]: http://php.net/manual/en/reserved.other-reserved-words.php
+[aritmetikai]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_2
+[értékadó]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_4
+[összehasonlító]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_1
+[bitorientált]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_8
+[logikai]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_9
+[karakterlánc]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_3
+[típus]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=10#section_3_11
+
+[Kezdőlap](../README.md)
