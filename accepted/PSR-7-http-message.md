@@ -171,7 +171,7 @@ Az alábbi táblázat azt mutatja be, hogy a `getHeaderLine('Host')` hogy fog vi
 a `withUri()` metódus által visszaadott értékkel, ha a `$preserveHost` paraméter
 értéke `true`.
 
-Kérés Host fejléc<sup>\[[1]](#rhh)</sup> | Kérés host összetevő<sup>\[[2]](#rhc)</sup> | URI host összetevő<sup>\[[3]](#uhc)</sup> | Eredmény
+Kérés Host fejléc<sup>[[1]](#rhh)</sup> | Kérés host összetevő<sup>[[2]](#rhc)</sup> | URI host összetevő<sup>[[3]](#uhc)</sup> | Eredmény
 ----------------------------------------|--------------------------------------------|----------------------------------------|--------
 ''                                      | ''                                         | ''                                     | ''
 ''                                      | foo.com                                    | ''                                     | foo.com
