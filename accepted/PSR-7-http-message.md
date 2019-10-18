@@ -9,8 +9,7 @@ az [URI](https://hu.wikipedia.org/wiki/URI) komponensre, amelyet az [STD 66](../
 internetes szabvány határoz meg.
 
 A HTTP üzenetek a webfejlesztés alappillérei. A böngészők és más HTTP kliens programok
-(gyűjtőnéven: [user agent](https://hu.wikipedia.org/wiki/User_agent)
-<a href="https://hu.wikipedia.org/wiki/User_agent" target="_blank">UA</a>), mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
+(gyűjtőnéven: [user agent](https://hu.wikipedia.org/wiki/User_agent)), mint a [cURL](https://hu.wikipedia.org/wiki/CURL) egy szabványos HTTP kérelmet (Request)
 hoznak létere és küldenek el a webszervernek, amely gondoskodik a szintén szabványos
 HTTP válaszról (Response). A szerver oldali kód tehát megkapja a HTTP kérelmet,
 majd egy HTTP válasz üzenettel reagál rá.
