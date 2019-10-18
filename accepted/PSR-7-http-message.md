@@ -180,8 +180,8 @@ foo.com                                 | ''                                    
 foo.com                                 | bar.com                                    | baz.com                                | foo.com
 
 - <span id="rhh">1</span> A `Host` fejléc értéke a végrehajtás előtt.
-- <sup id="rhc">2</sup> Az URI végrehajtás előtt összeállított host összetevője.
-- <sup id="uhc">3</sup> Az URI `withUri()` metódussal beinjektált host összetevője.
+- <span id="rhc">2</span> Az URI végrehajtás előtt összeállított host összetevője.
+- <span id="uhc">3</span> Az URI `withUri()` metódussal beinjektált host összetevője.
 
 ### 1.3 Adatfolyamok (stream)
 
