@@ -77,9 +77,9 @@ class Foo extends Bar implements FooInterface
 
 A kódnak követnie KELL a [PSR-1] alapvető kódolási szabvány összes rendelkezését.
 
-A PSR-1 ajánlásban szereplő `StudlyCaps` kifejezés alatt mindig[PascalCase-t](https://hu.wikipedia.org/wiki/CamelCase) KELL érteni, ahol minden
-egyes szó (a camelCase írásmódtól eltérően ideértve a legelső szót is) nagy
-kezdőbetűvel írandó.
+A PSR-1 ajánlásban szereplő `StudlyCaps` kifejezés alatt mindig [PascalCase-t](https://hu.wikipedia.org/wiki/CamelCase)
+KELL érteni, ahol minden egyes szó (a camelCase írásmódtól eltérően ideértve a
+legelső szót is) nagy kezdőbetűvel írandó.
 
 ### 2.2 Állományok
 
@@ -661,6 +661,7 @@ eleme után és befejező eleme előtt NEM LEHET szóköz.
 - A paraméterlistát lezáró kerek zárójelet és a függvénytörzs kezdetét jelző nyitó
 kapcsos zárójelet szóközzel KELL elválasztani
 - A vezérlési szerkezet törzsét egyszeres behúzással KELL tagolni
+- A törzsnek a nyitó zárójel után következő sorban KELL kezdődnie
 - A törzset lezáró kapcsos zárójelnek a törzset követő sorban KELL lennie
 
 Minden egyes vezérlési szerkezet törzsét kapcsos zárójelekkel KELL határolni.
@@ -696,13 +697,6 @@ elválasztva. A feltételek közötti esetleges logikai operátoroknak következ
 mindig vagy az adott sor elején, vagy a végén kell lenniük, ezt nem ajánlott
 keverni.
 
-Expressions in parentheses MAY be split across multiple lines, where each
-subsequent line is indented at least once. When doing so, the first condition
-MUST be on the next line. The closing parenthesis and opening brace MUST be
-placed together on their own line with one space between them. Boolean
-operators between conditions MUST always be at the beginning or at the end of
-the line, not a mix of both.
-
 ~~~php
 <?php
 
@@ -734,18 +728,18 @@ akkor olyan megjegyzéseket KELL elhelyezni, mint az alábbi példában is szere
 
 switch ($expr) {
     case 0:
-        echo 'First case, with a break';
+        echo 'Első eset, megszakítással';
         break;
     case 1:
-        echo 'Second case, which falls through';
+        echo 'Második eset, megszakítás nélküli továbblépéssel';
         // no break
     case 2:
     case 3:
     case 4:
-        echo 'Third case, return instead of break';
+        echo 'Harmadik eset, megszakítás helyett visszatéréssel';
         return;
     default:
-        echo 'Default case';
+        echo 'Alapértelmezett eset';
         break;
 }
 ~~~
@@ -771,14 +765,14 @@ switch (
 
 ### 5.3 `while`, `do while`
 
-A `while` statement looks like the following. Note the placement of
-parentheses, spaces, and braces.
+A `while` ciklusnak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
+oda a kerek és kapcsos zárójelek, szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
 
 while ($expr) {
-    // structure body
+    // ciklusmag
 }
 ~~~
 
@@ -797,18 +791,19 @@ while (
     $expr1
     && $expr2
 ) {
-    // structure body
+    // ciklusmag
 }
 ~~~
 
-Similarly, a `do while` statement looks like the following. Note the placement
-of parentheses, spaces, and braces.
+A `do while` ciklus küllemben nem sokban különbözik a `while` ciklustól, így a
+rá vonatkozó szabályok is hasonlóak. Figyeljünk oda itt is a kerek és kapcsos
+zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
 
 do {
-    // structure body;
+    // ciklusmag;
 } while ($expr);
 ~~~
 
@@ -822,7 +817,7 @@ vagy a végén kell lenniük, ezt nem ajánlott keverni.
 <?php
 
 do {
-    // structure body;
+    // ciklusmag;
 } while (
     $expr1
     && $expr2
@@ -838,15 +833,15 @@ oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 <?php
 
 for ($i = 0; $i < 10; $i++) {
-    // for body
+    // ciklusmag
 }
 ~~~
 
 A zárójelben lévő kifejezéseket fel LEHET osztani több sorra is, ahol az egyes
 sorokat legalább egyszeres behúzással kell kezdeni. Ebben az esetben az első
-feltételnek a következő sorban KELL helyet foglalnia. A feltételek közötti
-esetleges logikai operátoroknak következetesen mindig vagy az adott sor elején,
-vagy a végén kell lenniük, ezt nem ajánlott keverni.
+feltételnek a következő sorban KELL helyet foglalnia. A befejező kerek zárójelnek
+és a törzset nyitó kapcsos zárójelnek egyazon sorban KELL lennie, egy szóközzel
+elválasztva.
 
 ~~~php
 <?php
@@ -856,7 +851,7 @@ for (
     $i < 10;
     $i++
 ) {
-    // for body
+    // ciklusmag
 }
 ~~~
 
@@ -869,57 +864,59 @@ oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 <?php
 
 foreach ($iterable as $key => $value) {
-    // foreach body
+    // ciklusmag
 }
 ~~~
 
 ### 5.6 `try`, `catch`, `finally`
 
-A `try-catch-finally` blokknak a következő példakódhoz hasonlóan kell kinéznie. Figyeljünk
-oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
+A `try-catch-finally` blokknak a következő példakódhoz hasonlóan kell kinéznie.
+Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő elhelyezésére.
 
 ~~~php
 <?php
 
 try {
-    // try body
+    // try törzs
 } catch (FirstThrowableType $e) {
-    // catch body
+    // catch törzs
 } catch (OtherThrowableType | AnotherThrowableType $e) {
-    // catch body
+    // catch törzs
 } finally {
-    // finally body
+    // finally törzs
 }
 ~~~
 
 ## 6. Operátorok
 
-Style rules for operators are grouped by arity (the number of operands they take).
+A stílusszabályok az operandusok száma szerint vannak csoportosítva.
 
-When space is permitted around an operator, multiple spaces MAY be
-used for readability purposes.
-
-All operators not described here are left undefined.
+Ha a szóköz használata engedélyezett az operátor körül, akkor akár többet is
+LEHET használni belőle, ha ez javítja az olvashatóságot.
 
 ### 6.1. Egyoperandusú operátorok
 
-The increment/decrement operators MUST NOT have any space between
-the operator and operand.
+A léptető (inkrementáló/dekrementáló) operátoroknál TILOS szóközt tenni az
+operátor és az operandus közé.
+
 ~~~php
+
 $i++;
 ++$j;
 ~~~
 
-Type casting operators MUST NOT have any space within the parentheses:
+A típuskonvertáló operátoroknál TILOS szóközt alkalmazni a zárójelen belül:
+
 ~~~php
+
 $intValue = (int) $input;
 ~~~
 
 ### 6.2. Kétoperandusú operátorok
 
 Minden kétoperandusú ([aritmetikai], [összehasonlító], [értékadó], [bitorientált],
-[logikai], [karakterlánc], és [típus]) operátort MUST be preceded and
-followed by at least one space:
+[logikai], [karakterlánc], és [típus]) operátort legalább egy szóköznek KELL megelőzni
+és követni:
 
 ~~~php
 if ($a === $b) {
@@ -931,44 +928,54 @@ if ($a === $b) {
 
 ### 6.3. Feltételes (háromoperandusú, ternális) operátor
 
-The conditional operator, also known simply as the ternary operator, MUST be
-preceded and followed by at least one space around both the `?`
-and `:` characters:
+A feltételes, más néven ternális operátorban szereplő kérdőjel és kettőspont
+karaktert legalább egy szóköznek KELL megelőzni és követni:
+
 ~~~php
+
 $variable = $foo ? 'foo' : 'bar';
 ~~~
 
-When the middle operand of the conditional operator is omitted, the operator
-MUST follow the same style rules as other binary [comparison] operators:
+Ha a feltételes operátor középső operandusát elhagyják ("Elvis operátor"), az
+operátornak ugyanazt a stílusszabályt KELL követnie, mint más bináris
+[összehasonlító] operátoroknak:
 
 ~~~php
+
 $variable = $foo ?: 'bar';
 ~~~
 
-## 7. Closures
+## 7. Névtelen függvények
 
-Closures MUST be declared with a space after the `function` keyword, and a
-space before and after the `use` keyword.
+*A névtelen függvény (más néven closure) olyan névtelen függvény, ami a paraméterlistában
+átadott argumentumok mellett hozzáférhet a hatókörén kívül létrehozott azon változókhoz
+is, amelyek a függvénydeklaráció záradékában (a `use` kulcsszó utáni kerek zárójelben)
+vannak felsorolva.*
 
-The opening brace MUST go on the same line, and the closing brace MUST go on
-the next line following the body.
+Névtelen függvény létrehozásánál a `function` kulcsszó után szóközt KELL
+tenni, ahogy a záradékot jelölő `use` kulcsszó előtt és után is.
 
-There MUST NOT be a space after the opening parenthesis of the argument list
-or variable list, and there MUST NOT be a space before the closing parenthesis
-of the argument list or variable list.
+A függvénytörzset megnyitó kapcsos zárójelnek (az 5. fejezetben taglalt vezérlési
+szerkezetekhez hasonlóan) egy sorban KELL lennie a függvényfejléccel, a törzset
+lezáró kapcsos zárójelnek viszont a törzs utáni sorban KELL lennie.
 
-In the argument list and variable list, there MUST NOT be a space before each
-comma, and there MUST be one space after each comma.
+A névtelen függvény paraméter-, és váltózólistáját tartalmazó kerek
+zárójelek nyitó eleme után és záró eleme előtt NEM SZABAD szóközt hagyni.
 
-Closure arguments with default values MUST go at the end of the argument
-list.
+A névtelen függvény paraméter-, és váltózólistájában az egyes változónevek
+utáni vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
-If a return type is present, it MUST follow the same rules as with normal
-functions and methods; if the `use` keyword is present, the colon MUST follow
-the `use` list closing parentheses with no spaces between the two characters.
+Az alapértelmezett értéket tartalmazó paramétereknek a lista végére KELL kerülni.
 
-A closure declaration looks like the following. Note the placement of
-parentheses, commas, spaces, and braces:
+Ha van visszatérési érték, annak ugyan azokat a szabályokat KELL követnie, mint
+amelyek a normál függvényekre és metódusokra érvényesek. Ha jelen van a `use` kulcsszó,
+akkor a visszatérési érték típusát bevezető kettőspontnak a `use`-záradék végét jelző
+zárójel után KELL következnie, úgy, hogy a zárójel és a kettőspont között nem
+lehet szóköz.
+
+Egy névtelen függvény deklarációjának az alábbi kódhoz hasonlóan kell
+kinéznie. Figyeljünk oda a kerek és kapcsos zárójelek és szóközök megfelelő
+elhelyezésére:
 
 ~~~php
 <?php
@@ -986,68 +993,69 @@ $closureWithArgsVarsAndReturn = function ($arg1, $arg2) use ($var1, $var2): bool
 };
 ~~~
 
-Argument lists and variable lists MAY be split across multiple lines, where
-each subsequent line is indented once. When doing so, the first item in the
-list MUST be on the next line, and there MUST be only one argument or variable
-per line.
+A névtelen függvény paraméter-, és váltózólistáját több sorba is szét
+LEHET tördelni, ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél
+a megoldásnál a lista első elemének a következő sorba KELL kerülnie és soronként
+csak egyetlen paramétert/változót KELL feltüntetni.
 
-When the ending list (whether of arguments or variables) is split across
-multiple lines, the closing parenthesis and opening brace MUST be placed
-together on their own line with one space between them.
+Ha a paraméter-, és váltózólistát külön sorokba tördeljük, akkor a listát lezáró
+kerek zárójelet és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet azonos
+sorba KELL írni, szóközzel elválasztva.
 
-The following are examples of closures with and without argument lists and
-variable lists split across multiple lines.
+A következő példakódok olyan névtelen függvény-deklarációkat mutatnak be, amelyek
+a paraméterlista mellett rendelkezhetnek változólistával (záradék) is, s ezek a
+listák több sorba vannak tördelve, a fenti szabályok szerint.
 
 ~~~php
 <?php
-
 $longArgs_noVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) {
-   // body
+    // törzs
 };
 
 $noArgs_longVars = function () use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-   // body
+    // törzs
 };
 
 $longArgs_longVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-   // body
+    // törzs
 };
 
 $longArgs_shortVars = function (
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 ) use ($var1) {
-   // body
+    // törzs
 };
 
 $shortArgs_longVars = function ($arg) use (
-    $longVar1,
-    $longerVar2,
-    $muchLongerVar3
+    $hosszuValtozo,
+    $hosszabbValtozo,
+    $borzasztoanHosszuValtozo
 ) {
-   // body
+    // törzs
 };
 ~~~
 
-Note that the formatting rules also apply when the closure is used directly
-in a function or method call as an argument.
+Ne feledjük, hogy a formázási szabályok akkor is érvényesek, ha a névtelen
+függvény egy másik függvény vagy metódus argumentumaként kerül meghívásra, mint az
+alábbi példában:
 
 ~~~php
 <?php
@@ -1055,7 +1063,7 @@ in a function or method call as an argument.
 $foo->bar(
     $arg1,
     function ($arg2) use ($var1) {
-        // body
+        // törzs
     },
     $arg3
 );
@@ -1063,8 +1071,8 @@ $foo->bar(
 
 ## 8. Névtelen osztályok
 
-Anonymous Classes MUST follow the same guidelines and principles as closures
-in the above section.
+A névtelen osztályoknak ugyanazon fentebb kifejtett irányelveket KELL követniük,
+mint a névtelen függvényeknek.
 
 ~~~php
 <?php
@@ -1072,20 +1080,21 @@ in the above section.
 $instance = new class {};
 ~~~
 
-The opening brace MAY be on the same line as the `class` keyword so long as
-the list of `implements` interfaces does not wrap. If the list of interfaces
-wraps, the brace MUST be placed on the line immediately following the last
-interface.
+A nyitó kapcsos zárójel abban az esetben LEHET ugyan abban a sorban, mint a `class`
+kulcsszó, ha az `implements` után felsorolt interfészek egy sorban is
+elférnek (nincs sortörés). Ha az interfészek listája több sorban helyezkedik el,
+akkor a nyitó kapcsos zárójelnek az utolsó felsorolt interfész után következő
+sorban KELL lennie.
 
 ~~~php
 <?php
 
-// Brace on the same line
+// Zárójel ugyanabban a sorban
 $instance = new class extends \Foo implements \HandleableInterface {
     // Class content
 };
 
-// Brace on the next line
+// Zárójel a következő sorban
 $instance = new class extends \Foo implements
     \ArrayAccess,
     \Countable,
