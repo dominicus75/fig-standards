@@ -1106,7 +1106,7 @@ $instance = new class extends \Foo implements
 
 [PSR-1]: PSR-1-basic-coding-standard.md
 [PSR-2]: PSR-2-coding-style-guide.md
-[RFC 2119] ../related-rfcs/2119.md
+[RFC 2119]: ../related-rfcs/2119.md
 [kulcsszavak]: http://php.net/manual/en/reserved.keywords.php
 [adattípusok]: http://php.net/manual/en/reserved.other-reserved-words.php
 [aritmetikai]: http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=3#section_7_2
