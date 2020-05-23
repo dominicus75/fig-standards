@@ -42,14 +42,15 @@ foglal össze:
 
 declare(strict_types=1);
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
-use Vendor\Package\SomeNamespace\ClassD as D;
+use Szallito\Csomag\{OsztalyA as A, OsztalyB, OsztalyC as C};
+use Szallito\Csomag\ValamiNevter\OsztalyD as D;
+use Szallito\Csomag\MasikNevter\OsztalyE as E;
 
-use function Vendor\Package\{functionA, functionB, functionC};
+use function Szallito\Csomag\{functionA, functionB, functionC};
 
-use const Vendor\Package\{ConstantA, ConstantB, ConstantC};
+use const Szallito\Csomag\{CONSTANT_A, CONSTANT_B, CONSTANT_C};
 
 class Foo extends Bar implements FooInterface
 {
@@ -120,33 +121,33 @@ típusokra is, melyeket szintén kisbetűvel KELL írni.
 Az adattípusok nevének rövidített alakját KELL alkalmazni, például `boolean`
 helyett `bool`, `integer` helyett `int`, stb.
 
-## 3. Declare Statements, Namespace, and Import Statements
+## 3. Névterek, deklarációs és importáló utasítások
 
-The header of a PHP file may consist of a number of different blocks. If present,
-each of the blocks below MUST be separated by a single blank line, and MUST NOT contain
-a blank line. Each block MUST be in the order listed below, although blocks that are
-not relevant may be omitted.
+A PHP állományok fejléce több különböző blokkot foglalhat magába. Ha van fejléc,
+akkor minden alábbi blokkot egy üres sorral KELL elválasztani egymástól, de magának
+a blokknak NEM SZABAD üres sort tartalmaznia. Minden blokknak az alábbi sorrendben
+KELL szerepelnie a fejlécben, a nem releváns blokkok azonban elhagyhatók.
 
-* Opening `<?php` tag.
-* File-level docblock.
-* One or more declare statements.
-* The namespace declaration of the file.
-* One or more class-based `use` import statements.
-* One or more function-based `use` import statements.
-* One or more constant-based `use` import statements.
-* The remainder of the code in the file.
+* Nyitó `<?php` cimke.
+* Állomány-szintű dokumentációs blokk.
+* Egy vagy több deklarációs utasítás.
+* Az állomány névtér-deklarációja.
+* Egy vagy több osztály-importáló utasítás a `use` kulcsszó használatával.
+* Egy vagy több függvény-importáló utasítás a `use` kulcsszó használatával.
+* Egy vagy több konstans-importáló utasítás a `use` kulcsszó használatával.
+* Az állomány kódjának további része.
 
-When a file contains a mix of HTML and PHP, any of the above sections may still
-be used. If so, they MUST be present at the top of the file, even if the
-remainder of the code consists of a closing PHP tag and then a mixture of HTML and
-PHP.
+Ha az állomány vegyesen tartalmaz PHP és HTML kódot, a fenti szekciók bármelyike
+továbbra is használható. Ez esetben ezeknek az állomány elején KELL helyet foglalniuk,
+még akkor is, ha a kód további része PHP záró-tagot is magában foglal, a PHP és HTML
+kódrészeket elválasztandó.
 
-When the opening `<?php` tag is on the first line of the file, it MUST be on its
-own line with no other statements unless it is a file containing markup outside of PHP
-opening and closing tags.
+Ha a nyitó `<?php` tag az állomány első sorában van elhelyezve, akkor ennek az ő
+saját sorának KELL lennie, ide más kód nem írható, kivéve ha a fájl HTML kódot is
+tartalmaz.
 
-Import statements MUST never begin with a leading backslash as they
-must always be fully qualified.
+Az importáló utasításoknak soha NEM SZABAD vissza perjellel (backslash) kezdődni,
+mivel mindig teljesen minősítettnek kell lenniük.
 
 Példa a fenti szabályok alkalmazásra:
 
@@ -159,17 +160,17 @@ Példa a fenti szabályok alkalmazásra:
 
 declare(strict_types=1);
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\{ClassA as A, ClassB, ClassC as C};
-use Vendor\Package\SomeNamespace\ClassD as D;
-use Vendor\Package\AnotherNamespace\ClassE as E;
+use Szallito\Csomag\{OsztalyA as A, OsztalyB, OsztalyC as C};
+use Szallito\Csomag\ValamiNevter\OsztalyD as D;
+use Szallito\Csomag\MasikNevter\OsztalyE as E;
 
-use function Vendor\Package\{functionA, functionB, functionC};
-use function Another\Vendor\functionD;
+use function Szallito\Csomag\{functionA, functionB, functionC};
+use function MasikSzallito\Csomag\functionD;
 
-use const Vendor\Package\{CONSTANT_A, CONSTANT_B, CONSTANT_C};
-use const Another\Vendor\CONSTANT_D;
+use const Szallito\Csomag\{CONSTANT_A, CONSTANT_B, CONSTANT_C};
+use const MasikSzallito\Csomag\CONSTANT_D;
 
 /**
  * FooBar egy minta osztály.
@@ -181,37 +182,37 @@ class FooBar
 
 ~~~
 
-Compound namespaces with a depth of more than two MUST NOT be used. Therefore the
-following is the maximum compounding depth allowed:
+(A szállító és a csomag nevén felüli) kettőnél több névtér használata TILOS, tehát
+a `Szállító\Csomag\Névtér\Alnévtér` sémánál mélyebb tagolás nem engedélyezett. A
+következő példakód a lehetséges legnagyobb névtér-összetettséget szemlélteti:
 
 ~~~php
 <?php
 
-use Vendor\Package\SomeNamespace\{
-    SubnamespaceOne\ClassA,
-    SubnamespaceOne\ClassB,
-    SubnamespaceTwo\ClassY,
-    ClassZ,
+use Szallito\Csomag\Nevter\{
+    AlnevterEgy\OsztalyA,
+    AlnevterKetto\OsztalyB,
+    AlnevterHarom\OsztalyY,
+    OsztalyZ,
 };
 ~~~
 
-And the following would not be allowed:
+A következő kód már nem engedélyezett mélységű névteret tartalmaz:
 
 ~~~php
 <?php
 
-use Vendor\Package\SomeNamespace\{
-    SubnamespaceOne\AnotherNamespace\ClassA,
-    SubnamespaceOne\ClassB,
-    ClassZ,
+use Szallito\Csomag\Nevter\{
+    AlNevter\MasikNevter\OsztalyA,
+    MasikAlnevter\OsztalyB,
+    OsztalyZ,
 };
 ~~~
 
-When wishing to declare strict types in files containing markup outside PHP
-opening and closing tags, the declaration MUST be on the first line of the file
-and include an opening PHP tag, the strict types declaration and closing tag.
+Ha egy HTML kódot is tartalmazó PHP állományban szeretnénk deklarálni a szigorú
+módot (strict types), akkor a deklarációnak a fájl első sorában KELL elhelyezkedni,
+a nyitó és záró PHP-tag között, ahogy az alábbi példakódban is látható:
 
-For example:
 ~~~php
 <?php declare(strict_types=1) ?>
 <html>
@@ -223,11 +224,11 @@ For example:
 </html>
 ~~~
 
-Declare statements MUST contain no spaces and MUST be exactly `declare(strict_types=1)`
-(with an optional semi-colon terminator).
+A deklarációs utasításnak TILOS szóközt tartalmaznia, ellenben pontosan így KELL
+kinéznie: `declare(strict_types=1)` (az utasítás végén az opcionális pontosvesszővel).
 
-Block declare statements are allowed and MUST be formatted as below. Note position of
-braces and spacing:
+Engedélyezett a deklarációs utasítások blokkba foglalása is, ezeket az alább látható
+módon KELL megformázni, ügyelve a zárójelek elhelyezkedésére és a térközökre.
 
 ~~~php
 declare(ticks=1) {
@@ -240,11 +241,11 @@ declare(ticks=1) {
 Az "osztály" kifejezés ebben a dokumentumban egyaránt vonatkozik osztályokra,
 interfészekre vagy trait-ekre.
 
-Any closing brace MUST NOT be followed by any comment or statement on the
-same line.
+A záró kapcsos zárójelekkel azonos sorban TILOS bármi mást (megjegyzéseket, utasításokat,
+stb.) elhelyezni.
 
-When instantiating a new class, parentheses MUST always be present even when
-there are no arguments passed to the constructor.
+Új osztály példányosításakor a kerek zárójeleket akkor is ki KELL tenni, ha nem adunk
+át semmilyen paramétert a konstruktornak.
 
 ~~~php
 new Foo();
@@ -268,33 +269,33 @@ TILOS üres sort hagyni.
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use FooClass;
-use BarClass as Bar;
-use OtherVendor\OtherPackage\BazClass;
+use IzeOsztaly;
+use BigyoOsztaly as Bigyo;
+use MasikSzallito\MasikCsomag\BigyoOsztaly;
 
-class ClassName extends ParentClass implements \ArrayAccess, \Countable
+class OsztalyNev extends SzuloOsztaly implements \ArrayAccess, \Countable
 {
     // állandók, tulajdonságok, metódusok
 }
 ~~~
 
-Lists of `implements` and, in the case of interfaces, `extends` MAY be split
-across multiple lines, where each subsequent line is indented once. When doing
-so, the first item in the list MUST be on the next line, and there MUST be only
-one interface per line.
+A megvalósított interfészek (`implements`), illetve a szülő osztályok (`extends`)
+listáját több sorba is szét LEHET tördelni, ahol minden egyes sort egyszeres behúzással
+kell kezdeni. Ennél a megoldásnál a lista első elemének a következő sorba KELL kerülnie
+és soronként csak egyetlen interfészt/ősosztályt KELL feltüntetni.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use FooClass;
-use BarClass as Bar;
-use OtherVendor\OtherPackage\BazClass;
+use IzeOsztaly;
+use BigyoOsztaly as Bigyo;
+use MasikSzallito\MasikCsomag\BigyoOsztaly;
 
-class ClassName extends ParentClass implements
+class OsztalyNev extends SzuloOsztaly implements
     \ArrayAccess,
     \Countable,
     \Serializable
@@ -303,79 +304,79 @@ class ClassName extends ParentClass implements
 }
 ~~~
 
-### 4.2 Using traits
+### 4.2 Trait-ek használata
 
-The `use` keyword used inside the classes to implement traits MUST be
-declared on the next line after the opening brace.
+Ha `use` kulcsszót a trait-et használó osztály belsejében használjuk, akkor
+az osztálytörzs kezdetét jelző nyitó kapcsos zárójel utáni sorba KELL elhelyezni.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\FirstTrait;
+use Szallito\Csomag\ElsoTrait;
 
-class ClassName
+class OsztalyNev
 {
     use FirstTrait;
 }
 ~~~
 
-Each individual trait that is imported into a class MUST be included
-one-per-line and each inclusion MUST have its own `use` import statement.
+Az osztályba importált minden egyes trait-et külön sorban KELL feltüntetni (soronként
+egyet), illetve mindegyiknek rendelkeznie KELL saját `use` importáló utasítással.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\FirstTrait;
-use Vendor\Package\SecondTrait;
-use Vendor\Package\ThirdTrait;
+use Szallito\Csomag\ElsoTrait;
+use Szallito\Csomag\MasodikTrait;
+use Szallito\Csomag\HarmadikTrait;
 
-class ClassName
+class OsztalyNev
 {
-    use FirstTrait;
-    use SecondTrait;
-    use ThirdTrait;
+    use ElsoTrait;
+    use MasodikTrait;
+    use HarmadikTrait;
 }
 ~~~
 
-When the class has nothing after the `use` import statement, the class
-closing brace MUST be on the next line after the `use` import statement.
+Amikor az osztály törzse a `use` importáló utasításon kívül mást nem tartalmaz,
+akkor a lezáró kapcsos zárójelnek az importáló utasítást követő sorban KELL lennie.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\FirstTrait;
+use Szallito\Csomag\ElsoTrait;
 
-class ClassName
+class OsztalyNev
 {
-    use FirstTrait;
+    use ElsoTrait;
 }
 ~~~
 
-Otherwise, it MUST have a blank line after the `use` import statement.
+Egyébként a `use` importáló utasítást üres sornak KELL követnie:
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-use Vendor\Package\FirstTrait;
+use Szallito\Csomag\ElsoTrait;
 
-class ClassName
+class OsztalyNev
 {
-    use FirstTrait;
+    use ElsoTrait;
 
     private $property;
 }
 ~~~
 
-When using the `insteadof` and `as` operators they must be used as follows taking
-note of indentation, spacing, and new lines.
+Az `insteadof` és az `as` operátor használata esetén ezeket a következők szerint
+kell használni, ügyelve a behúzásra, a térközökre és az új sorokra.
 
 ~~~php
 <?php
@@ -390,69 +391,72 @@ class Talker
 }
 ~~~
 
-### 4.3 Properties and Constants
+### 4.3 Tulajdonságok és állandók
 
-Visibility MUST be declared on all properties.
+A láthatóságot minden objektumtulajdonsághoz meg KELL adni.
 
-Visibility MUST be declared on all constants if your project PHP minimum
-version supports constant visibilities (PHP 7.1 or later).
+A láthatóságot minden állandóhoz is be KELL állítani, abban az esetben, ha a
+projektben alkalmazott PHP változat támogatja az állandók láthatósági szintjének
+megadását (PHP 7.1 vagy újabb verzió).
 
-The `var` keyword MUST NOT be used to declare a property.
+Az elavult, de kompatibilitási okokból még támogatott `var` kulcsszót TILOS használni
+az objektumtulajdonságok deklarálásánál.
 
-There MUST NOT be more than one property declared per statement.
+Utasításonként egynél több tulajdonságot TILOS deklarálni.
 
-Property names MUST NOT be prefixed with a single underscore to indicate
-protected or private visibility. That is, an underscore prefix explicitly has
-no meaning.
+Az objektumtulajdonságok láthatósági szintjét (`private` vagy `protected`)
+TILOS aláhúzás karakterrel jelezni a tulajdonságnév elején.
 
-There MUST be a space between type declaration and property name.
+A típusdeklaráció és a tulajdonság neve közé egy szóközt KELL tenni.
 
-A property declaration looks like the following:
+Az előadottak tükrében egy objektumtulajdonság-deklarációnak valahogy így kellene
+kinéznie:
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-class ClassName
+class OsztalyNev
 {
     public $foo = null;
     public static int $bar = 0;
 }
 ~~~
 
-### 4.4 Methods and Functions
+### 4.4 Metódusok és függvények
 
-Visibility MUST be declared on all methods.
+A láthatóságot minden metódushoz meg KELL adni.
 
-Method names MUST NOT be prefixed with a single underscore to indicate
-protected or private visibility. That is, an underscore prefix explicitly has
-no meaning.
+A metódusok láthatósági szintjét (`private` vagy `protected`) TILOS aláhúzás karakterrel
+jelezni a metódusnév elején.
 
-Method and function names MUST NOT be declared with space after the method name. The
-opening brace MUST go on its own line, and the closing brace MUST go on the
-next line following the body. There MUST NOT be a space after the opening
-parenthesis, and there MUST NOT be a space before the closing parenthesis.
+A metódus-, és függvénynév után TILOS szóközt tenni. A metódus esetleges paramétereit
+tartalmazó kerek zárójel nyitó eleme után és záró eleme előtt NEM LEHET szóköz. A
+függvénytörzset nyitó kapcsos zárójelét külön sorban KELL elhelyezni (a fejléc után),
+a függvénytörzset befejező kapcsos zárójelet pedig a törzs utáni sorban.
 
-A method declaration looks like the following. Note the placement of
-parentheses, commas, spaces, and braces:
+A fentiek alapján egy metódus deklarációnak a következőképpen kellene kinéznie.
+Különösen figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és
+szóközök elhelyezésére:
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-class ClassName
+class OsztalyNev
 {
     public function fooBarBaz($arg1, &$arg2, $arg3 = [])
     {
-        // method body
+        // metódus törzs
     }
 }
 ~~~
 
-A function declaration looks like the following. Note the placement of
-parentheses, commas, spaces, and braces:
+Egy függvény deklarációnak pedig a következőképpen kellene kinéznie. Különösen
+figyeljünk oda a kerek, kapcsos és szögletes zárójelek, vesszők és szóközök
+elhelyezésére:
 
 ~~~php
 <?php
@@ -463,64 +467,64 @@ function fooBarBaz($arg1, &$arg2, $arg3 = [])
 }
 ~~~
 
-### 4.5 Method and Function Arguments
+### 4.5 Metódusok és függvények paraméterei
 
-In the argument list, there MUST NOT be a space before each comma, and there
-MUST be one space after each comma.
+A metódusok paraméterlistájában az egyes paraméterek utáni vessző elé TILOS
+szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
-Method and function arguments with default values MUST go at the end of the argument
-list.
+Az alapértelmezett értéket tartalmazó metódus paramétereknek a lista végén KELL
+elhelyezkedni.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-class ClassName
+class OsztalyNev
 {
     public function foo(int $arg1, &$arg2, $arg3 = [])
     {
-        // method body
+        // metódus törzs
     }
 }
 ~~~
 
-Argument lists MAY be split across multiple lines, where each subsequent line
-is indented once. When doing so, the first item in the list MUST be on the
-next line, and there MUST be only one argument per line.
+A metódus paraméterlistáját több sorba is szét LEHET tördelni, ahol minden egyes sort
+egyszeres behúzással kell kezdeni. Ennél a megoldásnál a lista első elemének a
+következő sorba KELL kerülnie és soronként csak egyetlen paramétert KELL feltüntetni.
 
-When the argument list is split across multiple lines, the closing parenthesis
-and opening brace MUST be placed together on their own line with one space
-between them.
+Ha a paraméterlistát külön sorokba tördeljük, akkor a listát lezáró kerek zárójelet
+és a függvénytörzs kezdetét jelző nyitó kapcsos zárójelet egy sorba KELL írni,
+szóközzel elválasztva, ahogy az alábbi példában is látható:
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-class ClassName
+class OsztalyNev
 {
     public function aVeryLongMethodName(
         ClassTypeHint $arg1,
         &$arg2,
         array $arg3 = []
     ) {
-        // method body
+        // metódus törzs
     }
 }
 ~~~
 
-When you have a return type declaration present, there MUST be one space after
-the colon followed by the type declaration. The colon and declaration MUST be
-on the same line as the argument list closing parenthesis with no spaces between
-the two characters.
+Ha a visszatérési érték típusát is meg kell adni, akkor az ezt jelző kettőspont és
+a típusdeklaráció közé egy szóközt KELL tenni. A kettőspontnak és a típusdeklarációnak
+a paraméterlistával azonos sorban KELL elhelyezkedni, úgy, hogy a paraméterlistát
+lezáró kerek zárójel és a kettőspont közé nem kell szóközt tenni.
 
 ~~~php
 <?php
 
 declare(strict_types=1);
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
 class ReturnTypeVariations
 {
@@ -539,15 +543,15 @@ class ReturnTypeVariations
 }
 ~~~
 
-In nullable type declarations, there MUST NOT be a space between the question mark
-and the type.
+Nullable típusdeklaráció esetén a kérdőjel és a visszatérési típus közé TILOS szóközt
+tenni.
 
 ~~~php
 <?php
 
 declare(strict_types=1);
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
 class ReturnTypeVariations
 {
@@ -558,11 +562,11 @@ class ReturnTypeVariations
 }
 ~~~
 
-When using the reference operator `&` before an argument, there MUST NOT be
-a space after it, like in the previous example.
+Ha az argumentum előtt referencia-operátort (`&`) használunk, akkor TILOS szóközt
+tenni utána, ahogy az előző példában is láthattuk.
 
-There MUST NOT be a space between the variadic three dot operator and the argument
-name:
+A változó hosszúságú paraméterlistát jelző hármaspont operátor (variadic oparator)
+és a paraméter neve közé TILOS szóközt tenni:
 
 ```php
 public function process(string $algorithm, ...$parts)
@@ -571,8 +575,8 @@ public function process(string $algorithm, ...$parts)
 }
 ```
 
-When combining both the reference operator and the variadic three dot operator,
-there MUST NOT be any space between the two of them:
+Ha a referencia-, és a hármaspont operátort kombináljuk, akkor szintén TILOS szóközt
+tenni a két operátor közé:
 
 ```php
 public function process(string $algorithm, &...$parts)
@@ -581,20 +585,19 @@ public function process(string $algorithm, &...$parts)
 }
 ```
 
-### 4.6 `abstract`, `final`, and `static`
+### 4.6 `abstract`, `final`, és `static` kulcsszavak
 
-When present, the `abstract` and `final` declarations MUST precede the
-visibility declaration.
+Ha szükség van rájuk, akkor az `abstract` és a `final` kulcsszavaknak meg KELL
+előzniük a láthatósági beállítást a deklarációkban.
 
-When present, the `static` declaration MUST come after the visibility
-declaration.
+Ellenben a `static` kulcsszónak a láthatósági deklaráció után KELL állnia.
 
 ~~~php
 <?php
 
-namespace Vendor\Package;
+namespace Szallito\Csomag;
 
-abstract class ClassName
+abstract class OsztalyNev
 {
     protected static $foo;
 
@@ -602,18 +605,18 @@ abstract class ClassName
 
     final public static function bar()
     {
-        // method body
+        // metódus törzs
     }
 }
 ~~~
 
-### 4.7 Method and Function Calls
+### 4.7 Metódus-, és függvényhívás
 
-When making a method or function call, there MUST NOT be a space between the
-method or function name and the opening parenthesis, there MUST NOT be a space
-after the opening parenthesis, and there MUST NOT be a space before the
-closing parenthesis. In the argument list, there MUST NOT be a space before
-each comma, and there MUST be one space after each comma.
+Metódus-, vagy függvényhívás esetén a hívott metódus vagy függvény neve és a paraméterlista
+kezdő zárójele közé - a 4.4. pontban megénekelt metódus-deklarációhoz hasonlóan - TILOS
+szóközt tenni, ugyanúgy a paraméterlistát határoló kerek zárójel nyitó eleme után és
+záró eleme előtt NEM LEHET szóköz. A meghívott metódus paraméterlistájában az egyes
+paraméterek utáni vessző elé TILOS szóközt tenni, a vessző után ellenben SZÜKSÉGES.
 
 ~~~php
 <?php
@@ -623,19 +626,20 @@ $foo->bar($arg1);
 Foo::bar($arg2, $arg3);
 ~~~
 
-Argument lists MAY be split across multiple lines, where each subsequent line
-is indented once. When doing so, the first item in the list MUST be on the
-next line, and there MUST be only one argument per line. A single argument being
-split across multiple lines (as might be the case with an anonymous function or
-array) does not constitute splitting the argument list itself.
+A hívandó metódus vagy függvény paraméterlistáját több sorba is szét LEHET tördelni,
+ahol minden egyes sort egyszeres behúzással kell kezdeni. Ennél a megoldásnál
+a lista első elemének a következő sorba KELL kerülnie és soronként csak egyetlen
+argumentumot KELL feltüntetni. Ha egy egyedüli paraméter több sort foglal el (ahogy
+a névtelen függvények vagy a tömbök esetében), az nem jelenti paraméterlista
+széttördelését.
 
 ~~~php
 <?php
 
 $foo->bar(
-    $longArgument,
-    $longerArgument,
-    $muchLongerArgument
+    $hosszuArgumentum,
+    $hosszabbArgumentum,
+    $iszonyuHosszuArgumentum
 );
 ~~~
 
