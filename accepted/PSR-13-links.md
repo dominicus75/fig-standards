@@ -11,13 +11,12 @@ hypermedia link independently of the serialization format that is used. That in 
 a system to serialize a response with hypermedia links into one or more wire formats independently
 of the process of deciding what those links should be.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119](http://tools.ietf.org/html/rfc2119).
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 ### References
 
-- [RFC 2119](http://tools.ietf.org/html/rfc2119)
+- [RFC 2119](../related-rfcs/2119.md)
 - [RFC 4287](https://tools.ietf.org/html/rfc4287)
 - [RFC 5988](https://tools.ietf.org/html/rfc5988)
 - [RFC 6570](https://tools.ietf.org/html/rfc6570)
