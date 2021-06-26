@@ -1,20 +1,21 @@
 [Kezdőlap](../README.md)
 
-# Link definition interfaces
+# Hivatkozásmeghatározó interfészek
 
-Hypermedia links are becoming an increasingly important part of the web, in both HTML contexts
-and various API format contexts. However, there is no single common hypermedia format, nor
-is there a common way to represent links between formats.
+A hipermédia hivatkozások az internet egyre fontosabb részévé válnak, mind HTML, mind
+valamilyen API kontextusban. Ennek ellenére még nem létezik egy közös hipermédia
+formátum, sem a formátumok közötti kapcsolat ábrázolására szolgáló általános módszer.
 
-This specification aims to provide PHP developers with a simple, common way of representing a
-hypermedia link independently of the serialization format that is used. That in turn allows
-a system to serialize a response with hypermedia links into one or more wire formats independently
-of the process of deciding what those links should be.
+A jelen specifikáció célja, hogy a PHP fejlesztők számára egyszerű, általánosan
+alkalmazható, a használt szerializációs formátumtól független módszert biztosítson
+a hipermédia hivatkozások ábrázolására. Ez lehetővé teszi a rendszer számára, hogy
+a választ hipermédia hivatkozásokkal együtt szerializálja, egy vagy több fizikai
+formátumban, függetlenül a hivatkozások formátumától.
 
 A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
 kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-### References
+### Referenciák
 
 - [RFC 2119](../related-rfcs/2119.md)
 - [RFC 4287](https://tools.ietf.org/html/rfc4287)
@@ -23,9 +24,9 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 - [IANA Link Relations Registry](http://www.iana.org/assignments/link-relations/link-relations.xhtml)
 - [Microformats Relations List](http://microformats.org/wiki/existing-rel-values#HTML5_link_type_extensions)
 
-## 1. Specification
+## 1. Specifikáció
 
-### 1.1 Basic links
+### 1.1 Alapvető hivatkozások
 
 A Hypermedia Link consists of, at minimum:
 - A URI representing the target resource being referenced.
@@ -42,7 +43,7 @@ specification.
 *    **Serializer** - A library or other system that takes one or more Link objects and produces
 a serialized representation of it in some defined format.
 
-### 1.2 Attributes
+### 1.2 Tulajdonságok
 
 All links MAY include zero or more additional attributes beyond the URI and relationship.
 There is no formal registry of the values that are allowed here, and validity of values
@@ -71,7 +72,7 @@ unless doing so changes the semantic meaning of the result. This rule applies if
 and only if the attribute is boolean `false`, not for any other "falsey" value in PHP
 such as integer 0.
 
-### 1.3 Relationships
+### 1.3 Kapcsolatok
 
 Link relationships are defined as strings, and are either a simple keyword in
 case of a publicly defined relationship or an absolute URI in the case of a
@@ -90,7 +91,7 @@ A relationship that is not defined in one of the above registries or a similar
 public registry is considered "private", that is, specific to a particular
 application or use case. Such relationships MUST use an absolute URI.
 
-## 1.4 Link Templates
+## 1.4 Hivatkozás sablonok
 
 [RFC 6570](https://tools.ietf.org/html/rfc6570) defines a format for URI templates, that is,
 a pattern for a URI that is expected to be filled in with values provided by a client
@@ -98,7 +99,7 @@ tool. Some hypermedia formats support templated links while others do not, and m
 have a special way to denote that a link is a template. A Serializer for a format
 that does not support URI Templates MUST ignore any templated Links it encounters.
 
-## 1.5 Evolvable providers
+## 1.5 Fejleszthető szolgáltatók
 
 In some cases, a Link Provider may need the ability to have additional links
 added to it. In others, a link provider is necessarily read-only, with links
@@ -111,7 +112,7 @@ incompatible. Therefore, the `EvolvableLinkProviderInterface`'s single method
 requires that a new object be returned, identical to the original but with
 an additional Link object included.
 
-## 1.6 Evolvable link objects
+## 1.6 Fejleszthető hivatkozás objektumok
 
 Link objects are in most cases value objects. As such, allowing them to evolve
 in the same fashion as PSR-7 value objects is a useful option. For that reason,
@@ -123,12 +124,12 @@ There is no evolvable method for templated values, however, as the templated val
 link is based exclusively on the href value. It MUST NOT be set independently, but
 derived from whether or not the href value is an RFC 6570 link template.
 
-## 2. Package
+## 2. A csomag
 
 The interfaces and classes described are provided as part of the
 [psr/link](https://packagist.org/packages/psr/link) package.
 
-## 3. Interfaces
+## 3. Interfészek
 
 ### 3.1 `Psr\Link\LinkInterface`
 
