@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 Common Interface for Caching Libraries
 ======================================
 
@@ -281,3 +283,5 @@ interface InvalidArgumentException extends CacheException
 {
 }
 ~~~
+
+[Kezdőlap](../README.md)

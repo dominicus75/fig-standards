@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 # Link definition interfaces
 
 Hypermedia links are becoming an increasingly important part of the web, in both HTML contexts
@@ -342,3 +344,5 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
     public function withoutLink(LinkInterface $link);
 }
 ~~~
+
+[Kezdőlap](../README.md)

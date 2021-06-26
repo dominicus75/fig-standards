@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 HTTP Server Request Handlers
 ============================
 
@@ -128,3 +130,5 @@ interface MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 }
 ```
+
+[Kezdőlap](../README.md)

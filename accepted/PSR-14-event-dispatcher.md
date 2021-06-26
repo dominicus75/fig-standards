@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 Event Dispatcher
 ================
 
@@ -178,3 +180,5 @@ interface StoppableEventInterface
     public function isPropagationStopped() : bool;
 }
 ```
+
+[Kezdőlap](../README.md)

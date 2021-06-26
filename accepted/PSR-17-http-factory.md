@@ -1,3 +1,5 @@
+[Kezdőlap](../README.md)
+
 HTTP Factories
 ==============
 
@@ -45,7 +47,7 @@ interface RequestFactoryInterface
      * Create a new request.
      *
      * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request. 
+     * @param UriInterface|string $uri The URI associated with the request.
      */
     public function createRequest(string $method, $uri): RequestInterface;
 }
@@ -94,7 +96,7 @@ interface ServerRequestFactoryInterface
      * determine the HTTP method or URI, which must be provided explicitly.
      *
      * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request. 
+     * @param UriInterface|string $uri The URI associated with the request.
      * @param array $serverParams An array of Server API (SAPI) parameters with
      *     which to seed the generated request instance.
      */
@@ -217,3 +219,5 @@ interface UriFactoryInterface
     public function createUri(string $uri = '') : UriInterface;
 }
 ```
+
+[Kezdőlap](../README.md)
