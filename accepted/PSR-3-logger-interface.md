@@ -17,10 +17,10 @@ alkalmazás-naplóba.
 A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
 [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-A `megvalósító` alatt ebben a dokumentumban azt a személyt értjük, aki implementálja
+A `megvalósító` kifejezés ebben a dokumentumban arra a kódra értendő, ami megvalósítja
 a `LoggerInterface`-t egy naplózáshoz kapcsolódó függvénykönyvtárban, vagy
-keretrendszerben. Az így elkészült naplózókat használókra a szöveg `felhasználóként`
-hivatkozik.
+keretrendszerben. Az így elkészült naplózókat alkalmazó (meghívó) kódokra a jelen
+dokumentum `felhasználó`-ként hivatkozik.
 
 ## 1. Specifikáció
 
