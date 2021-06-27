@@ -2,7 +2,7 @@
 
 # Hivatkozásmeghatározó interfészek
 
-A hipermédia hivatkozások az internet egyre fontosabb részévé válnak, mind HTML, mind
+A **hipermédia**<sup id="1">[[1]](#note1)</sup> hivatkozások az internet egyre fontosabb részévé válnak, mind HTML, mind
 valamilyen API kontextusban. Ennek ellenére még nem létezik egy közös hipermédia
 formátum, sem a formátumok közötti kapcsolat ábrázolására szolgáló általános módszer.
 
@@ -26,51 +26,61 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 
 ## 1. Specifikáció
 
-### 1.1 Alapvető hivatkozások
+### 1.1 Alapvető hivatkozások<sup id="2">[[2]](#note2)</sup>
 
-A Hypermedia Link consists of, at minimum:
-- A URI representing the target resource being referenced.
-- A relationship defining how the target resource relates to the source.
+Egy hipermédia hivatkozás minimálisan az alábbiakból áll:
+- a hivatkozott célerőforrást reperezentáló URI
+- a forrás és a célerőforrás viszonyát meghatározó kapcsolat.
 
-Various other attributes of the Link may exist, depending on the format used. As additional attributes
-are not well-standardized or universal, this specification does not seek to standardize them.
+Az alkalmazott formátumtól függően egy hivatkozásnak számos egyéb tulajdonsága is lehet.
+Mivel a további attribútumok nem univerzálisak és nincsenek jól szabványosítva, ezért
+ez a specifikáció sem foglalkozik velük.
 
-For the purposes of this specification, the following definitions apply.
+Jelen specifikáció alkalmazásában az alábbi fogalmak jelentése a következő:
 
-*    **Implementing Object** - An object that implements one of the interfaces defined by this
-specification.
+*    **Megvalósító objektum** - olyan objektum, amely megvalósítja a jelen specifikációban
+meghatározott interfészek egyikét.
 
-*    **Serializer** - A library or other system that takes one or more Link objects and produces
-a serialized representation of it in some defined format.
+*    **Szerializáló** - egy függvénykönyvtár vagy más rendszer, amely egy vagy több
+Link objektumot vesz át, majd egy olyan megadott formára alakítja, amely külső
+adattárolóra lementhető, és amelyből az eredeti állapot később helyreállítható.
 
 ### 1.2 Tulajdonságok
 
-All links MAY include zero or more additional attributes beyond the URI and relationship.
-There is no formal registry of the values that are allowed here, and validity of values
-is dependent on context and often on a particular serialization format. Commonly supported
-values include 'hreflang', 'title', and 'type'.
+Az URI és a kapcsolat mellett minden hivatkozásnak nulla vagy több további tulajdonsága
+LEHET. Az itt engedélyezett értékekről nincs formális nyilvántartás, azok érvényessége
+a kontextustól és gyakran az alkalmazott szerializálási formátumtól is függ. Az
+általánosan támogatott tulajdonságok közé tartozik a `hreflang` (*a linkelt dokumentum
+nyelve, kétbetűs nyelvkóddal ábrázolva*), `title`, vagy a `type` (*a hivatkozott
+dokumentum média típusa*).
 
-Serializers MAY omit attributes on a link object if required to do so by the serialization
-format. However, serializers SHOULD encode all provided attributes possible in order to
-allow for user-extension unless prevented by a serialization format's definition.
+A szerializálóknak el LEHET hagyni a hivatkozás objektum tulajdonságait, ha az
+alkalmazott szerializációs formátum ezt megköveteli. Ellenben a szerializálóknak
+kódolni KELLENE az összes rendelkezésre álló attribútumot a felhasználói kiterjesztés
+lehetővé tétele érdekében, hacsak a szerializációs formátum meghatározása ezt meg
+nem akadályozza.
 
-Some attributes (commonly `hreflang`) may appear more than once in their context. Therefore,
-an attribute value MAY be an array of values rather than a simple value. Serializers MAY
-encode that array in whatever format is appropriate for the serialized format (such
-as a space-separated list, comma-separated list, etc.). If a given attribute is not
-allowed to have multiple values in a particular context, serializers MUST use the first
-value provided and ignore all subsequent values.
+Némely tulajdonság (általában a `hreflang`) egynél többször is megjelenhet a kontextusában.
+Ebből kifolyólag egy tulajdonság értéke LEHET tömb is. A szerializálóknak ezt a tömböt
+bármilyen formátumban LEHET kódolni, amely megfelel a szerializált formátumnak
+(szóközzel vagy vesszővel elválasztott lista, stb.). Ha a megadott tulajdonságnak
+az adott kontextusban nem lehet több értéke, akkor a szerializálóknak az első értéket
+KELL használniuk, az utána következő értékek figyelmenkivül hagyásával.
 
-If an attribute value is boolean `true`, serializers MAY use abbreviated forms if appropriate
-and supported by a serialization format. For example, HTML permits attributes to
-have no value when the attribute's presence has a boolean meaning. This rule applies
-if and only if the attribute is boolean `true`, not for any other "truthy" value
-in PHP such as integer 1.
+Ha a tulajdonság értéke logikai igaz (`true`), akkor a szerializálóknak LEHET a
+megfelelő rövidített formát is használni, ha a szerializálási formátum ezt lehetővé
+teszi. Például a HTML szabvány megengedi, hogy azon attribútumoknak, amelyek jelenlétének
+logikai jelntése van (ilyen pl. a `required` vagy a `multiple` tulajdonság az
+űrlapoknál), ne legyen értéke (maga az tulajdonság jelenléte hordozza az értéket).
+Ez a szabály csak és kizárólag azon esetekre érvényes, ha a tulajdonság értéke kimondott
+logikai igaz (`true`), de nem vonatkozik a PHP más, igazként is értelmezhető adattípusára
+(pl. az `integer` típusú `1`).
 
-If an attribute value is boolean `false`, serializers SHOULD omit the attribute entirely
-unless doing so changes the semantic meaning of the result. This rule applies if
-and only if the attribute is boolean `false`, not for any other "falsey" value in PHP
-such as integer 0.
+Ha a tulajdonság értéke logikai hamis (`false`), akkor a szerializálóknak AJÁNLOTT
+teljesen figyelmenkivül hagyni azt, kivéve, ha ez megváltoztatná az eredmény szematikai
+jelentését. Ez a szabály csak és kizárólag azon esetekre érvényes, ha a tulajdonság
+értéke kimondott logikai hamis (`false`), de nem vonatkozik a PHP más, hamisként
+is értelmezhető adattípusára (pl. az `integer` típusú `0`).
 
 ### 1.3 Kapcsolatok
 
@@ -344,5 +354,32 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
     public function withoutLink(LinkInterface $link);
 }
 ~~~
+
+### A fordító jegyzetei:
+
+* <span id="note1">[[1]](#1)</span> *A **hipermédia** a hipertext fogalmát úgy terjeszti
+  ki, hogy az egyes csomópontokban nemcsak újabb szöveget (szöveges dokumentumot),
+  hanem tetszőleges más médiaelemet, képet, hangot, videót is találhatunk. A szakirodalomban
+  ma már ritkán különböztetik meg a hipertext és hipermédia fogalmát, gyakran szinonim
+  kifejezésként alkalmazzák őket. A hipertext és hipermédia lényeges tulajdonsága
+  a nemlineáris információláncolás. Ha az egyes elemek bizonyos jelentésbeli összefüggéseik
+  mentén össze vannak kapcsolva, akkor ezt a nemlineáris összefüggésrendszert nevezzük
+  hipertextnek, illetve bizonyos esetekben hipermédiának. A hipermédia-rendszer a
+  hipertext és a multimédia közös halmazát alkotja, magában egyesítvén a hipertext
+  kapcsolódási és a multimédia összetett médiarendszerét. A hipermédia-rendszer az
+  információk nemlineáris láncolatából áll. Az információegységek minden kapcsolata
+  hivatkozásokkal valósul meg. Egyszerű módon integrál összetett médiumokat.*
+  (Forgó Sándor, Lengyelné Molnár Tünde: [Multimédiafejlesztés](https://regi.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0021_47_multimediafejlesztes/2210_a_hipertext_s_a_hipermdia.html) című könyve nyomán)
+* <span id="note2">[[2]](#2)</span> *A linkek azok a szervező eszközök a hipertexten
+  belül, melyek megteremtik a kapcsolatot a tetszőleges szempont alapján összetartozó,
+  egymással asszociálható információs egységek, csomópontok vagy csomópontrészek
+  között. A linkek lehetnek egyirányúak, amikor csak azt tudjuk megmondani, egy adott
+  dokumentumból hová mutatnak linkek. A kétirányú linkekben az is megállapítható,
+  mely csomópontokból mutatnak linkek agy adott dokumentum valamely pontjára. A linkek
+  jelölhetnek valamilyen szemantikus kapcsolatot két dokumentum között, s a kapcsolat
+  jellege szerint a linkek tipizálhatók. A web-terminológiában a linkek referenciák
+  (egy cím), melyek a web valamely erőforrására mutatnak. Ezek az erőforrások lehetnek
+  egy HTML oldal, egy kép, hangfájl, videó stb.*
+  (Forgó Sándor, Lengyelné Molnár Tünde: [Multimédiafejlesztés](https://regi.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0021_47_multimediafejlesztes/2210_a_hipertext_s_a_hipermdia.html) című könyve nyomán)
 
 [Kezdőlap](../README.md)
