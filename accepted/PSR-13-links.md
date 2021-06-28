@@ -84,32 +84,31 @@ is értelmezhető adattípusára (pl. az `integer` típusú `0`).
 
 ### 1.3 Kapcsolatok
 
-Link relationships are defined as strings, and are either a simple keyword in
-case of a publicly defined relationship or an absolute URI in the case of a
-private relationships.
+A hivatkozások kapcsolatai karakterláncként vannak meghatározva, ami vagy egy
+szimpla kulcsszó (publikus kapcsolat esetén), vagy egy abszolút URI (privát
+kapcsolat esetén).
 
-In case a simple keyword is used, it SHOULD match one from the IANA registry at:
+Abban az esetben, ha a kapcsolat egy kulcsszóval van meghatározva, annak
+olyannak KELLENE lenni, ami szerepel az [IANA nyilvántartásában](http://www.iana.org/assignments/link-relations/link-relations.xhtml).
+Opcionálisan a [microformats.org nyilvántartása](http://microformats.org/wiki/existing-rel-values)
+is használható, de ez nem minden kontextusban érvényes.
 
-http://www.iana.org/assignments/link-relations/link-relations.xhtml
+Azt a kapcsolatot, amelyet a fenti vagy más hasonló publikus nyilvántartásokban
+szereplő kulcsszavakkal nem lehet leírni, privátnak kell tekinteni, ami egy
+adott alkalmazásra vagy használati esetre jellemző. Az ilyen kapcsolatoknál
+abszolút URI-t KELL megadni.
 
-Optionally the microformats.org registry MAY be used, but this may not be valid
-in every context:
+### 1.4 Hivatkozás sablonok<sup id="3">[[3]](#note3)</sup>
 
-http://microformats.org/wiki/existing-rel-values
+Az [RFC 6570](https://tools.ietf.org/html/rfc6570) meghatározza az URI-sablonok
+formátumát, ami lényegében egy olyan minta, amelyet az ügyfél eszköz által megadott
+értékekkel kell feltölteni. Némely hipermédia formátum támogatja a hivatkozás sablonokat,
+míg mások esetleg nem. Egyes hipermédia formátumok egyedi módon jelzik, hogy a
+hivatkozás sablont tartalmaz. A sablonokat nem támogató formátumokat kezelő
+szerializálóknak figyelmen kívül KELL hagyniuk a sablonos hivatkozásokat, ha
+ilyennel találkoznak.
 
-A relationship that is not defined in one of the above registries or a similar
-public registry is considered "private", that is, specific to a particular
-application or use case. Such relationships MUST use an absolute URI.
-
-## 1.4 Hivatkozás sablonok
-
-[RFC 6570](https://tools.ietf.org/html/rfc6570) defines a format for URI templates, that is,
-a pattern for a URI that is expected to be filled in with values provided by a client
-tool. Some hypermedia formats support templated links while others do not, and may
-have a special way to denote that a link is a template. A Serializer for a format
-that does not support URI Templates MUST ignore any templated Links it encounters.
-
-## 1.5 Fejleszthető szolgáltatók
+### 1.5 Fejleszthető szolgáltatók
 
 In some cases, a Link Provider may need the ability to have additional links
 added to it. In others, a link provider is necessarily read-only, with links
@@ -122,7 +121,7 @@ incompatible. Therefore, the `EvolvableLinkProviderInterface`'s single method
 requires that a new object be returned, identical to the original but with
 an additional Link object included.
 
-## 1.6 Fejleszthető hivatkozás objektumok
+### 1.6 Fejleszthető hivatkozás objektumok
 
 Link objects are in most cases value objects. As such, allowing them to evolve
 in the same fashion as PSR-7 value objects is a useful option. For that reason,
@@ -281,7 +280,7 @@ interface EvolvableLinkInterface extends LinkInterface
 }
 ~~~
 
-#### 3.2 `Psr\Link\LinkProviderInterface`
+### 3.2 `Psr\Link\LinkProviderInterface`
 
 ~~~php
 <?php
@@ -315,7 +314,7 @@ interface LinkProviderInterface
 }
 ~~~
 
-#### 3.3 `Psr\Link\EvolvableLinkProviderInterface`
+### 3.3 `Psr\Link\EvolvableLinkProviderInterface`
 
 ~~~php
 <?php
@@ -381,5 +380,9 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
   (egy cím), melyek a web valamely erőforrására mutatnak. Ezek az erőforrások lehetnek
   egy HTML oldal, egy kép, hangfájl, videó stb.*
   (Forgó Sándor, Lengyelné Molnár Tünde: [Multimédiafejlesztés](https://regi.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0021_47_multimediafejlesztes/2210_a_hipertext_s_a_hipermdia.html) című könyve nyomán)
+* <span id="note3">[[3]](#3)</span> *Az URI-sablonok nyomtatható unicode karakterekből
+  álló karakterláncok, amelyek nulla vagy több beágyazott változó-kifejezést tartalmaznak.
+  Minden kifejezést kapcsoszárójelek (`{` és `}`) határolnak. A részletes szintaxist
+  a vonatkozó RFC [2. fejezete](https://datatracker.ietf.org/doc/html/rfc6570#section-2) tárgyalja.
 
 [Kezdőlap](../README.md)
