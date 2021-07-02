@@ -125,7 +125,7 @@ eggyel kevesebbet tartalmaz, mint az eredeti).
 
 ### 1.6 Fejleszthető hivatkozás objektumok
 
-A Link objektumok a legtöbb esetben értékobjektumok. Ezért hasznos lehet képessé
+A Link objektumok a legtöbb esetben értékobjektumok<sup id="4">[[4]](#note4)</sup>. Ezért hasznos lehet képessé
 tenni őket a PSR-7 értékobjektumokhoz hasonló fejlődésre. Ezen okból kifolyólag
 a jelen szabvány leír egy további `EvolvableLinkInterface`-t is, ami olyan metódusokat
 biztosít, amelyek lehetővé teszik új objektumpéldányok létrehozást az eredeti
@@ -390,5 +390,9 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
   álló karakterláncok, amelyek nulla vagy több beágyazott változó-kifejezést tartalmaznak.
   Minden kifejezést kapcsoszárójelek (`{` és `}`) határolnak. A részletes szintaxist
   a vonatkozó RFC [2. fejezete](https://datatracker.ietf.org/doc/html/rfc6570#section-2) tárgyalja.
+* <span id="note4">[[4]](#4)</span> *Az értékobjektum (vagy adatátviteli objektum, DTO)
+  egy egyszerű (primitív) értéket reprezántáló kisebb, jellemzően immutable-típusú objektum.
+  Értékobjektumok esetében két objektum egyenlősége nem azok identitásán, hanem a
+  bennük tárolt érték megegyezőségén alapszik.*
 
 [Kezdőlap](../README.md)
