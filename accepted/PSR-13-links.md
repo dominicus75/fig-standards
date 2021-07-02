@@ -110,33 +110,39 @@ ilyennel találkoznak.
 
 ### 1.5 Fejleszthető szolgáltatók
 
-In some cases, a Link Provider may need the ability to have additional links
-added to it. In others, a link provider is necessarily read-only, with links
-derived at runtime from some other data source. For that reason, modifiable providers
-are a secondary interface that may optionally be implemented.
+Bizonyos esetben a hivatkozás szolgáltatónak (Link Provider) szüksége lehet a képességre,
+hogy további hivatkozásokat tudjon hozzáadni. Más esetekben futásidőben a hivatkozás
+szolgáltató szükségképpen csak olvasható, más adatforrásból származó hivatkozásokkal.
+Ezokból kifolyólag a módosítható providerek másodlagos interfészek, amelyek implementálása
+opcionális.
 
-Additionally, some Link Provider objects, such as PSR-7 Response objects, are
-by design immutable. That means methods to add links to them in-place would be
-incompatible. Therefore, the `EvolvableLinkProviderInterface`'s single method
-requires that a new object be returned, identical to the original but with
-an additional Link object included.
+Ráadásul néhány Link Provider objektum, mint például a [PSR-7](https://github.com/dominicus75/fig-standards/blob/master/accepted/PSR-7-http-message.md#33-psrhttpmessageresponseinterface) Response objektum megváltoztathatalannak (immutable) van tervezve. Ez azt jelenti,
+hogy a linkek hozzáadásra irányuló metódusok ezekkel inkompatibilisek lennének.
+Ebből kifolyólag az `EvolvableLinkProviderInterface` metódusai megkövetelik egy új
+objektumpéldány visszaadását, amely megegyezik a kiindulási objektummal, azt leszámítva,
+hogy tartalmaz egy további Link objektumot is (illetve a `removeLink()` esetén
+eggyel kevesebbet tartalmaz, mint az eredeti).
 
 ### 1.6 Fejleszthető hivatkozás objektumok
 
-Link objects are in most cases value objects. As such, allowing them to evolve
-in the same fashion as PSR-7 value objects is a useful option. For that reason,
-an additional EvolvableLinkInterface is included that provides methods to
-produce new object instances with a single change. The same model is used by PSR-7
-and, thanks to PHP's copy-on-write behavior, is still CPU and memory efficient.
+A Link objektumok a legtöbb esetben értékobjektumok. Ezért hasznos lehet képessé
+tenni őket a PSR-7 értékobjektumokhoz hasonló fejlődésre. Ezen okból kifolyólag
+a jelen szabvány leír egy további `EvolvableLinkInterface`-t is, ami olyan metódusokat
+biztosít, amelyek lehetővé teszik új objektumpéldányok létrehozást az eredeti
+megváltoztatása nélkül. Ugyanez a modell van használatban a PSR-7 szabványban is,
+ami a PHP által alkalmazott másolás íráskor (copy on write, COW) technikának hála
+még mindig CPU-, és memória-hatékony.
 
-There is no evolvable method for templated values, however, as the templated value of a
-link is based exclusively on the href value. It MUST NOT be set independently, but
-derived from whether or not the href value is an RFC 6570 link template.
+A sablonokat tartalmazó értékekhez nincs kidolgozandó metódus, mivel egy hivatkozás
+sablonos értéke kizárólag a `href` tulajdonság értékén alapul. Ezért TILOS önállóan
+beállítani, e helyett azt kell megállapítani, hogy a `href` értéke tartalmaz-e az
+[RFC 6570](https://tools.ietf.org/html/rfc6570) által meghatározott URI-sablont,
+vagy nem.
 
 ## 2. A csomag
 
-The interfaces and classes described are provided as part of the
-[psr/link](https://packagist.org/packages/psr/link) package.
+A leírt interfészek és osztályok a [psr/link](https://packagist.org/packages/psr/link)
+csomag részei.
 
 ## 3. Interfészek
 
