@@ -154,50 +154,52 @@ csomag részei.
 namespace Psr\Link;
 
 /**
- * A readable link object.
+ * Csak olvasható Link objektum.
  */
 interface LinkInterface
 {
     /**
-     * Returns the target of the link.
+     * Visszatér a hivatkozás célpontjával.
      *
-     * The target link must be one of:
-     * - An absolute URI, as defined by RFC 5988.
-     * - A relative URI, as defined by RFC 5988. The base of the relative link
-     *     is assumed to be known based on context by the client.
-     * - A URI template as defined by RFC 6570.
+     * A hivatkozás céljának az alábbiak egyikének kell lennie:
+     * - egy abszolút URI, az RFC 5988 meghatározása szerint.
+     * - relatív URI, az RFC 5988 meghatározása szerint. Feltételezzük, hogy a relatív
+     *   hivatkozás bázisát (a base html tag href tulajdonságában beállított érték)
+     *   a kliens a kontextus alapján felismeri.
+     * - URI sablon az RFC 6570 meghatározása szerint.
      *
-     * If a URI template is returned, isTemplated() MUST return True.
+     * Ha URI-sablont adunk vissza, akkor az isTemplated() metódusnak true értékkel
+     * KELL visszatérnie.
      *
      * @return string
      */
     public function getHref();
 
     /**
-     * Returns whether or not this is a templated link.
+     * Megállapítja, hogy a hivatkozás tartalmaz-e URI-sablont.
      *
      * @return bool
-     *   True if this link object is templated, False otherwise.
+     *  True, ha az objektum URI-sablont tartalmaz, egyébként False.
      */
     public function isTemplated();
 
     /**
-     * Returns the relationship type(s) of the link.
+     * Visszadja a hivatkozás kapcsolattípusát/típusait.
      *
-     * This method returns 0 or more relationship types for a link, expressed
-     * as an array of strings.
+     * Nulla vagy több, a hivatkozáshoz tartozó kapcsolattípust ad vissza egy
+     * string értékeket tartalmazó tömbben.
      *
      * @return string[]
      */
     public function getRels();
 
     /**
-     * Returns a list of attributes that describe the target URI.
+     * Visszaadja az URI tulajdonságainak listáját.
      *
      * @return array
-     *   A key-value list of attributes, where the key is a string and the value
-     *  is either a PHP primitive or an array of PHP strings. If no values are
-     *  found an empty array MUST be returned.
+     *  A tulajdonságok listája kulcs-érték párok formájában, ahol a kulcs típusa
+     *  string, az érték pedig a PHP valamely elemi adattípusa, vagy string-tömb.
+     *  Ha nem található egyetlen tulajdonság sem, akkor üres tömböt KELL visszaadni.
      */
     public function getAttributes();
 }
@@ -211,75 +213,76 @@ interface LinkInterface
 namespace Psr\Link;
 
 /**
- * An evolvable link value object.
+ * Egy fejleszthető hivatkozás értékobjektum.
  */
 interface EvolvableLinkInterface extends LinkInterface
 {
     /**
-     * Returns an instance with the specified href.
+     * Visszaad egy új példányt a megadott href tulajdonsággal.
      *
      * @param string $href
-     *   The href value to include. It must be one of:
-     *     - An absolute URI, as defined by RFC 5988.
-     *     - A relative URI, as defined by RFC 5988. The base of the relative link
-     *       is assumed to be known based on context by the client.
-     *     - A URI template as defined by RFC 6570.
-     *     - An object implementing __toString() that produces one of the above
-     *       values.
+     *   A belefoglalandó href értéknek az alábbiak egyikének kell lennie:
+     *    - egy abszolút URI, az RFC 5988 meghatározása szerint.
+     *    - relatív URI, az RFC 5988 meghatározása szerint. Feltételezzük, hogy a relatív
+     *      hivatkozás bázisát (a base html tag href tulajdonságában beállított érték)
+     *      a kliens a kontextus alapján felismeri.
+     *    - URI sablon az RFC 6570 meghatározása szerint.
+     *    - Egy __toString() metódust megvalósító objektum, amely a fenti értékek
+     *      egyikét állítja elő.
      *
-     * An implementing library SHOULD evaluate a passed object to a string
-     * immediately rather than waiting for it to be returned later.
+     * Egy megvalósító könyvtárnak az átadott objektumot rögtön karakterláncá
+     * KELLENE alakítania, ahelyet, hogy később visszadná.
      *
      * @return static
      */
     public function withHref($href);
 
     /**
-     * Returns an instance with the specified relationship included.
+     * Egy olyan objektumpéldányt ad vissza, amelyben a megadott kapcsolat szerepel.
      *
-     * If the specified rel is already present, this method MUST return
-     * normally without errors, but without adding the rel a second time.
+     * Ha a megadott kapcsolat már létezik, akkor ennek a metódusnak hiba nélkül
+     * KELL visszatérnie, a nélkül, hogy a már létező kapcsolatot ismét hozzáadta volna.
      *
      * @param string $rel
-     *   The relationship value to add.
+     *   A hozzáadanadó kapcsolat értéke.
      * @return static
      */
     public function withRel($rel);
 
     /**
-     * Returns an instance with the specified relationship excluded.
+     * Visszaad egy olyan objektumpéldányt, amely a megadott kapcsolatot már
+     * nem tartalmazza.
      *
-     * If the specified rel is already not present, this method MUST return
-     * normally without errors.
+     * Ha a megadott kapcsolat már nem létezik, akkor ennek a metódusnak hiba nélkül
+     * KELL visszatérnie.
      *
      * @param string $rel
-     *   The relationship value to exclude.
+     *   Az eltávolítandó kapcsolat értéke.
      * @return static
      */
     public function withoutRel($rel);
 
     /**
-     * Returns an instance with the specified attribute added.
+     * Visszaad egy új objektumpéldányt a megadott tulajdonság hozzáadásával.
      *
-     * If the specified attribute is already present, it will be overwritten
-     * with the new value.
+     * Ha a megadott tulajdonság már létezik, akkor felülírja azt az új értékkel.
      *
      * @param string $attribute
-     *   The attribute to include.
+     *   Beillesztendő tulajdonság neve.
      * @param string $value
-     *   The value of the attribute to set.
+     *   A tulajdonság beállítandó értéke.
      * @return static
      */
     public function withAttribute($attribute, $value);
 
     /**
-     * Returns an instance with the specified attribute excluded.
+     * Visszaad egy új objektumpéldányt a megadott tulajdonság nélkül.
      *
-     * If the specified attribute is not present, this method MUST return
-     * normally without errors.
+     * Ha a megadott tulajdonság már nem létezik, akkor ennek a metódusnak hiba nélkül
+     * KELL visszatérnie.
      *
      * @param string $attribute
-     *   The attribute to remove.
+     *   Az eltávolítandó tulajdonság.
      * @return static
      */
     public function withoutAttribute($attribute);
@@ -294,25 +297,30 @@ interface EvolvableLinkInterface extends LinkInterface
 namespace Psr\Link;
 
 /**
- * A link provider object.
+ * Egy hivatkozás szolgáltató objektum.
  */
 interface LinkProviderInterface
 {
     /**
-     * Returns an iterable of LinkInterface objects.
+     * LinkInterface objektumokat tartalmazó bejárható adatszerkezetet ad vissza.
      *
-     * The iterable may be an array or any PHP \Traversable object. If no links
-     * are available, an empty array or \Traversable MUST be returned.
+     * A bejárható adatszerkezet lehet tömb, vagy a PHP \Traversable interfészt
+     * megvalósító bármilyen objektum. Ha egy LinkInterface objektum sem áll rendelkezésre,
+     * akkor ennek a metódusnak egy üres tömböt vagy \Traversable objektumot KELL
+     * visszadnia.
      *
      * @return LinkInterface[]|\Traversable
      */
     public function getLinks();
 
     /**
-     * Returns an iterable of LinkInterface objects that have a specific relationship.
+     * LinkInterface objektumokat tartalmazó bejárható adatszerkezetet ad vissza,
+     * amely tartalmazza a megadott kapcsolatot.
      *
-     * The iterable may be an array or any PHP \Traversable object. If no links
-     * with that relationship are available, an empty array or \Traversable MUST be returned.
+     * A bejárható adatszerkezet lehet tömb, vagy a PHP \Traversable interfészt
+     * megvalósító bármilyen objektum. Ha egy olyan LinkInterface objektum sem áll
+     * rendelkezésre, amely tartalmazza a megadott kapcsolatot, akkor ennek a metódusnak
+     * egy üres tömböt vagy \Traversable objektumot KELL visszadnia.
      *
      * @return LinkInterface[]|\Traversable
      */
@@ -328,32 +336,34 @@ interface LinkProviderInterface
 namespace Psr\Link;
 
 /**
- * An evolvable link provider value object.
+ * Egy fejleszthető hivatkozás szolgáltató értékobjektum.
  */
 interface EvolvableLinkProviderInterface extends LinkProviderInterface
 {
     /**
-     * Returns an instance with the specified link included.
+     * Visszaad egy olyan objektumpéldányt, amely a megadott LinkInterface objektumot
+     * is tartalmazza.
      *
-     * If the specified link is already present, this method MUST return normally
-     * without errors. The link is present if $link is === identical to a link
-     * object already in the collection.
+     * Ha a megadott hivatkozás már létezik, akkor ennek a metódusnak hiba nélkül
+     * KELL visszatérnie. A LinkInterface objektum akkor létezik, ha a $link azonos
+     * (===) a gyüjteményben már megtalálható egyik LinkInterface objektummal.
      *
      * @param LinkInterface $link
-     *   A link object that should be included in this collection.
+     *   Egy hivatkozás objektum, amelyet hozzá kell adni a gyüjteményhez.
      * @return static
      */
     public function withLink(LinkInterface $link);
 
     /**
-     * Returns an instance with the specified link removed.
+     * Visszaad egy olyan objektumpéldányt, amely a megadott LinkInterface objektumot
+     * már nem tartalmazza.
      *
-     * If the specified link is not present, this method MUST return normally
-     * without errors. The link is present if $link is === identical to a link
-     * object already in the collection.
+     * Ha a megadott hivatkozás nem létezik, akkor ennek a metódusnak hiba nélkül
+     * KELL visszatérnie. A LinkInterface objektum akkor létezik, ha a $link azonos
+     * (===) a gyüjteményben már megtalálható egyik LinkInterface objektummal.
      *
      * @param LinkInterface $link
-     *   The link to remove.
+     *   Egy hivatkozás objektum, amelyet el kell távolítani a gyüjteményből.
      * @return static
      */
     public function withoutLink(LinkInterface $link);
@@ -389,7 +399,7 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
 * <span id="note3">[[3]](#3)</span> *Az URI-sablonok nyomtatható unicode karakterekből
   álló karakterláncok, amelyek nulla vagy több beágyazott változó-kifejezést tartalmaznak.
   Minden kifejezést kapcsoszárójelek (`{` és `}`) határolnak. A részletes szintaxist
-  a vonatkozó RFC [2. fejezete](https://datatracker.ietf.org/doc/html/rfc6570#section-2) tárgyalja.
+  a vonatkozó RFC [2. fejezete](https://datatracker.ietf.org/doc/html/rfc6570#section-2) tárgyalja*.
 * <span id="note4">[[4]](#4)</span> *Az értékobjektum (vagy adatátviteli objektum, DTO)
   egy egyszerű (primitív) értéket reprezántáló kisebb, jellemzően immutable-típusú objektum.
   Értékobjektumok esetében két objektum egyenlősége nem azok identitásán, hanem a

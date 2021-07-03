@@ -30,8 +30,8 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 7   | [HTTP-üzenet interfész][psr7]       | Matthew Weier O'Phinney        | elfogadott   | magyar |
 | 11  | [Tároló interfész][psr11]         | Matthieu Napoli, David Négrier | elfogadott   | magyar |
 | 12  | [Bővített kódstílus útmutató][psr12]         | Korvin Szanto | elfogadott   | magyar |
-| 13  | [Hypermédia hivatkozások][psr13]            | Larry Garfield                 | elfogadott   | fordítás folyamatban |
-| 14  | [Esemény-kezelő][psr14]            | Larry Garfield                 | elfogadott   | angol |
+| 13  | [Hypermédia hivatkozások][psr13]            | Larry Garfield                 | elfogadott   | magyar |
+| 14  | [Esemény-kezelő][psr14]            | Larry Garfield                 | elfogadott   | fordítás folyamatban |
 | 15  | [HTTP-kezelők][psr15]               | Woody Gilk                     | elfogadott   | angol |
 | 16  | [Egyszerű gyorsítótár][psr16]                | Paul Dragoonis                 | elfogadott   | angol |
 | 17  | [HTTP-gyárak][psr17]              | Woody Gilk                     | elfogadott   | angol |
