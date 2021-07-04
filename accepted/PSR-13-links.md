@@ -20,7 +20,7 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 - [RFC 2119](../related-rfcs/2119.md)
 - [RFC 4287](https://tools.ietf.org/html/rfc4287)
 - [RFC 5988](https://tools.ietf.org/html/rfc5988)
-- [RFC 6570](https://tools.ietf.org/html/rfc6570)
+- [RFC 6570](../related-rfcs/6570.md)
 - [IANA Link Relations Registry](http://www.iana.org/assignments/link-relations/link-relations.xhtml)
 - [Microformats Relations List](http://microformats.org/wiki/existing-rel-values#HTML5_link_type_extensions)
 
@@ -100,7 +100,7 @@ abszolút URI-t KELL megadni.
 
 ### 1.4 Hivatkozás sablonok<sup id="3">[[3]](#note3)</sup>
 
-Az [RFC 6570](https://tools.ietf.org/html/rfc6570) meghatározza az URI-sablonok
+Az [RFC 6570](../related-rfcs/6570.md) meghatározza az URI-sablonok
 formátumát, ami lényegében egy olyan minta, amelyet az ügyfél eszköz által megadott
 értékekkel kell feltölteni. Némely hipermédia formátum támogatja a hivatkozás sablonokat,
 míg mások esetleg nem. Egyes hipermédia formátumok egyedi módon jelzik, hogy a
@@ -399,7 +399,7 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
 * <span id="note3">[[3]](#3)</span> *Az URI-sablonok nyomtatható unicode karakterekből
   álló karakterláncok, amelyek nulla vagy több beágyazott változó-kifejezést tartalmaznak.
   Minden kifejezést kapcsoszárójelek (`{` és `}`) határolnak. A részletes szintaxist
-  a vonatkozó RFC [2. fejezete](https://datatracker.ietf.org/doc/html/rfc6570#section-2) tárgyalja*.
+  a vonatkozó RFC [2. fejezete](../related-rfcs/6570.md) tárgyalja*.
 * <span id="note4">[[4]](#4)</span> *Az értékobjektum (vagy adatátviteli objektum, DTO)
   egy egyszerű (primitív) értéket reprezántáló kisebb, jellemzően immutable-típusú objektum.
   Értékobjektumok esetében két objektum egyenlősége nem azok identitásán, hanem a
