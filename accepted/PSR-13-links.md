@@ -399,7 +399,7 @@ interface EvolvableLinkProviderInterface extends LinkProviderInterface
 * <span id="note3">[[3]](#3)</span> *Az URI-sablonok nyomtatható unicode karakterekből
   álló karakterláncok, amelyek nulla vagy több beágyazott változó-kifejezést tartalmaznak.
   Minden kifejezést kapcsoszárójelek (`{` és `}`) határolnak. A részletes szintaxist
-  a vonatkozó RFC [2. fejezete](../related-rfcs/6570.md) tárgyalja*.
+  a vonatkozó RFC [2. fejezete](../related-rfcs/6570.md#2-szintaxis) tárgyalja*.
 * <span id="note4">[[4]](#4)</span> *Az értékobjektum (vagy adatátviteli objektum, DTO)
   egy egyszerű (primitív) értéket reprezántáló kisebb, jellemzően immutable-típusú objektum.
   Értékobjektumok esetében két objektum egyenlősége nem azok identitásán, hanem a
