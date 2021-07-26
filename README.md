@@ -83,13 +83,13 @@ A szabványokat 3 érettségi szintbe sorolják:
 * **[Internet Standard (internet szabvány)](https://www.rfc-editor.org/standards#IS)**
 
 
-|   RFC száma          | Típus/szint |      Ajánlás/szabvány tárgya  |
-|----------------------|:---------------------:|-------------------------------|
+|   RFC száma                      | Típus/szint |      Ajánlás/szabvány tárgya  |
+|----------------------------------|:---------------------:|-------------------------------|
 | [RFC 2119](related-rfcs/2119.md) | [BCP 14](https://www.rfc-editor.org/info/bcp14) leírás | Kulcsszavak az RFC-kben a követelmények szintjének jelzésére |
-| [RFC 5234](related-rfcs/5234.md) | [STD 68](https://www.rfc-editor.org/info/std68) néven internetes szabvány | Bővített Backus–Naur Forma (ABNF) |
 | [RFC 3986](related-rfcs/3986.md) | [STD 66](https://www.rfc-editor.org/info/std66) néven internetes szabvány | Egységes Erőforrás-azonosító (URI) |
+| [RFC 5234](related-rfcs/5234.md) | [STD 68](https://www.rfc-editor.org/info/std68) néven internetes szabvány | Bővített Backus–Naur Forma (ABNF) |
 | [RFC 5424](related-rfcs/5424.md) | Javasolt szabvány | Rendszernapló protokoll |
-
+| [RFC 6570](related-rfcs/6570.md) | Javasolt szabvány | URI-sablonok |
 
 
 
