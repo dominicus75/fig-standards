@@ -19,22 +19,22 @@ A PSR munkafolyamat-szabályzat szerint minden egyes PSR-ajánlás rendelkezik e
 A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat tartalmazza, a vázlatokat és a gazdátlanná vált dokumentumokat nem, ezek az [eredeti dokumentációban](https://github.com/php-fig/fig-standards) találhatók meg, angol nyelven.
 
 
-| Szám | Szabvány neve                                | Szerkesztő(k)                     | Állapot     | Nyelv |
-|:---:|--------------------------------------|--------------------------------|------------|----------|
-| 0   | [Önbetöltő szabvány][psr0]         | Matthew Weier O'Phinney        | elavult | magyar |
-| 1   | [Alapvető kódolási szabvány][psr1]        | Paul M. Jones                  | elfogadott   | magyar |
-| 2   | [Kódstílus útmutató][psr2]           | Paul M. Jones                  | elavult   | magyar |
-| 3   | [Naplózó interfész][psr3]             | Jordi Boggiano                 | elfogadott   | magyar |
-| 4   | [Önbetöltő szabvány][psr4]         | Paul M. Jones                  | elfogadott   | magyar |
-| 6   | [Gyorsítótár interfész][psr6]            | Larry Garfield                 | elfogadott   | magyar |
-| 7   | [HTTP-üzenet interfész][psr7]       | Matthew Weier O'Phinney        | elfogadott   | magyar |
-| 11  | [Tároló interfész][psr11]         | Matthieu Napoli, David Négrier | elfogadott   | magyar |
-| 12  | [Bővített kódstílus útmutató][psr12]         | Korvin Szanto | elfogadott   | magyar |
-| 13  | [Hypermédia hivatkozások][psr13]            | Larry Garfield                 | elfogadott   | magyar |
-| 14  | [Esemény-kezelő][psr14]            | Larry Garfield                 | elfogadott   | fordítás folyamatban |
-| 15  | [HTTP-kezelők][psr15]               | Woody Gilk                     | elfogadott   | angol |
-| 16  | [Egyszerű gyorsítótár][psr16]                | Paul Dragoonis                 | elfogadott   | angol |
-| 17  | [HTTP-gyárak][psr17]              | Woody Gilk                     | elfogadott   | angol |
+| Szám | Szabvány neve                       | Szerkesztő(k)                  | Állapot      | Nyelv  |
+|:---:|--------------------------------------|--------------------------------|--------------|--------|
+| 0   | [Önbetöltő szabvány][psr0]           | Matthew Weier O'Phinney        | elavult      | magyar |
+| 1   | [Alapvető kódolási szabvány][psr1]   | Paul M. Jones                  | elfogadott   | magyar |
+| 2   | [Kódstílus útmutató][psr2]           | Paul M. Jones                  | elavult      | magyar |
+| 3   | [Naplózó interfész][psr3]            | Jordi Boggiano                 | elfogadott   | magyar |
+| 4   | [Önbetöltő szabvány][psr4]           | Paul M. Jones                  | elfogadott   | magyar |
+| 6   | [Gyorsítótár interfész][psr6]        | Larry Garfield                 | elfogadott   | magyar |
+| 7   | [HTTP-üzenet interfész][psr7]        | Matthew Weier O'Phinney        | elfogadott   | magyar |
+| 11  | [Tároló interfész][psr11]            | Matthieu Napoli, David Négrier | elfogadott   | magyar |
+| 12  | [Bővített kódstílus útmutató][psr12] | Korvin Szanto                  | elfogadott   | magyar |
+| 13  | [Hypermédia hivatkozások][psr13]     | Larry Garfield                 | elfogadott   | magyar |
+| 14  | [Eseményirányító (Event Dispatcher)][psr14] | Larry Garfield          | elfogadott   | fordítás folyamatban |
+| 15  | [HTTP-kezelők][psr15]                | Woody Gilk                     | elfogadott   | angol |
+| 16  | [Egyszerű gyorsítótár][psr16]        | Paul Dragoonis                 | elfogadott   | angol |
+| 17  | [HTTP-gyárak][psr17]                 | Woody Gilk                     | elfogadott   | angol |
 | 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   | angol |
 
 

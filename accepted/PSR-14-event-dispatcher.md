@@ -1,36 +1,34 @@
 [Kezdőlap](../README.md)
 
-Event Dispatcher
-================
+# Eseményirányító (Event Dispatcher)
 
 Event Dispatching is a common and well-tested mechanism to allow developers to inject logic into an application easily and consistently.
 
 The goal of this PSR is to establish a common mechanism for event-based extension and collaboration so that libraries and components may be reused more freely between various applications and frameworks.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119][].
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-[RFC 2119]: http://tools.ietf.org/html/rfc2119
-
-## Goal
+## Cél
 
 Having common interfaces for dispatching and handling events allows developers to create libraries that can interact with many frameworks and other libraries in a common fashion.
 
-Some examples:
+Néhány példa:
 
 * A security framework that will prevent saving/accessing data when a user doesn't have permission.
 * A common full page caching system.
 * Libraries that extend other libraries, regardless of what framework they are both integrated into.
 * A logging package to track all actions taken within the application
 
-## Definitions
+## Meghatározások
 
-* **Event** - An Event is a message produced by an *Emitter*.  It may be any arbitrary PHP object.
-* **Listener** - A Listener is any PHP callable that expects to be passed an Event.  Zero or more Listeners may be passed the same Event.  A Listener MAY enqueue some other asynchronous behavior if it so chooses.
-* **Emitter** - An Emitter is any arbitrary code that wishes to dispatch an Event.  This is also known as the "calling code".  It is not represented by any particular data structure but refers to the use case.
-* **Dispatcher** - A Dispatcher is a service object that is given an Event object by an Emitter.  The Dispatcher is responsible for ensuring that the Event is passed to all relevant Listeners, but MUST defer determining the responsible listeners to a Listener Provider.
-* **Listener Provider** - A Listener Provider is responsible for determining what Listeners are relevant for a given Event, but MUST NOT call the Listeners itself.  A Listener Provider may specify zero or more relevant Listeners.
+* **Esemény (Event)** - An Event is a message produced by an *Emitter*.  It may be any arbitrary PHP object.
+* **Figyelő (Listener)** - A Listener is any PHP callable that expects to be passed an Event.  Zero or more Listeners may be passed the same Event.  A Listener MAY enqueue some other asynchronous behavior if it so chooses.
+* **Küldő (Emitter)** - An Emitter is any arbitrary code that wishes to dispatch an Event.  This is also known as the "calling code".  It is not represented by any particular data structure but refers to the use case.
+* **Irányító (Dispatcher)** - A Dispatcher is a service object that is given an Event object by an Emitter.  The Dispatcher is responsible for ensuring that the Event is passed to all relevant Listeners, but MUST defer determining the responsible listeners to a Listener Provider.
+* **Figyelő szolgáltató (Listener Provider)** - A Listener Provider is responsible for determining what Listeners are relevant for a given Event, but MUST NOT call the Listeners itself.  A Listener Provider may specify zero or more relevant Listeners.
 
-## Events
+## Események
 
 Events are objects that act as the unit of communication between an Emitter and appropriate Listeners.
 
@@ -40,13 +38,13 @@ Implementers MUST assume that the same object will be passed to all Listeners.
 
 It is RECOMMENDED, but NOT REQUIRED, that Event objects support lossless serialization and deserialization; `$event == unserialize(serialize($event))` SHOULD hold true.  Objects MAY leverage PHP’s `Serializable` interface, `__sleep()` or `__wakeup()` magic methods, or similar language functionality if appropriate.
 
-## Stoppable Events
+## Megállítható események
 
 A **Stoppable Event** is a special case of Event that contains additional ways to prevent further Listeners from being called.  It is indicated by implementing the `StoppableEventInterface`.
 
 An Event that implements `StoppableEventInterface` MUST return `true` from `isPropagationStopped()` when whatever Event it represents has been completed.  It is up to the implementer of the class to determine when that is.  For example, an Event that is asking for a PSR-7 `RequestInterface` object to be matched with a corresponding `ResponseInterface` object could have a `setResponse(ResponseInterface $res)` method for a Listener to call, which causes `isPropagationStopped()` to return `true`.
 
-## Listeners
+## Figyelők
 
 A Listener may be any PHP callable.  A Listener MUST have one and only one parameter, which is the Event to which it responds.  Listeners SHOULD type hint that parameter as specifically as is relevant for their use case; that is, a Listener MAY type hint against an interface to indicate it is compatible with any Event type that implements that interface, or to a specific implementation of that interface.
 
@@ -56,11 +54,11 @@ A Listener MAY delegate actions to other code. That includes a Listener being a 
 
 A Listener MAY enqueue information from the Event for later processing by a secondary process, using cron, a queue server, or similar techniques.  It MAY serialize the Event object itself to do so; however, care should be taken that not all Event objects may be safely serializable. A secondary process MUST assume that any changes it makes to an Event object will NOT propagate to other Listeners.
 
-## Dispatcher
+## Irányító
 
 A Dispatcher is a service object implementing `EventDispatcherInterface`.  It is responsible for retrieving Listeners from a Listener Provider for the Event dispatched, and invoking each Listener with that Event.
 
-A Dispatcher:
+Egy irányítónak:
 
 * MUST call Listeners synchronously in the order they are returned from a ListenerProvider.
 * MUST return the same Event object it was passed after it is done invoking Listeners.
@@ -74,13 +72,13 @@ A Dispatcher SHOULD assume that any Listener returned to it from a Listener Prov
 
 [Promise object]: https://promisesaplus.com/
 
-### Error handling
+### Hibakezelés
 
 An Exception or Error thrown by a Listener MUST block the execution of any further Listeners.  An Exception or Error thrown by a Listener MUST be allowed to propagate back up to the Emitter.
 
 A Dispatcher MAY catch a thrown object to log it, allow additional action to be taken, etc., but then MUST rethrow the original throwable.
 
-## Listener Provider
+## Figyelő szolgáltató
 
 A Listener Provider is a service object responsible for determining what Listeners are relevant to and should be called for a given Event.  It may determine both what Listeners are relevant and the order in which to return them by whatever means it chooses.  That MAY include:
 
@@ -109,11 +107,11 @@ function listener(A $event): void {};
 
 A Listener Provider MUST treat `listener()` as an applicable listener for `$b`, as it is type compatible, unless some other criteria prevents it from doing so.
 
-## Object composition
+## Objektum összeállítás
 
 A Dispatcher SHOULD compose a Listener Provider to determine relevant listeners.  It is RECOMMENDED that a Listener Provider be implemented as a distinct object from the Dispatcher but that is NOT REQUIRED.
 
-## Interfaces
+## Interfészek
 
 ```php
 namespace Psr\EventDispatcher;
