@@ -32,21 +32,25 @@ attól, hogy ezek mely keretrendszerbe vannak integrálva.
 
 ## Meghatározások
 
-* **Esemény (Event)** - An Event is a message produced by an *Emitter*.  It may be any arbitrary PHP object.
-* **Figyelő (Listener)** - A Listener is any PHP callable that expects to be passed an Event.  Zero or more
-Listeners may be passed the same Event.  A Listener MAY enqueue some other asynchronous behavior if it so chooses.
-* **Küldő (Emitter)** - An Emitter is any arbitrary code that wishes to dispatch an Event.  This is also
-known as the "calling code".  It is not represented by any particular data structure but refers to the use case.
-* **Irányító (Dispatcher)** - A Dispatcher is a service object that is given an Event object by an Emitter.
-The Dispatcher is responsible for ensuring that the Event is passed to all relevant Listeners, but MUST
-defer determining the responsible listeners to a Listener Provider.
-* **Figyelő szolgáltató (Listener Provider)** - A Listener Provider is responsible for
-determining what Listeners are relevant for a given Event, but MUST NOT call the
-Listeners itself.  A Listener Provider may specify zero or more relevant Listeners.
+* **Esemény (Event)** - egy *Küldő (Emitter)* által létrehozott üzenet, ami tetszőleges
+PHP objektum lehet.
+* **Figyelő (Listener)** - bármely olyan meghívható PHP-kód, amely egy esemény
+átadását várja. Nulla vagy több eseményfigyelő is feliratkozhat ugyanarra az eseményre.
+A figyelőnek LEHET más aszinkron viselkedést is előidézni.
+* **Küldő (Emitter)** - bármely tetszőleges kód, ami eseményt szeretne küldeni.
+"Hívó kódként" is ismert. Használati esetre és nem adatszerkezetre utal.
+* **Irányító (Dispatcher)** - egy olyan szolgáltatás-objektum (service), amelyet egy
+küldő ad meg egy eseményobjektum számára. Az irányító felelős azért, hogy biztosítsa
+az események eljuttatását az összes érintett figyelőnek, de az érintett figyelők
+meghatározását egy Figyelő szolgáltató (Listener Provider) objektumra KELL bízni.
+* **Figyelő szolgáltató (Listener Provider)** - felelős annak meghatározásáért, hogy
+mely figyelők érintettek egy adott eseményben, viszont magát a figyelőt TILOS meghívnia.
+A figyelő szolgáltató nulla vagy több releváns figyelőt adhat meg.
 
 ## Események
 
-Events are objects that act as the unit of communication between an Emitter and appropriate Listeners.
+Az események olyan objekjtumok, amelyek kommunikációs egységként működnek a küldő
+és a figyelő között.
 
 Event objects MAY be mutable should the use case call for Listeners providing information back to the Emitter.
 However, if no such bidirectional communication is needed then it is RECOMMENDED that the Event be
