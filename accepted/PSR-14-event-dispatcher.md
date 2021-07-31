@@ -26,8 +26,9 @@ Néhány példa:
 * Biztonsági keretrendszer, amely megakadályozza, hogy a felhasználók olyan
 adatokat mentsenek vagy érjenek el, amihez nincs jogosultságuk.
 * Közös teljes oldal gyorstárazási rendszer.
-* Libraries that extend other libraries, regardless of what framework they are both integrated into.
-* A logging package to track all actions taken within the application
+* Programkönyvtárak, amelyek más könyvtárak képességeit terjesztik ki, függetlenül
+attól, hogy ezek mely keretrendszerbe vannak integrálva.
+* Naplozó csomag az alkalmazáson belül végrehajtott összes művelet követésére.
 
 ## Meghatározások
 
