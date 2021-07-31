@@ -52,21 +52,26 @@ A figyelő szolgáltató nulla vagy több releváns figyelőt adhat meg.
 Az események olyan objekjtumok, amelyek kommunikációs egységként működnek a küldő
 és a figyelő között.
 
-Event objects MAY be mutable should the use case call for Listeners providing information back to the Emitter.
-However, if no such bidirectional communication is needed then it is RECOMMENDED that the Event be
-defined as immutable; i.e., defined such that it lacks mutator methods.
+Az eseményobjektum LEHET változtatható, ha a használati eset arra hívja a figyelőt,
+hogy információt küldjön vissza a küldőnek. Ha azonban nincs szükség ilyen kétirányú
+kommnikációra, akkor AJÁNLOTT, hogy az eseményodjektum megváltoztathatatlanként
+(immutable) legyen definiálva; azaz az objektum állapotát megváltoztató metódusok
+nélkül.
 
-Implementers MUST assume that the same object will be passed to all Listeners.
+A megvalósítóknak vállalniuk KELL, hogy ugyanazt az objektumot az összes figyelőnek
+el lehessen küldeni.
 
-It is RECOMMENDED, but NOT REQUIRED, that Event objects support lossless serialization
-and deserialization; `$event == unserialize(serialize($event))` SHOULD hold true.
-Objects MAY leverage PHP’s `Serializable` interface, `__sleep()` or `__wakeup()` magic
-methods, or similar language functionality if appropriate.
+AJÁNLOTT, de NEM SZÜKSÉGES, hogy az eseményobjektumok támogassák a veszteségmentes
+szerializációt és deszerializációt; az `$event == unserialize(serialize($event))`
+kódnak ezért `true` értéket KELLENE visszadnia. Az objektumoknak LEHET alkalmazni
+a PHP `Serializable` interfészét, a `__sleep()` vagy a `__wakeup()` mágikus
+metódusokat, illetve más hasonló nyelvi elemet.
 
 ## Megállítható események
 
-A **Stoppable Event** is a special case of Event that contains additional ways
-to prevent further Listeners from being called.  It is indicated by implementing the `StoppableEventInterface`.
+A **megállítható esemény** az események egy speciális esete, amely további módszereket
+tartalmaz annak megakadályozására, hogy megakadályozza további figyelők meghívását.
+Ezt a `StoppableEventInterface` implementálása jelzi.
 
 An Event that implements `StoppableEventInterface` MUST return `true` from `isPropagationStopped()` when
 whatever Event it represents has been completed.  It is up to the implementer of the class to
