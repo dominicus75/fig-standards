@@ -70,7 +70,7 @@ metódusokat, illetve más hasonló nyelvi elemet.
 ## Megállítható események
 
 A **megállítható esemény** az események egy speciális esete, amely további módszereket
-tartalmaz annak megakadályozására, hogy megakadályozza további figyelők meghívását.
+tartalmaz annak megakadályozására, hogy további figyelők kerüljenek meghívásra.
 Ezt a `StoppableEventInterface` implementálása jelzi.
 
 An Event that implements `StoppableEventInterface` MUST return `true` from `isPropagationStopped()` when
