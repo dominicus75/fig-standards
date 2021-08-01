@@ -47,7 +47,7 @@ meghatározását egy Figyelő szolgáltató (Listener Provider) objektumra KELL
 mely figyelők érintettek egy adott eseményben, viszont magát a figyelőt TILOS meghívnia.
 A figyelő szolgáltató nulla vagy több releváns figyelőt adhat meg.
 
-## Események
+## Események (Events)
 
 Az események olyan objekjtumok, amelyek kommunikációs egységként működnek a küldő
 és a figyelő között.
@@ -67,92 +67,109 @@ kódnak ezért `true` értéket KELLENE visszadnia. Az objektumoknak LEHET alkal
 a PHP `Serializable` interfészét, a `__sleep()` vagy a `__wakeup()` mágikus
 metódusokat, illetve más hasonló nyelvi elemet.
 
-## Megállítható események
+## Megállítható események (Stoppable Events)
 
 A **megállítható esemény** az események egy speciális esete, amely további módszereket
 tartalmaz annak megakadályozására, hogy további figyelők kerüljenek meghívásra.
 Ezt a `StoppableEventInterface` implementálása jelzi.
 
-An Event that implements `StoppableEventInterface` MUST return `true` from `isPropagationStopped()` when
-whatever Event it represents has been completed.  It is up to the implementer of the class to
-determine when that is.  For example, an Event that is asking for a PSR-7 `RequestInterface` object
-to be matched with a corresponding `ResponseInterface` object could have a `setResponse(ResponseInterface $res)`
-method for a Listener to call, which causes `isPropagationStopped()` to return `true`.
+Egy eseményobjektumban, amely implementálja a `StoppableEventInterface`-t, a
+`isPropagationStopped()` metódusnak KÖTELEZŐ `true` értéket visszaadni, amikor bármilyen,
+általa képviselt esemény befejeződött. Az osztály megvalósítójától függ, hogy ez
+mikor történik meg. Például egy olyan esemény, amelyik egy PSR-7 típusú `RequestInterface`
+objektumot vár, hogy megfeleltesse a megfelelő `ResponseInterface` objektummal,
+rendelkezhet egy `setResponse(ResponseInterface $res)` metódussal, amit a figyelő
+meghívhat, ez esetben a `isPropagationStopped()` metódus `true` értékkel tér vissza.
 
-## Figyelők
+## Figyelők (Listeners)
 
-A Listener may be any PHP callable.  A Listener MUST have one and only one parameter,
-which is the Event to which it responds.  Listeners SHOULD type hint that parameter
-as specifically as is relevant for their use case; that is, a Listener MAY type
-hint against an interface to indicate it is compatible with any Event type that
-implements that interface, or to a specific implementation of that interface.
+Figyelő lehet bármilyen meghívható PHP-kód (callable). A figyelőnek egy és csakis egy
+paraméterrel KELL rendelkeznie, ez az az esemény, amire válaszol. A figyelőknek
+AJÁNLOTT type hint-elni azt a paramétert, amelyik az ő használati esetükre vonatkozik,
+vagyis egy figyelőnek LEHET type hint-elni egy interfészt azért, hogy jelezze:
+kompatibilis valamennyi eseménytípussal, amelyik implementálja a jelzett interfészt,
+vagy az interfész egy konkrét megvalósításával.
 
-A Listener SHOULD have a `void` return, and SHOULD type hint that return explicitly.
-A Dispatcher MUST ignore return values from Listeners.
+A figyelőknek AJÁNLOTT érték visszaadása nélkül visszatérni (`void`) és ezt AJÁNLOTT
+kifejezetten jelezniük is a metódus szignatúrájában. Az irányítónak viszont
+KÖTELEZŐ figyelmenkivül hagynia a figyelő visszatérési értékét.
 
-A Listener MAY delegate actions to other code. That includes a Listener being a
-thin wrapper around an object that runs the actual business logic.
+Egy figyelőnek LEHET továbbdelegálnia bármely tevékenységet más kódnak. Ez magában
+foglalja azt is, hogy a figyelő tulajdonképpen egy burkoló (wrapper) azon objektum
+körül, amelyik a tényleges üzleti logikát tartalmazza.
 
-A Listener MAY enqueue information from the Event for later processing by a
-secondary process, using cron, a queue server, or similar techniques.  It MAY
-serialize the Event object itself to do so; however, care should be taken
-that not all Event objects may be safely serializable. A secondary process
-MUST assume that any changes it makes to an Event object will NOT propagate to other Listeners.
+Egy figyelőnek LEHET későbbi, másodlagos eljárással történő feldolgozás céljából
+besorolni az információkat. LEHET az eseményobjektumot magát szerializálni is, ügyelve
+arra, hogy nem minden eseményobjektum szerializálható biztonságosan. A másodlagos
+eljárásnak KÖTELEZŐ biztosítani, hogy az eseményobjektumon általa eszközölt bármilyen
+változás nem fog továbbterjedni más figyelőkre.
 
-## Irányító
+## Irányító (Dispatcher)
 
-A Dispatcher is a service object implementing `EventDispatcherInterface`.  It is
-responsible for retrieving Listeners from a Listener Provider for the Event dispatched, and invoking each Listener with that Event.
+Az irányító egy szolgáltatás objektum, amely implemetálja az `EventDispatcherInterface`
+interfészt. Ez felelős az eseménynek megfelelő figyelők lekéréséért a figyelő szolgáltató
+(Listener Provider) objektumtól és minden egyes figyelő meghívásáért az adott eseménnyel.
 
 Egy irányítónak:
 
-* MUST call Listeners synchronously in the order they are returned from a ListenerProvider.
-* MUST return the same Event object it was passed after it is done invoking Listeners.
-* MUST NOT return to the Emitter until all Listeners have executed.
+* abban a sorrendben KELL meghívnia a figyelőket, ahogy a figyelő szolgáltatótól
+megkapja őket.
+* ugyanazzal az eseményobjektummal KELL visszatérnie, amelyet a figyelő meghívása
+után megkapott.
+* TILOS visszatérnie a küldőhöz, amíg az összes figyelő le nem futott.
 
-If passed a Stoppable Event, a Dispatcher
+Ha egy leállítható esemény át lett adva a figyelőnek, akkor annak
 
-* MUST call `isPropagationStopped()` on the Event before each Listener has been called.
-If that method returns `true` it MUST return the Event to the Emitter immediately
-and MUST NOT call any further Listeners.  This implies that if an Event is passed
-to the Dispatcher that always returns `true` from `isPropagationStopped()`, zero listeners will be called.
+* KÖTELEZŐ meghívnia az `isPropagationStopped()` metódust az eseményen, mielőtt
+bármely figyelőt is meghívna. Ha ez a metódus `true` értékkel tér vissza, akkor
+azonnal vissza KELL adnia az eseményt a küldőnek és TILOS más további eseményfigyelőt
+meghívnia. Ez azt jelenti, hogy ha egy esemény el lett küldve az irányítónak, akkor
+annak mindig `true` értéket kell visszadni az `isPropagationStopped()` metódusból,
+valamint pontosan nulla figyelő fog meghívódni.
 
-A Dispatcher SHOULD assume that any Listener returned to it from a Listener
-Provider is type-safe.  That is, the Dispatcher SHOULD assume that calling `$listener($event)` will not produce a `TypeError`.
-
-[Promise object]: https://promisesaplus.com/
+Az irányítónak feltételeznie KELLENE, hogy a figyelő szolgáltató által visszaadott
+bármely figyelő típusbiztos. Vagyis, az irányítónak azt KELLENE feltételeznie, hogy
+a `$listener($event)` kód nem eredményez `TypeError`-t.
 
 ### Hibakezelés
 
-An Exception or Error thrown by a Listener MUST block the execution of any further Listeners.
-An Exception or Error thrown by a Listener MUST be allowed to propagate back up to the Emitter.
+A figyelő által dobott kivételnek vagy hibának blokkolnia KELL minden további figyelő
+végrehajtását. A figyelő által dobott kivételnek vagy hibának engednie KELL, hogy
+visszaterjedjen a kibocsátóhoz.
 
-A Dispatcher MAY catch a thrown object to log it, allow additional action to be taken, etc.,
-but then MUST rethrow the original throwable.
+Az irányítónak naplózás vagy más további művelet céljából LEHET dobott hibát vagy
+kivételt elkapnia, de ez után KÖTELEZŐ azt változatlan formában továbbdobnia.
 
-## Figyelő szolgáltató
+## Figyelő szolgáltató (Listener Provider)
 
-A Listener Provider is a service object responsible for determining what Listeners
-are relevant to and should be called for a given Event.  It may determine both what
-Listeners are relevant and the order in which to return them by whatever means it chooses.
+A figyelő szolgáltató egy szolgáltató-objektum, ami annak meghatározásáért felelős,
+hogy adott eseményhez mely eseményfigyelőt kell meghívni. Meghatározhatja, hogy
+mely figyelőket és milyen sorrendben kell meghívni. Ebbe a következőket LEHET
+beleérteni:
 
-That MAY include:
+* A regisztrációs mechanizmus bizonyos formáinak engedélyezése, hogy a megvalósítók
+rögzített sorrendben rendelhessenek figyelőket az eseményekhez.
+* Az alkalmazható eseményfigyelők listájának összeállítása a megvalósított esemény
+interfész és az esemény típusa alapján.
+* Az eseményfigyelők listájának idő előtti összeállítása, melyből futásidőben lehet
+tájékozódni.
+* A hozzáférés-szabályozás valamilyen formájának megvalósítása azért, hogy bizonyos
+figyelők csak akkor legyenek meghívhatók, ha az aktuális felhasználó rendelkezik
+a szükséges jogosultsággal.
+* Néhány információ kinyerése az esemény által hivatkozott objektumból, mint például
+egy entitás és előre meghatározott életciklus metódusok meghívása azon az objektumon.
+* A felelősség átruházása egy vagy több másik figyelő szolgáltató objektumra,
+tetszőleges logikát alkalmazva.
 
-* Allowing for some form of registration mechanism so that implementers may assign a Listener to an Event in a fixed order.
-* Deriving a list of applicable Listeners through reflection based on the type and implemented interfaces of the Event.
-* Generating a compiled list of Listeners ahead of time that may be consulted at runtime.
-* Implementing some form of access control so that certain Listeners will only be called if the current user has a certain permission.
-* Extracting some information from an object referenced by the Event, such as an Entity, and calling pre-defined lifecycle
-methods on that object.
-* Delegating its responsibility to one or more other Listener Providers using some arbitrary logic.
+A fentiek bármely kombinációja vagy akár más mechanizmus is TETSZŐLEGESEN alkalmazható.
 
-Any combination of the above, or other mechanisms, MAY be used as desired.
+A figyelő szolgáltatóknak AJÁNLOTT használni egy esemény osztálynevét, hogy meg
+tudják különböztetni azt a többitől. A figyelő szolgáltatóknak adott esetben figyelembe
+LEHET venni más információt is az eseményről.
 
-Listener Providers SHOULD use the class name of an Event to differentiate one event from another.
-They MAY also consider any other information on the event as appropriate.
-
-Listener Providers MUST treat parent types identically to the Event's own type when determining
-listener applicability.  In the following case:
+A figyelő szolgáltatóknak az esemény saját típusával azonos módon KELL kezelni a
+szülő típusokat is, amikor meghatározzák a figyelő alkalmazhatóságát. Mint a következő
+esetben:
 
 ```php
 class A {}
@@ -164,13 +181,14 @@ $b = new B();
 function listener(A $event): void {};
 ```
 
-A Listener Provider MUST treat `listener()` as an applicable listener for `$b`, as it is type
-compatible, unless some other criteria prevents it from doing so.
+A figyelő szolgáltatóknak KÖTELEZŐ `listener()`-t `$b` számára alkalmazható. típus
+kompatibilis figyelőként kezelni, hacsak valami más kritérim meg nem akadályozza ezt.
 
 ## Objektum összeállítás
 
-A Dispatcher SHOULD compose a Listener Provider to determine relevant listeners.  It is
-RECOMMENDED that a Listener Provider be implemented as a distinct object from the Dispatcher but that is NOT REQUIRED.
+Az irányítónak AJÁNLOTT összeállítania egy figyelő szolgáltatót a releváns figyelők
+meghatározására. AJÁNLOTT továbbá, hogy a figyelő szolgáltatót az irányítótól
+különböző objektumként valósítsák meg, de ez nem feltétlenül szükséges.
 
 ## Interfészek
 
@@ -178,18 +196,18 @@ RECOMMENDED that a Listener Provider be implemented as a distinct object from th
 namespace Psr\EventDispatcher;
 
 /**
- * Defines a dispatcher for events.
+ * Definiál egy irányítót az eseményekhez.
  */
 interface EventDispatcherInterface
 {
     /**
-     * Provide all relevant listeners with an event to process.
+     * Feldolgozható eseményt biztosít minden releváns figyelőnek.
      *
      * @param object $event
-     *   The object to process.
+     *   A feldolgozandó eseményobjektum.
      *
      * @return object
-     *   The Event that was passed, now modified by listeners.
+     *   Az átadott esemény, a figyelők által módosítva.
      */
     public function dispatch(object $event);
 }
@@ -199,16 +217,17 @@ interface EventDispatcherInterface
 namespace Psr\EventDispatcher;
 
 /**
- * Mapper from an event to the listeners that are applicable to that event.
+ * Feltérképezi az adott eseményhez alkalmazható figyelőket.
  */
 interface ListenerProviderInterface
 {
     /**
      * @param object $event
-     *   An event for which to return the relevant listeners.
+     *   egy esemény, amelyre megkapjuk az érintett figyelőket.
      * @return iterable[callable]
-     *   An iterable (array, iterator, or generator) of callables.  Each
-     *   callable MUST be type-compatible with $event.
+     *   Egy bejárható/iterable (array, iterator, vagy generator) adatszerkezet,
+     *   amely callable típusú elemeket tartalmaz. Minden hívható elemnek típus
+     *   kompatibilisnek KELL lennie az $event-el.
      */
     public function getListenersForEvent(object $event) : iterable;
 }
@@ -218,23 +237,23 @@ interface ListenerProviderInterface
 namespace Psr\EventDispatcher;
 
 /**
- * An Event whose processing may be interrupted when the event has been handled.
+ * Esemény, amelynek feldolgozása félbeszakadhat, amikor az eseményt lekezelték.
  *
- * A Dispatcher implementation MUST check to determine if an Event
- * is marked as stopped after each listener is called.  If it is then it should
- * return immediately without calling any further Listeners.
+ * Az irányító megvalósításának ellenőrizni KELL, hogy egy esemény megállíthatónak
+ * van-e jelölve, miután minden figyelőt meghívtak. Ha igen, akkor rögtön visszatérhet
+ * anélkül, hogy bármely további figyelőt meghívna.
  */
 interface StoppableEventInterface
 {
     /**
-     * Is propagation stopped?
+     * A továbbadás megállt?
      *
-     * This will typically only be used by the Dispatcher to determine if the
-     * previous listener halted propagation.
+     * Ezt az irányító jellemzően csak akkor fogja használni, ha az előző figyelő
+     * megállította az esemény továbbadását.
      *
      * @return bool
-     *   True if the Event is complete and no further listeners should be called.
-     *   False to continue calling listeners.
+     *   true, ha az esemény készen van és nincs további hívandó eseményfigyelő.
+     *   false, ha folytatni kell a figyelők meghívását.
      */
     public function isPropagationStopped() : bool;
 }
