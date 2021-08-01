@@ -181,7 +181,7 @@ $b = new B();
 function listener(A $event): void {};
 ```
 
-A figyelő szolgáltatóknak KÖTELEZŐ `listener()`-t `$b` számára alkalmazható. típus
+A figyelő szolgáltatóknak KÖTELEZŐ `listener()`-t `$b` számára alkalmazható, típus
 kompatibilis figyelőként kezelni, hacsak valami más kritérim meg nem akadályozza ezt.
 
 ## Objektum összeállítás
