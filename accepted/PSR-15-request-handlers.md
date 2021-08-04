@@ -4,7 +4,7 @@
 
 Ez a dokumentáció közös interfészeket ír le a HTTP szerver kéréskezelők („request handlers”)
 és a HTTP szerver köztesréteg („middleware”) számára, amelyek a  [PSR-7][psr7] vagy
-az ezt helyettesítő PSR-ekben leírt HTTP üzeneteket.
+az ezt helyettesítő PSR-ekben leírt HTTP üzeneteket használják.
 
 A HTTP kéréskezelők alapvető részei bármely webalkalmazásnak. A szerveroldali kód
 fogad egy kérés üzenetet, feldolgozza és válaszüzenetet állít elő. A HTTP köztesréteg
