@@ -1,82 +1,82 @@
 [Kezdőlap](../README.md)
 
-HTTP Server Request Handlers
-============================
+# HTTP szerver kéréskezelők
 
-This document describes common interfaces for HTTP server request handlers
-("request handlers") and HTTP server middleware components ("middleware")
-that use HTTP messages as described by [PSR-7][psr7] or subsequent
-replacement PSRs.
+Ez a dokumentáció közös interfészeket ír le a HTTP szerver kéréskezelők („request handlers”)
+és a HTTP szerver köztesréteg („middleware”) számára, amelyek a  [PSR-7][psr7] vagy
+az ezt helyettesítő PSR-ekben leírt HTTP üzeneteket.
 
-HTTP request handlers are a fundamental part of any web application. Server-side
-code receives a request message, processes it, and produces a response message.
-HTTP middleware is a way to move common request and response processing away from
-the application layer.
+A HTTP kéréskezelők alapvető részei bármely webalkalmazásnak. A szerveroldali kód
+fogad egy kérés üzenetet, feldolgozza és válaszüzenetet állít elő. A HTTP köztesréteg
+segítségével eltávolíthatjuk a gyakori kérések és válaszok feldolgozását az
+alkalmazásrétegből.
 
-The interfaces described in this document are abstractions for request handlers
-and middleware.
+A jelen dokumentumban leírt interfészek a kéréskezelők és a köztesréteg absztrakcióját
+tartalmazzák.
 
-_Note: All references to "request handlers" and "middleware" are specific to
-**server request** processing._
+*Megjegyzés: a kéréskezelőkre és a köztesrétegre való minden hivatkozás a **szerver kérések**
+feldolgozására vonatkozik.*
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][rfc2119].
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-[psr7]: http://www.php-fig.org/psr/psr-7/
-[rfc2119]: http://tools.ietf.org/html/rfc2119
+[psr7]: PSR-7-http-message.md/
+[rfc2119]: ../related-rfcs/2119.md
 
-### References
+### Referenciák
 
 - [PSR-7][psr7]
 - [RFC 2119][rfc2119]
 
-## 1. Specification
+## 1. Specifikáció
 
-### 1.1 Request Handlers
+### 1.1 Kéréskezelők
 
-A request handler is an individual component that processes a request and
-produces a response, as defined by PSR-7.
+A kéréskezelő olyan egyedi komponens, amely feldolgozza a HTTP kérést és a PSR-7
+szabványban leírtak szerint létrehozza a HTTP válasz üzenetet.
 
-A request handler MAY throw an exception if request conditions prevent it from
-producing a response. The type of exception is not defined.
+A kéréskezelőnek LEHET kivételt is dobnia, ha a kérés körülményei meggátolják a
+válasz előállításában. A kivétel típusa nincs meghatározva.
 
-Request handlers using this standard MUST implement the following interface:
+A jelen szabványt használó kéréskezelőknek KÖTELEZŐ megvalósítani a következő
+interfészt:
 
 - `Psr\Http\Server\RequestHandlerInterface`
 
-### 1.2 Middleware
+### 1.2 Köztesréteg
 
-A middleware component is an individual component participating, often together
-with other middleware components, in the processing of an incoming request and
-the creation of a resulting response, as defined by PSR-7.
+A köztesréteg komponens olyan egyedi komponens, amely gyakran más köztesréteg
+összetevőkkel együtt vesz részt a bejövő kérések feldolgozásában és a PSR-7 által
+meghatározott válasz létrehozásában.
 
-A middleware component MAY create and return a response without delegating to
-a request handler, if sufficient conditions are met.
+A köztesréteg komponensnek LEHET HTTP választ létrehozni és visszaadni anélkül,
+hogy ezt tovább delegálná a kéréskezelőnek, ha elegendő feltétel teljesül.
 
-Middleware using this standard MUST implement the following interface:
+A jelen szabványt használó köztesrétegnek KÖTELEZŐ megvalósítani a következő
+interfészt:
 
 - `Psr\Http\Server\MiddlewareInterface`
 
-### 1.3 Generating Responses
+### 1.3 Válaszüzenet generálása
 
-It is RECOMMENDED that any middleware or request handler that generates a response
-will either compose a prototype of a PSR-7 `ResponseInterface` or a factory capable
-of generating a `ResponseInterface` instance in order to prevent dependence on a
-specific HTTP message implementation.
+AJÁNLOTT, hogy bármely köztesréteg vagy kéréskezelő, amely HTTP választ állít elő,
+vagy a PSR-7 `ResponseInterface` egy prototípusát, vagy egy ilyet generálni képes
+gyártó példányt állítson össze, egy adott HTTP üzenet implementációtól való
+függés megelőzése érdekében.
 
-### 1.4 Handling Exceptions
+### 1.4 Kivételkezelés
 
-It is RECOMMENDED that any application using middleware includes a component
-that catches exceptions and converts them into responses. This middleware SHOULD
-be the first component executed and wrap all further processing to ensure that
-a response is always generated.
+AJÁNLOTT, hogy bármely köztesréteget használó alkalmazás tartalmazzon egy olyan
+komponenst is, amelyik elkapja a kivételeket és HTTP válaszokká alakítja őket.
+Ezen köztesrétegnek KELLENE az első futtatott összetevőnek lennie, amelynek meg
+kell szakítania minden további feldolgozást, bizosítandó, hogy a HTTP válasz mindig
+létrejön.
 
-## 2. Interfaces
+## 2. Interfészek
 
 ### 2.1 Psr\Http\Server\RequestHandlerInterface
 
-The following interface MUST be implemented by request handlers.
+Az alábbi interfészt a kéréskezelőknek KELL megvalósítani.
 
 ```php
 namespace Psr\Http\Server;
@@ -85,17 +85,16 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Handles a server request and produces a response.
+ * Kezeli a szerver kéréseket és létrehozza a HTTP választ.
  *
- * An HTTP request handler process an HTTP request in order to produce an
- * HTTP response.
+ * Egy HTTP kéréskezelő feldolgozza a HTTP kérést és létrehozza a HTTP választ.
  */
 interface RequestHandlerInterface
 {
     /**
-     * Handles a request and produces a response.
+     * Kezel egy kérést és előállítja a választ.
      *
-     * May call other collaborating code to generate the response.
+     * Hívhat további együttműködő kódokat is a válasz előállításához.
      */
     public function handle(ServerRequestInterface $request): ResponseInterface;
 }
@@ -103,7 +102,7 @@ interface RequestHandlerInterface
 
 ### 2.2 Psr\Http\Server\MiddlewareInterface
 
-The following interface MUST be implemented by compatible middleware components.
+Az alábbi interfészt a kompatibilis köztesréteg komponensekkel KELL megvalósítani.
 
 ```php
 namespace Psr\Http\Server;
@@ -112,20 +111,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Participant in processing a server request and response.
+ * Résztvesz a szerver kérés és válasz előállításában.
  *
- * An HTTP middleware component participates in processing an HTTP message:
- * by acting on the request, generating the response, or forwarding the
- * request to a subsequent middleware and possibly acting on its response.
+ * A HTTP köztesréteg komponens részt vesz a HTTP üzenet feldolgozásában:
+ * a kérésnek eleget téve előállítja a válasz üzenetet vagy továbbküldi a kérést
+ * a soronkövetkező köztesrétegnek és esetleg reagál annak válaszára.
  */
 interface MiddlewareInterface
 {
     /**
-     * Process an incoming server request.
+     * Bejövő szerver kérés feldolgozása.
      *
-     * Processes an incoming server request in order to produce a response.
-     * If unable to produce the response itself, it may delegate to the provided
-     * request handler to do so.
+     * Feldolgoz egy bejövő szerver kérést, azért, hogy előállítsa a választ.
+     * Ha képtelen maga választ előállítani, delegálhatja a kérést egy másik
+     * kéréskezelőnek, hogy az dolgozza fel.
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 }
