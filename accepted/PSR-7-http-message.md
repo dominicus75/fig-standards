@@ -3,7 +3,7 @@
 # HTTP üzenet interfészek
 
 Ez a dokumentum azokat a közös programozási felületeket írja le, amelyek az ide
-vonatkozó [RFC 7230](../related-rfcs/7230.md) és [RFC 7231](../related-rfcs/7231.md)
+vonatkozó [RFC 7230](https://datatracker.ietf.org/doc/html/rfc7230) és [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231)
 számú szabványok figyelembevételével ábrázolják a HTTP üzeneteket, különös tekintettel
 az [URI](https://hu.wikipedia.org/wiki/URI) komponensre, amelyet az [STD 66](../related-rfcs/3986.md)
 internetes szabvány határoz meg.
@@ -72,8 +72,8 @@ kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint �
 
 - [RFC 2119](../related-rfcs/2119.md)
 - [RFC 3986](../related-rfcs/3986.md)
-- [RFC 7230](../related-rfcs/7230.md)
-- [RFC 7231](../related-rfcs/7231.md)
+- [RFC 7230](https://datatracker.ietf.org/doc/html/rfc7230)
+- [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231)
 
 ## 1. Specifikáció
 
@@ -224,7 +224,7 @@ létrehozni és azt az üzenethez csatolni, az állapot érvényesítése érdek
 
 ### 1.4 A kérelmek célpontjai és az URI-k
 
-Az [RFC 7230](../related-rfcs/7230.md#53--request-target) előírja, hogy a kérelmek
+Az [RFC 7230](https://datatracker.ietf.org/doc/html/rfc7230#section-5.3) előírja, hogy a kérelmek
 első sorának ("request line") a metódus után tartalmaznia kell egy olyan szegmenst
 ami a kérés célját, vagyis annak az erőforrásnak az azonosítóját tartalmazza,
 amelyre a kérés irányul. A kérés célját az alább felsorolt formátumokban lehet
