@@ -34,8 +34,8 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 14  | [Eseményirányító (Event Dispatcher)][psr14] | Larry Garfield          | elfogadott   | magyar |
 | 15  | [HTTP-kezelők][psr15]                | Woody Gilk                     | elfogadott   | magyar |
 | 16  | [Egyszerű gyorsítótár][psr16]        | Paul Dragoonis                 | elfogadott   | magyar |
-| 17  | [HTTP-gyárak][psr17]                 | Woody Gilk                     | elfogadott   | fordítás folyamatban |
-| 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   | angol |
+| 17  | [HTTP-gyárak][psr17]                 | Woody Gilk                     | elfogadott   | magyar |
+| 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   | fordítás folyamatban |
 
 
 [psr0]: accepted/PSR-0.md
@@ -90,9 +90,4 @@ A szabványokat 3 érettségi szintbe sorolják:
 | [RFC 5234](related-rfcs/5234.md) | [STD 68](https://www.rfc-editor.org/info/std68) néven internetes szabvány | Bővített Backus–Naur Forma (ABNF) |
 | [RFC 5424](related-rfcs/5424.md) | Javasolt szabvány | Rendszernapló protokoll |
 | [RFC 6570](related-rfcs/6570.md) | Javasolt szabvány | URI-sablonok |
-
-
-
-
-
 

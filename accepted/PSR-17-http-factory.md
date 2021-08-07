@@ -1,39 +1,38 @@
 [Kezdőlap](../README.md)
 
-HTTP Factories
-==============
+# HTTP gyárak
 
-This document describes a common standard for factories that create [PSR-7][psr7]
-compliant HTTP objects.
+Ez a dokumentum egy [PSR-7][psr7] szerinti HTTP objektumok létrehozására alkalmas
+gyártó objektumot deklaráló közös szabványt ír le.
 
-PSR-7 did not include a recommendation on how to create HTTP objects, which leads
-to difficulties when needing to create new HTTP objects within components that are
-not tied to a specific implementation of PSR-7.
+A PSR-7 ugyanis nem tartalmazott a HTTP objektumok létrehozására vonatkozó ajánlást,
+ez pedig nehézségekhez vezet, amikor új HTTP objektumot kell létrehozni olyan
+összetevőkön belül, amelyek nem kapcsolódnak a PSR-7 egy konkrét megvalósításához.
 
-The interfaces outlined in this document describe methods by which PSR-7 objects
-can be instantiated.
+A jelen dokumentumban szereplő interfészek olyan metódusokat vázolnak fel, amelyekkel
+PSR-7 stílusú objektumokat lehet példányosítani.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][rfc2119].
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-[psr7]: https://www.php-fig.org/psr/psr-7/
-[rfc2119]: https://tools.ietf.org/html/rfc2119
+[psr7]: PSR-7-http-message.md/
+[rfc2119]: ../related-rfcs/2119.md
 
-## 1. Specification
+## 1. Specifikáció
 
-An HTTP factory is a method by which a new HTTP object, as defined by PSR-7,
-is created. HTTP factories MUST implement these interfaces for each object type
-that is provided by the package.
+A HTTP gyártó egy olyan metódus, amellyel új, PSR-7 szerinti HTTP objektumot lehet
+létrehozni. A HTTP gyáraknak KÖTELEZŐ megvalósítaniuk ezeket az interfészeket
+minden egyes objektumtípusra, amelyet a csomag biztosít.
 
 ## 2. Interfaces
 
-The following interfaces MAY be implemented together within a single class or
-in separate classes.
+A következő interfészeket meg LEHET valósítnai egyetlen közös osztályban, vagy
+különálló osztályokban is.
 
 ### 2.1 RequestFactoryInterface
 
-Has the ability to create client requests.
+Képes PSR-7 stílusú kliensoldali HTTP kérés objektumok létrehozására.
+
 
 ```php
 namespace Psr\Http\Message;
@@ -44,10 +43,10 @@ use Psr\Http\Message\UriInterface;
 interface RequestFactoryInterface
 {
     /**
-     * Create a new request.
+     * Létrehoz egy új RequestInterface típusú objektumpéldányt.
      *
-     * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request.
+     * @param string $method A kéréshez társított HTTP metódus.
+     * @param UriInterface|string $uri A kéréshez társított URI.
      */
     public function createRequest(string $method, $uri): RequestInterface;
 }
@@ -55,7 +54,7 @@ interface RequestFactoryInterface
 
 ### 2.2 ResponseFactoryInterface
 
-Has the ability to create responses.
+Képes PSR-7 stílusú HTTP válasz objektumok létrehozására.
 
 ```php
 namespace Psr\Http\Message;
@@ -65,12 +64,13 @@ use Psr\Http\Message\ResponseInterface;
 interface ResponseFactoryInterface
 {
     /**
-     * Create a new response.
+     * Létrehoz egy új ResponseInterface típusú objektumpéldányt.
      *
-     * @param int $code The HTTP status code. Defaults to 200.
-     * @param string $reasonPhrase The reason phrase to associate with the status code
-     *     in the generated response. If none is provided, implementations MAY use
-     *     the defaults as suggested in the HTTP specification.
+     * @param int $code            HTTP állapotkód. Alapértelmezett a 200.
+     * @param string $reasonPhrase Az állapotkódhoz társított szöveges indoklás a
+     *                             generált válaszban. Ha nincs megadva, az implementációknak LEHET
+     *                             a HTTP specifikáció által ajánlott alapértelmezett
+     *                             indiklásokat is használni.
      */
     public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface;
 }
@@ -78,7 +78,7 @@ interface ResponseFactoryInterface
 
 ### 2.3 ServerRequestFactoryInterface
 
-Has the ability to create server requests.
+Képes PSR-7 stílusú szerver request objektumok létrehozására.
 
 ```php
 namespace Psr\Http\Message;
@@ -89,16 +89,17 @@ use Psr\Http\Message\UriInterface;
 interface ServerRequestFactoryInterface
 {
     /**
-     * Create a new server request.
+     * Létrehoz egy új ServerRequestInterface típusú objektumpéldányt.
      *
-     * Note that server parameters are taken precisely as given - no parsing/processing
-     * of the given values is performed. In particular, no attempt is made to
-     * determine the HTTP method or URI, which must be provided explicitly.
+     * Megjegyzendő, hogy a szerver paraméterei pontosan a megadott módon lesznek
+     * rögzítve, az értékek feldolgozása/elemzése nem történik meg. Különösen
+     * arra nem tesznek kísérletet, hogy meghatározzák a HTTP metódust vagy az URI-t,
+     * ezeket ugyanis pontosan meg kell adni.
      *
-     * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request.
-     * @param array $serverParams An array of Server API (SAPI) parameters with
-     *     which to seed the generated request instance.
+     * @param string $method           A kéréshez tartozó HTTP metódus.
+     * @param UriInterface|string $uri A kéréshez tartozó URI.
+     * @param array $serverParams      A Server API (SAPI) paramétereinek tömbje, amellyel
+     *                                 a létrehozott válasz példányt inicializálni lehet.
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface;
 }
@@ -106,7 +107,7 @@ interface ServerRequestFactoryInterface
 
 ### 2.4 StreamFactoryInterface
 
-Has the ability to create streams for requests and responses.
+Képes PSR-7 stílusú adatfolyamok létrehozására HTTP kérés és válasz objektumok számára.
 
 ```php
 namespace Psr\Http\Message;
@@ -116,43 +117,44 @@ use Psr\Http\Message\StreamInterface;
 interface StreamFactoryInterface
 {
     /**
-     * Create a new stream from a string.
+     * String típusú bemenetből létrehoz egy új StreamInterface típusú objektumpéldányt.
      *
-     * The stream SHOULD be created with a temporary resource.
+     * Az adatfolyamot ideiglenes erőforrással KELLENE létrehozni.
      *
-     * @param string $content String content with which to populate the stream.
+     * @param string $content Szöveges tartalom, amellyel az adatfolyam megtöltendő.
      */
     public function createStream(string $content = ''): StreamInterface;
 
     /**
-     * Create a stream from an existing file.
+     * Létező állományból létrehoz egy új StreamInterface típusú objektumpéldányt.
      *
-     * The file MUST be opened using the given mode, which may be any mode
-     * supported by the `fopen` function.
+     * Az állományt a megadott módon KELL megnyitni, ami lehet bármilyen mód, amit
+     * a `fopen()` függvény támogat.
      *
-     * The `$filename` MAY be any string supported by `fopen()`.
+     * A `$filename` LEHET bármely string, amit támogat a `fopen()` függvény.
      *
-     * @param string $filename The filename or stream URI to use as basis of stream.
-     * @param string $mode The mode with which to open the underlying filename/stream.
+     * @param string $filename Az adatfolyam alapjául szolgáló állománynév vagy adatfolyam URI.
+     * @param string $mode     A mód, amellyel a mögöttes file/adatfolyam megnyitandó.
      *
-     * @throws \RuntimeException If the file cannot be opened.
-     * @throws \InvalidArgumentException If the mode is invalid.
+     * @throws \RuntimeException Ha az állomány nem nyitható meg.
+     * @throws \InvalidArgumentException Ha a megadott mód érvénytelen.
      */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface;
 
     /**
-     * Create a new stream from an existing resource.
+     * Létező erőforrásból létrehoz egy új StreamInterface típusú objektumpéldányt.
      *
-     * The stream MUST be readable and may be writable.
+     * At adatfolyamnak olvashatónak KELL lennie és az sem árt, ha írható.
      *
-     * @param resource $resource The PHP resource to use as the basis for the stream.
+     * @link https://www.php.net/manual/en/language.types.resource.php
+     * @param resource $resource Az adatfolyam alapjául szolgáló PHP resource.
      */
     public function createStreamFromResource($resource): StreamInterface;
 }
 ```
 
-Implementations of this interface SHOULD use a temporary stream when creating
-resources from strings. The RECOMMENDED method for doing so is:
+A jelen felület megvalósításainak ideiglenes adatfolyamot KELLENE alkalmazi, amikor
+string típusú bemenetből hoznak létre új erőforrást. Az AJÁNLOTT módszer ez:
 
 ```php
 $resource = fopen('php://temp', 'r+');
@@ -160,7 +162,7 @@ $resource = fopen('php://temp', 'r+');
 
 ### 2.5 UploadedFileFactoryInterface
 
-Has the ability to create streams for uploaded files.
+Képes adatfolyamok létrehozására feltöltött file objektumok számára.
 
 ```php
 namespace Psr\Http\Message;
@@ -171,22 +173,21 @@ use Psr\Http\Message\UploadedFileInterface;
 interface UploadedFileFactoryInterface
 {
     /**
-     * Create a new uploaded file.
+     * Léterhoz egy új UploadedFileInterface típusú objektumpéldányt.
      *
-     * If a size is not provided it will be determined by checking the size of
-     * the stream.
+     * Ha a méret nincs megadva, akkor az adatfolyam méretéből lesz megállapítva.
      *
      * @link http://php.net/manual/features.file-upload.post-method.php
      * @link http://php.net/manual/features.file-upload.errors.php
      *
-     * @param StreamInterface $stream The underlying stream representing the
-     *     uploaded file content.
-     * @param int $size The size of the file in bytes.
-     * @param int $error The PHP file upload error.
-     * @param string $clientFilename The filename as provided by the client, if any.
-     * @param string $clientMediaType The media type as provided by the client, if any.
+     * @param StreamInterface $stream  A feltöltött file tartalmát reprezentáló,
+     *                                 alapul szolgáló adatfolyam.
+     * @param int $size                Az állomány mérete byte-ban megadva.
+     * @param int $error               PHP file feltöltés hiba.
+     * @param string $clientFilename   A kliens által megadott állománynév, ha van.
+     * @param string $clientMediaType  A kliens által megadott médiatípus, ha van.
      *
-     * @throws \InvalidArgumentException If the file resource is not readable.
+     * @throws \InvalidArgumentException Ha a file erőforrás nem olvasható.
      */
     public function createUploadedFile(
         StreamInterface $stream,
@@ -200,7 +201,7 @@ interface UploadedFileFactoryInterface
 
 ### 2.6 UriFactoryInterface
 
-Has the ability to create URIs for client and server requests.
+Képes PSR-7 stílusú URI objektumok létrehozására kliens és szerver kérések számára.
 
 ```php
 namespace Psr\Http\Message;
@@ -210,11 +211,11 @@ use Psr\Http\Message\UriInterface;
 interface UriFactoryInterface
 {
     /**
-     * Create a new URI.
+     * Létrehoz egy új UriInterface típusú objektumpéldányt.
      *
-     * @param string $uri The URI to parse.
+     * @param string $uri Az értelmezendő URI.
      *
-     * @throws \InvalidArgumentException If the given URI cannot be parsed.
+     * @throws \InvalidArgumentException Ha a megadott URI nem értelmezhető.
      */
     public function createUri(string $uri = '') : UriInterface;
 }
