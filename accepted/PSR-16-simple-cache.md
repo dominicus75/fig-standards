@@ -1,137 +1,156 @@
 [Kezdőlap](../README.md)
 
-Common Interface for Caching Libraries
-======================================
+# Gyorsítótár programkönyvtárak közös interfésze
 
-This document describes a simple yet extensible interface for a cache item and
-a cache driver.
+Ez a dokumentum egy egyszerű, de bővíthető felületet ír le a gyorsítótár elem és
+a gyorsítótár illesztő számára.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119][].
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-The final implementations MAY decorate the objects with more
-functionality than the one proposed but they MUST implement the indicated
-interfaces/functionality first.
+A végső megvalósítók TETSZŐLEGESEN díszíthetik az objektumokat a javasoltnál több
+funkcionalitással, de először a előírt interfészeket/funkcionalitást KELL megvalósítaniuk.
 
-[RFC 2119]: http://tools.ietf.org/html/rfc2119
+## 1. Specifikáció
 
-# 1. Specification
+### 1.1 Bevezetés
 
-## 1.1 Introduction
+A [gyorsítótárazás/cache](https://www.letscode.hu/2015/02/05/cache-avagy-dugikeszletek)
+bevett mód bármely projekt teljesítménynövelésére, a különböző gyorsítótár
+megoldások számos keretrendszer és függvénykönyvtár legáltalánosabb szolgáltatásai.
 
-Caching is a common way to improve the performance of any project, making
-caching libraries one of the most common features of many frameworks and
-libraries. Interoperability at this level means libraries can drop their
-own caching implementations and easily rely on the one given to them by the
-framework, or another dedicated cache library.
+Az interoperábilitás ezen a szinten azt jelenti, hogy a programkönyvtárak dobhatják
+saját gyorsítótár implementációjukat és könnyedén támaszkodhatnak a keretrendszerre
+vagy más gyorsítótárnak szánt könyvtárra.
 
-PSR-6 solves this problem already, but in a rather formal and verbose way for
-what the most simple use cases need. This simpler approach aims to build a
-standardized streamlined interface for common cases. It is independent of
-PSR-6 but has been designed to make compatibility with PSR-6 as straightforward
-as possible.
+A PSR-6 már megoldotta ezt a problémát, de meglehetősen formális és bőbeszédű módon,
+még a legegyszerűbb használati esetknél is. Jelen PSR célja, hogy egyszerűbb,
+áramvonalasabb felületet építsen a gyakori esetekhez. Független a PSR-6 szabványtól,
+de úgy tervezték, hogy a PSR-6-al való kompatibilitás a lehető legegyszerűbb legyen.
 
-## 1.2 Definitions
+### 1.2 Alapfogalmak
 
-Definitions for Calling Library, Implementing Library, TTL, Expiration and Key
-are copied from PSR-6 as the same assumptions are true.
+A klienskód, a szolgáltató programkönyvtár, az élettartam, a lejárat és a kulcs
+fogalmának meghatározása megegyezik a PSR-6 szabványban foglaltakkal.
 
-*    **Calling Library** - The library or code that actually needs the cache
-services. This library will utilize caching services that implement this
-standard's interfaces, but will otherwise have no knowledge of the
-implementation of those caching services.
+*    **Hívó vagy kliens kód** - Az a programkönyvtár vagy kód, amelynek ténylegesen
+gyorsítótár szolgáltatásra van szüksége. Ez a kód fogja használni az ezen szabványos
+interfészt megvalósító gyorsítótár szolgáltatást, de egyébként nem lesz tudomása
+eme szolgáltatások megvalósításáról.
 
-*    **Implementing Library** - This library is responsible for implementing
-this standard in order to provide caching services to any Calling Library. The
-Implementing Library MUST provide a class implementing the Psr\SimpleCache\CacheInterface interface.
-Implementing Libraries MUST support at minimum TTL functionality as described
-below with whole-second granularity.
+*    **Megvalósító vagy szolgáltató programkönyvtár** - Ez a programkönyvtár felelős
+a jelen szabvány megvalósításáért és azért, hogy biztosítsa a gyorsítótárazó szolgáltatást
+a hívó vagy kliens kód számára. A szolgáltató programkönyvtárnak KELL biztosítania
+azokat az osztályokat, amelyek implementálják a `Psr\SimpleCache\CacheInterface`
+interfészt. A szolgáltató programkönyvtáraknak támogatniuk KELL legalább a TTL
+(élettartam, részletek alább) funkcionalitást.
 
-*    **TTL** - The Time To Live (TTL) of an item is the amount of time between
-when that item is stored and it is considered stale. The TTL is normally defined
-by an integer representing time in seconds, or a DateInterval object.
+*    **Élettartam** - Az egyes elemek élettartama (TTL) az az időtartam, amíg az
+adott elem tárolva van a gyorsítótárban és stabilnak tekinthető (nem változik).
+Az élettartamot általában egy másodperceket reprezentáló egész számmal szokás
+megadni, vagy egy rögzített időtartamot tároló
+[DateInterval](https://www.php.net/manual/en/class.dateinterval.php) objektummal.
 
-* **Expiration** - The actual time when an item is set to go stale. This is
-  calculated by adding the TTL to the time when an object is stored.
+*    **Lejárat** - Az a tényleges időpont, amikor egy elem lejár. Ezt rendszerint
+úgy számítják ki, hogy az elem gyorsítótárba helyezésének időpontjához hozzáadják
+az élettartamot (TTL), de kifejezetten beállítható a DateTime objektummal is.
 
-  An item with a 300 second TTL stored at 1:30:00 will have an expiration of 1:35:00.
+Ha egy elem élettartamát 300 másodpercre állítjuk és 1:30:00 időpontban helyezzük a
+gyorsítótárba, akkor 1:35:00-kor fog lejárni.
 
-  Implementing Libraries MAY expire an item before its requested Expiration Time,
-  but MUST treat an item as expired once its Expiration Time is reached. If a calling
-  library asks for an item to be saved but does not specify an expiration time, or
-  specifies a null expiration time or TTL, an Implementing Library MAY use a configured
-  default duration. If no default duration has been set, the Implementing Library
-  MUST interpret that as a request to cache the item forever, or for as long as the
-  underlying implementation supports.
+A szolgáltató programkönyvtáraknak LEHET egy elemet lejárttá tenni a kért lejárati
+idő előtt is, de a lejárati idő elérése után lejártként KELL kezelniük minden elemet.
+Ha a hívó kód kéri, hogy mentsen egy konkrét elemet, de nincs meghatározva lejárati
+idő, illetve az vagy az élettartam értéke `null`, akkor a szolgáltató programkönyvtárnak
+LEHET egy alapértelmezett időtartamot alkalmazni. Ha nincs beállítva alapértelmezett
+időtartam, akkor a szolgáltató programkönyvtárnak ezt úgy kell értelmezni, hogy
+az adott elem gyorsítótárazására irányuló kérelem örök időkre szól, vagy legalábbis
+addig, ameddig a mögöttes implementáció támogatja.
 
-  If a negative or zero TTL is provided, the item MUST be deleted from the cache
-  if it exists, as it is expired already.
+Ha negatív vagy nulla lejárati idő van megadva, akkor az elemet (ha létezik) törlöni
+KELL a gyorsítótárból, mert már lejárt.
 
-*    **Key** - A string of at least one character that uniquely identifies a
-cached item. Implementing libraries MUST support keys consisting of the
-characters `A-Z`, `a-z`, `0-9`, `_`, and `.` in any order in UTF-8 encoding and a
-length of up to 64 characters. Implementing libraries MAY support additional
-characters and encodings or longer lengths, but MUST support at least that
-minimum. Libraries are responsible for their own escaping of key strings
-as appropriate, but MUST be able to return the original unmodified key string.
-The following characters are reserved for future extensions and MUST NOT be
-supported by implementing libraries: `{}()/\@:`
+*    **Kulcs** - Legalább egy karakterből álló szöveg, amely egyedileg azonosítja
+a gyorstárazott elemet. A szolgáltató programkönyvtáraknak támogatniuk KELL az
+alfanumerikus karaktereket, aláhúzást és pontot bármilyen sorrendben tartalmazó,
+UTF-8 kódolású kulcsokat, melyek hossza nem haladja meg a 64 karaktert.
+A szolgáltató programkönyvtárak TETSZŐLEGESEN támogathatnak olyan kulcsokat is,
+amelyek a felsoroltakon kívül más karaktereket is tartalmaznak, nem UTF-8 a kódolásuk,
+vagy hosszabbak 64 karakternél, de csak a minimálisan elvárt követelmények teljesítésén felül.
+A szolgáltató programkönyvtárak felelősek szöveges kulcsaik megfelelő védőkarakterezéséért
+(szép magyar szóval: eszképelés), de képesnek KELL lenniük arra is, hogy
+visszaadják az eredeti, módosítatlan szöveges kulcsot. A következő karakterek fenn
+vannak tartva a szabvány jövendő kiterjesztései céljaira, ezért a szolgáltató
+programkönyvtáraknak NEM SZABAD támogatni a használatukat: `{}()/\@:`
 
-*    **Cache** - An object that implements the `Psr\SimpleCache\CacheInterface` interface.
+*    **Gyorsítótár (Cache)** - olyan objektum, amely implemetálja a `Psr\SimpleCache\CacheInterface`
+interfészt.
 
-*    **Cache Misses** - A cache miss will return null and therefore detecting
-if one stored `null` is not possible. This is the main deviation from PSR-6's
-assumptions.
+*    **Gyorsítótár hiányok** - A gyorsítótár hiány null értékkel fog visszatérni
+és ezért jelzi, hogy a `null` érték tárolása nem lehetséges. Ez a fő eltérés a PSR-6
+feltételeihez képest.
 
-## 1.3 Cache
+### 1.3 Gyorsítótár
 
-Implementations MAY provide a mechanism for a user to specify a default TTL
-if one is not specified for a specific cache item. If no user-specified default
-is provided implementations MUST default to the maximum legal value allowed by
-the underlying implementation. If the underlying implementation does not
-support TTL, the user-specified TTL MUST be silently ignored.
+Az implementációknak LEHET biztosítani egy olyan mechanizmust, amely segítségével
+a felhasználó beállíthatja az alapértelmezett lejárati időt, ha ez nincs beállítva
+az adott gyorsítótár elemhez. Ha nincs a felhasználó által megadott alapértelmezett
+lejárati idő, akkor az implementációnak KELL meghatároznia a mögöttes implementáció
+által megengedett értéket. Ha a mögöttes implemetáció nem támogatja a lejárati időt,
+akkor a felhasználó által beállított lejárati időt csendben figyelmenkívül KELL hagyni.
 
-## 1.4 Data
+### 1.4 Adat
 
-Implementing libraries MUST support all serializable PHP data types, including:
+A szolgáltató programkönyvtáraknak támogatniuk KELL az összes
+[szerializálható](http://nyelvek.inf.elte.hu/leirasok/PHP/index.php?chapter=10#section_3_19)
+PHP adattípust, különösen a következőket:
 
-*    **Strings** - Character strings of arbitrary size in any PHP-compatible encoding.
-*    **Integers** - All integers of any size supported by PHP, up to 64-bit signed.
-*    **Floats** - All signed floating point values.
-*    **Booleans** - True and False.
-*    **Null** - The null value (although it will not be distinguishable from a
-cache miss when reading it back out).
+*    **Karakterlánc** (string) - Tetszőleges méretű karakterláncok, bármely PHP-kompatibilis
+karakterkódolással.
+*    **Egész szám** (integer) - Bármilyen méretű, akár 64 biten ábrázolt a PHP által
+támogatott előjeles egész szám.
+*    **Lebegőpontos szám** (float) - Tizedes ponttal jelölt előjeles tört szám.
+*    **Logikai érték** (boolean) - Igaz (true) és hamis (false).
+*    **Null** - Null érték (bár nem lesz megkülönböztethető a gyorsítótár hiánytól).
 *    **Arrays** - Indexed, associative and multidimensional arrays of arbitrary depth.
-*    **Objects** - Any object that supports lossless serialization and
-deserialization such that $o == unserialize(serialize($o)). Objects MAY
-leverage PHP's Serializable interface, `__sleep()` or `__wakeup()` magic methods,
-or similar language functionality if appropriate.
+*    **Tömb** - Numerikusan vagy szövegesen indexelt, többdimenziós tömb, tetszőleges mélységben.
+*    **Objektum** - Bármely objektum, amely támogatja a veszteségmentes szerializációt
+és deszerializációt, oly módon, hogy `$objektum == unserialize(serialize($objektum))`
+kifejezés igaz legyen. Az objektumoknak ki LEHET használni a PHP [Serializable interfésze](https://www.php.net/manual/en/class.serializable.php)
+vagy a `__sleep()` illetve `__wakeup()` mágikus metódusok, esetleg más nyelvi eszközök
+által kínált funkcionalitást.
 
-All data passed into the Implementing Library MUST be returned exactly as
-passed. That includes the variable type. That is, it is an error to return
-(string) 5 if (int) 5 was the value saved. Implementing Libraries MAY use PHP's
-serialize()/unserialize() functions internally but are not required to do so.
-Compatibility with them is simply used as a baseline for acceptable object values.
+Minden a szolgáltató programkönyvtárnak átadott adatot úgy KELL visszaadni, ahogy
+átadásra került, különös tekintettel a változók típusára. Tehát ha a visszatérési
+érték ugyan 5, de a típusa szöveg, annak ellenére, hogy egész számként volt eltárolva,
+akkor az hibának számít. A szolgáltató programkönyvtáraknak LEHET alkalmazni a PHP
+[serialize()](https://www.php.net/manual/en/function.serialize.php) és [unserialize()](https://www.php.net/manual/en/function.unserialize.php) függvényeit,
+de nem kötelesek erre. A kompatibilitás érdekében egyszerűen csak alapértékként
+kell használni az elfogadható objektum értékeket.
 
-If it is not possible to return the exact saved value for any reason, implementing
-libraries MUST respond with a cache miss rather than corrupted data.
+Ha bármilyen okból nem lehetséges a mentett érték pontos visszaadása, akkor a
+jelen PSR-t megvalósító programkönyvtáraknak inkább gyorsítótár-hiánnyal KELL
+visszatérniük, mint az érvénytelen adattal.
 
-# 2. Interfaces
+## 2. Interfészek
 
-## 2.1 CacheInterface
+### 2.1 CacheInterface
 
-The cache interface defines the most basic operations on a collection of cache-entries, which
-entails basic reading, writing and deleting individual cache items.
+A gyorsítótár interfész meghatározza a gyorsítótár-bejegyzések gyűjteményén végezhető
+legalapvetőbb műveleteket, melyek magában foglalják az olvasást, írást és az elemek
+törlését.
 
-In addition, it has methods for dealing with multiple sets of cache entries such as writing, reading or
-deleting multiple cache entries at a time. This is useful when you have lots of cache reads/writes
-to perform, and lets you perform your operations in a single call to the cache server cutting down latency
-times dramatically.
+Továbbá rendelkezik a gyorsítótár bejegyzések többrészes gyüjteményét is kezelő
+metódusokkal, mint például a több gyorstár-bejegyzést egyszerre író, olvasó vagy
+törlő metódusok. Ez akkor hasznos, amikor sok cache olvasást/írást kell végrehajtani,
+mert lehetővé teszi hogy a műveleteket a gyorsítótár-kiszolgáló egyetlen hívásával
+lehessen végrehajtani, jelentősen lecsökkentve a várakozási időt.
 
-An instance of CacheInterface corresponds to a single collection of cache items with a single key namespace,
-and is equivalent to a "Pool" in PSR-6. Different CacheInterface instances MAY be backed by the same
-datastore, but MUST be logically independent.
+A CacheInterface egy példánya megfelel egy gyorsítótár-elem gyüjteménynek, egykulcsos
+névtérrel és egyenértékű a PSR-6 [Cache\CacheItemPoolInterface](PSR-6-cache.md#cacheitempoolinterface)-el.
+A különböző CacheInterface példányoknak LEHET ugyanaz az adatforrásuk, viszont
+logikailag függetlennek KELL lenniük egymástól.
+
 
 ~~~php
 <?php
@@ -141,116 +160,120 @@ namespace Psr\SimpleCache;
 interface CacheInterface
 {
     /**
-     * Fetches a value from the cache.
+     * Lekér egy értéket a gyorsítótárból.
      *
-     * @param string $key     The unique key of this item in the cache.
-     * @param mixed  $default Default value to return if the key does not exist.
+     * @param string $key     Az elemet a cache-ben azonosító egyedi kulcs.
+     * @param mixed  $default Alapértelmezett visszatérési érték, ha a kulcs nem létezik.
      *
-     * @return mixed The value of the item from the cache, or $default in case of cache miss.
+     * @return mixed Az elem értéke a cache-ből, vagy $default gyorsítótár-hiány esetén.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if the $key string is not a legal value.
+     *   Akkor KELL dobnia, ha a $key string nem érvényes érték.
      */
     public function get($key, $default = null);
 
     /**
-     * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
+     * Adatok megőrzése a cache-ben, opcionális lejárati idővel (TTL) rendelkező egyedi kulccsal.
      *
-     * @param string                 $key   The key of the item to store.
-     * @param mixed                  $value The value of the item to store. Must be serializable.
-     * @param null|int|\DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
-     *                                      the driver supports TTL then the library may set a default value
-     *                                      for it or let the driver take care of that.
+     * @param string                 $key   A tárolandó elem egyedi kulcsa.
+     * @param mixed                  $value A tárolandó elem értéke. Szerializálhatónak kell lennie.
+     * @param null|int|\DateInterval $ttl   Opcionális. Az elem lejárati ideje. Ha nincs érték megadva és
+     *                                      az illesztő támogatja a lejárati időt, akkor a könyvtár beállíthat
+     *                                      egy alapértelmezett értéket hozzá, vagy az illesztő
+     *                                      gondoskodik róla.
      *
-     * @return bool True on success and false on failure.
+     * @return bool True siker, false kudarc estenén.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if the $key string is not a legal value.
+     *   Akkor KELL dobnia, ha a $key string nem érvényes érték.
      */
     public function set($key, $value, $ttl = null);
 
     /**
-     * Delete an item from the cache by its unique key.
+     * A megadott egyedi kulccsal azonosított elem törlése a gyorsítótárból.
      *
-     * @param string $key The unique cache key of the item to delete.
+     * @param string $key A törlendő gyorsítótár-elem egyedi kulcsa.
      *
-     * @return bool True if the item was successfully removed. False if there was an error.
+     * @return bool True, ha az elem eltávolítása sikeres volt. False, ha valami hiba történt.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if the $key string is not a legal value.
+     *   Akkor KELL dobnia, ha a $key string nem érvényes érték.
      */
     public function delete($key);
 
     /**
-     * Wipes clean the entire cache's keys.
+     * Az egész gyorsítótár törlése.
      *
-     * @return bool True on success and false on failure.
+     * @return bool True siker, false kudarc estenén.
      */
     public function clear();
 
     /**
-     * Obtains multiple cache items by their unique keys.
+     * Több gyorsítótár-elem egyidejű lekérdezése a kulcsaik által.
      *
-     * @param iterable $keys    A list of keys that can obtained in a single operation.
-     * @param mixed    $default Default value to return for keys that do not exist.
+     * @param iterable $keys    Egy műveletben beszrzendő kulcsok listája.
+     * @param mixed    $default Alapértelmezett visszatérési érték, ha a ok nem léteznek.
      *
-     * @return iterable A list of key => value pairs. Cache keys that do not exist or are stale will have $default as value.
+     * @return iterable Egy kulcs => érték párokból álló lista. A nem létező, vagy
+     *   elavult gyorsítótár-kulcsok értéke $default lesz.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if $keys is neither an array nor a Traversable,
-     *   or if any of the $keys are not a legal value.
+     *   Akkor KELL eldobni, ha $keys típusa nem tömb, sem Traversable,
+     *   vagy ha a $keys bármelyik eleme nem érvényes érték.
      */
     public function getMultiple($keys, $default = null);
 
     /**
-     * Persists a set of key => value pairs in the cache, with an optional TTL.
+     * Kulcs => érték párok megőrzése a cache-ben, opcionális lejárati idővel (TTL).
      *
-     * @param iterable               $values A list of key => value pairs for a multiple-set operation.
-     * @param null|int|\DateInterval $ttl    Optional. The TTL value of this item. If no value is sent and
-     *                                       the driver supports TTL then the library may set a default value
-     *                                       for it or let the driver take care of that.
+     * @param iterable               $values Egy kulcs => érték párokból álló lista a többszörös beállítási művelethez.
+     * @param null|int|\DateInterval $ttl    Opcionális. Az elem lejárati ideje. Ha nincs érték megadva és
+     *                                       az illesztő támogatja a lejárati időt, akkor a könyvtár beállíthat
+     *                                       egy alapértelmezett értéket hozzá, vagy az illesztő
+     *                                       gondoskodik róla.
      *
-     * @return bool True on success and false on failure.
+     * @return bool True siker, false kudarc estenén.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if $values is neither an array nor a Traversable,
-     *   or if any of the $values are not a legal value.
+     *   Akkor KELL eldobni, ha $values típusa nem tömb, sem Traversable,
+     *   vagy ha a $values bármelyik eleme nem érvényes érték.
      */
     public function setMultiple($values, $ttl = null);
 
     /**
-     * Deletes multiple cache items in a single operation.
+     * Több cache-elem egyetlen műveletben történő törlése.
      *
-     * @param iterable $keys A list of string-based keys to be deleted.
+     * @param iterable $keys A törlendő elemek kulcsainak szöveges alapú listája.
      *
-     * @return bool True if the items were successfully removed. False if there was an error.
+     * @return bool True, ha az elemek eltávolítása sikeres volt. False, ha valami hiba történt.
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if $keys is neither an array nor a Traversable,
-     *   or if any of the $keys are not a legal value.
+     *   Akkor KELL eldobni, ha $keys típusa nem tömb, sem Traversable,
+     *   vagy ha a $keys bármelyik eleme nem érvényes érték.
      */
     public function deleteMultiple($keys);
 
     /**
-     * Determines whether an item is present in the cache.
+     * Meghatározza, hogy egy elem jelen van-e a gyorsítótárban.
      *
-     * NOTE: It is recommended that has() is only to be used for cache warming type purposes
-     * and not to be used within your live applications operations for get/set, as this method
-     * is subject to a race condition where your has() will return true and immediately after,
-     * another script can remove it, making the state of your app out of date.
+     * Megjegyzés: Ajánlatos, hogy a has() csak cache előmelegítésére legyen használva
+     * és ne alkalmazzuk éles alakalmazásban a get/set műveletekhez. Mivel ez a metódus
+     * amikor true-val tér vissza, majd közvetlenül ez után egy másik script esetleg
+     * eltávolítja az imént megtalált elemet, ez olyan versenyhelyzethez vezet, ami
+     * az alkalmazás állapotát elavultá teheti.
      *
-     * @param string $key The cache item key.
+     * @param string $key A keresett elem kulcsa.
      *
      * @return bool
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     *   MUST be thrown if the $key string is not a legal value.
+     *   Akkor KELL dobnia, ha a $key string nem érvényes érték.
      */
     public function has($key);
 }
 ~~~
 
-## 2.2 CacheException
+### 2.2 CacheException
 
 ~~~php
 
@@ -259,14 +282,14 @@ interface CacheInterface
 namespace Psr\SimpleCache;
 
 /**
- * Interface used for all types of exceptions thrown by the implementing library.
+ * Az összes olyan kivételtípus őse, amelyet a megvalósító könyvtár dobhat.
  */
 interface CacheException
 {
 }
 ~~~
 
-## 2.3 InvalidArgumentException
+### 2.3 InvalidArgumentException
 
 ~~~php
 <?php
@@ -274,10 +297,10 @@ interface CacheException
 namespace Psr\SimpleCache;
 
 /**
- * Exception interface for invalid cache arguments.
+ * Kivétel interfész érvénytelen gyorsítótár paraméterekhez.
  *
- * When an invalid argument is passed, it must throw an exception which implements
- * this interface.
+ * Amikor egy érvénytelen argumentum kerül átadásra, a jelen interfészt megvalósítóknak
+ * ilyen kivételt kell dobni.
  */
 interface InvalidArgumentException extends CacheException
 {

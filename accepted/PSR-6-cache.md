@@ -20,8 +20,8 @@ számíthatnak arra, hogy a gyorsítótárazó rendszerek az elvárt módon fogn
 míg ezen rendszerek fejlesztőinek csupán egyetlen programozási felületet kell
 megvalósítani, adapterek sokaságának megírása helyett.
 
-A csupa nagybetűvel szedett kiemelt kulcsszavak ebben a leírásban az
-[RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
 ## Cél
 
@@ -109,8 +109,9 @@ PHP adattípust, különösen a következőket:
 
 *    **Karakterlánc** (string) - Tetszőleges méretű karakterláncok, bármely PHP-kompatibilis
 karakterkódolással.
-*    **Egész szám** (integer) - Bármilyen méretű, akár 64 biten ábrázolt a PHP által támogatott egész szám.
-*    **Lebegőpontos szám** (float) - Tizedes ponttal jelölt tört szám.
+*    **Egész szám** (integer) - Bármilyen méretű, akár 64 biten ábrázolt a PHP által
+támogatott előjeles egész szám.
+*    **Lebegőpontos szám** (float) - Tizedes ponttal jelölt előjeles tört szám.
 *    **Logikai érték** (boolean) - Igaz (true) és hamis (false).
 *    **Null** - Tényleges null érték.
 *    **Tömb** - Numerikusan vagy szövegesen indexelt, többdimenziós tömb, tetszőleges mélységben.
