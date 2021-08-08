@@ -1,74 +1,85 @@
 [Kezdőlap](../README.md)
 
-HTTP Client
-===========
+# HTTP ügyfél
 
-This document describes a common interface for sending HTTP requests and receiving HTTP responses.
+Ez a dokumentum egy olyan közös felületet ír le, amely képes HTTP kéréseket küldeni
+és HTTP válaszüzeneteket fogadni.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in [RFC 2119](http://tools.ietf.org/html/rfc2119).
+A csupa nagybetűvel szedett, a követelmények szintjének jelzésére szolgáló kiemelt
+kulcsszavak ebben a leírásban az [RFC 2119](../related-rfcs/2119.md) szerint értelmezendők.
 
-## Goal
+## Cél
 
-The goal of this PSR is to allow developers to create libraries decoupled from HTTP client
-implementations. This will make libraries more reusable as it reduces the number of
-dependencies and lowers the likelihood of version conflicts.
+E PSR célja, hogy lehetővé tegye a fejlesztők számára a HTTP ügyfél implementációktól
+független programkönyvtár létrehozását. Ez a könyvtárakat még inkább újrafelhasználhatóvá
+teszi az által, hogy csökkenti a függőségek számát és a verzióütközések valószínűségét.
 
-A second goal is that HTTP clients can be replaced as per the
-[Liskov substitution principle][Liskov]. This means that all clients MUST behave in the
-same way when sending a request.
+Másodlagos cél, hogy a HTTP ügyfelek a [Liskov helyettesítési elvnek][Liskov] megfelelően
+cserélhetőek legyenek. Ez azt jelenti, hogy az összes ügyfélnek azonos módon KELL
+viselkednie a HTTP kérés elküldésekor.
 
-## Definitions
+## Meghatározások
 
-* **Client** - A Client is a library that implements this specification for the purposes of
-sending PSR-7-compatible HTTP Request messages and returning a PSR-7-compatible HTTP Response message to a Calling library.
-* **Calling Library** - A Calling Library is any code that makes use of a Client.  It does not implement
-this specification's interfaces but consumes an object that implements them (a Client).
+* **Ügyfél (kliens)** - olyan könyvtár, amely PSR-7 kompatibilis HTTP kérés üzenetek
+küldése és HTTP válasz üzenetek hívónak történő visszaadása céljából megvalósítja
+ezt a specifikációt.
+* **Hívó kód** - bármely kód, amely használja az ügyfél szolgálatait. Nem valósítja
+meg a jelen specifikáció interfészeit, de olyan objektumot vesz igénybe, amelyik
+implementálja őket (ez az ügyfél vagy kliens).
 
-## Client
+## Ügyfél
 
-A Client is an object implementing `ClientInterface`.
+Az ügyfél egy olyan objektum, amely megvalósítja a `ClientInterface`-t.
 
-A Client MAY:
+Az ügyfél által VÁLASZTHATÓ lehetőségek:
 
-* Choose to send an altered HTTP request from the one it was provided. For example, it could
-compress an outgoing message body.
-* Choose to alter a received HTTP response before returning it to the calling library. For example, it could
-decompress an incoming message body.
+* küldhet egy módosított HTTP kérést. Például tömörítheti a kimenő üzenet törzsét.
+* módosíthatja a kapott HTTP választ, mielőtt visszadja a hívó kódnak. Például
+kitömörítheti a bejövő üzenet törzsét.
 
-If a Client chooses to alter either the HTTP request or HTTP response, it MUST ensure that the
-object remains internally consistent.  For example, if a Client chooses to decompress the message
-body then it MUST also remove the `Content-Encoding` header and adjust the `Content-Length` header.
+Ha az ügyfél a HTTP kérés vagy HTTP válasz módosítását választja, akkor biztosítania
+KELL azt, hogy az objektum belsőleg konzisztens maradjon. Például ha az ügyfél
+úgy dönt, hogy kitömöríti az üzenet törzsét, akkor el KELL távolítania a `Content-Encoding`
+fejlécet és frissítnei a `Content-Length` fejlécet.
 
-Note that as a result, since [PSR-7 objects are immutable](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message-meta.md#why-value-objects),
-the Calling Library MUST NOT assume that the object passed to `ClientInterface::sendRequest()` will be the same PHP object
-that is actually sent. For example, the Request object that is returned by an exception MAY be a different object than
-the one passed to `sendRequest()`, so comparison by reference (===) is not possible.
+Megjegyzendő, hogy ennek eredményeként, mivel a PSR-7 objektumok megváltoztathatatlanok,
+a hívó kódnak TILOS feltételezni, hogy a `ClientInterface::sendRequest()` metódusnak
+átadott objektum ugyanaz a PHP objektum lesz, amit ténylegesen elküldtek. Például
+a kivétel által visszaadott HTTP kérés objektum LEHET, hogy különbözni fog attól,
+amit a `sendRequest()` metódus megkapott, ezért a referencia szerinti (`===`)
+összehasonlítás nem lehetséges.
 
-A Client MUST:
+Az ügyfél KÖTELES:
 
-* Reassemble a multi-step HTTP 1xx response itself so that what is returned to the Calling Library is a valid HTTP response
-of status code 200 or higher.
+* újra összeállítani egy többlépéses HTTP 1xx választ úgy, hogy ha visszaküldésre
+kerül a hívó kódnak, érvényes HTTP válasz legyen, 200-as vagy magasabb állapotkóddal.
 
-## Error handling
+## Hibakezelés
 
-A Client MUST NOT treat a well-formed HTTP request or HTTP response as an error condition. For example, response
-status codes in the 400 and 500 range MUST NOT cause an exception and MUST be returned to the Calling Library as normal.
+Az ügyfélnek TILOS hibaállapotként kezelni a jól formázott HTTP kérés és válasz
+üzeneteket. Például ha a válasz állapotkódja 400 és 500 közti tartományban van,
+akkor ennek TILOS kivételt kiváltania és a választ normál módon KELL visszaküldeni
+a hívónak.
 
-A Client MUST throw an instance of `Psr\Http\Client\ClientExceptionInterface` if and only if it is unable to send
-the HTTP request at all or if the HTTP response could not be parsed into a PSR-7 response object.
+Az ügyfélnek egy `Psr\Http\Client\ClientExceptionInterface` példányt KELL dobnia,
+ha és csakis akkor, ha egyáltalán nem képes elküldeni a HTTP kérést, vagy ha a HTTP
+válasz nem értelmezhető PSR-7 HTTP válasz objektumként.
 
-If a request cannot be sent because the request message is not a well-formed HTTP request or is missing some critical
-piece of information (such as a Host or Method), the Client MUST throw an instance of `Psr\Http\Client\RequestExceptionInterface`.
+Ha a kérést nem lehet elküldeni, mert a kérés üzenet nem megfelelően formázott
+HTTP kérés, vagy hiányzik belőle néhány kritikus információ (mint például a Host
+vagy a HTTP metódus), akkor az ügyfélnek egy `Psr\Http\Client\RequestExceptionInterface`
+példányt KELL dobnia.
 
-If the request cannot be sent due to a network failure of any kind, including a timeout, the Client MUST throw an
-instance of `Psr\Http\Client\NetworkExceptionInterface`.
+Ha a kérés hálózati, vagy bármiféle hiba (ideértve az időtúllépést) következtében
+nem elküldhető, akkor az ügyfélnek egy `Psr\Http\Client\NetworkExceptionInterface`
+példányt KELL dobnia.
 
-Clients MAY throw more specific exceptions than those defined here (a `TimeOutException` or `HostNotFoundException` for
-example), provided they implement the appropriate interface defined above.
+Az ügyfélnek LEHET további specifikus kivételeket is dobnia, mint az itt defináltak
+(pl. a `TimeOutException` vagy `HostNotFoundException`), feltéve, hogy azok megvalósítják
+a fentebb meghatározott interfészt (vagyis a kivétel a `Psr\Http\Client\ClientExceptionInterface`
+interfészből vagy valamely leszármazottjából származik).
 
-## Interfaces
+## Interfészek
 
 ### ClientInterface
 
@@ -81,13 +92,13 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
-     * Sends a PSR-7 request and returns a PSR-7 response.
+     * Elküld egy PSR-7 kérést és visszatér egy PSR-7 válasszal.
      *
      * @param RequestInterface $request
      *
      * @return ResponseInterface
      *
-     * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
+     * @throws \Psr\Http\Client\ClientExceptionInterface Ha hiba merül fel a kérés feldolgozása közben.
      */
     public function sendRequest(RequestInterface $request): ResponseInterface;
 }
@@ -99,7 +110,8 @@ interface ClientInterface
 namespace Psr\Http\Client;
 
 /**
- * Every HTTP client related exception MUST implement this interface.
+ * Minden HTTP ügyfélhez kapcsolódó kivételnek meg KELL valósítania ezt az interfészt,
+ * vagyis ebből kell leszármaztatni.
  */
 interface ClientExceptionInterface extends \Throwable
 {
@@ -114,18 +126,19 @@ namespace Psr\Http\Client;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Exception for when a request failed.
+ * Kivétel sikertelen HTTP kérés esetén.
  *
- * Examples:
- *      - Request is invalid (e.g. method is missing)
- *      - Runtime request errors (e.g. the body stream is not seekable)
+ * Példák:
+ *      - A kérés érvénytelen (pl. hiányzik a HTTP metódus)
+ *      - Futásidejű kérés hibák (pl. a kéréstörzs-adatfolyama nem kereshető)
  */
 interface RequestExceptionInterface extends ClientExceptionInterface
 {
     /**
-     * Returns the request.
+     * Visszaadja a kérést.
      *
-     * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
+     * A kérés objektum LEHET más, mint a ClientInterface::sendRequest()
+     * metódusnak átadott.
      *
      * @return RequestInterface
      */
@@ -141,18 +154,19 @@ namespace Psr\Http\Client;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Thrown when the request cannot be completed because of network issues.
+ * Akkor dobandó, ha a kérést hálózati problémák miatt nem lehet végrehajtani.
  *
- * There is no response object as this exception is thrown when no response has been received.
+ * Nincs válaszobjektum, mivel ez a kivétel akkor dobandó, ha nem érkezett válasz.
  *
- * Example: the target host name can not be resolved or the connection failed.
+ * Példa: a célgép nevét nem sikerült feloldani vagy a kapcsolat megszakadt.
  */
 interface NetworkExceptionInterface extends ClientExceptionInterface
 {
     /**
-     * Returns the request.
+     * Visszaadja a kérést.
      *
-     * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
+     * A kérés objektum LEHET más, mint a ClientInterface::sendRequest()
+     * metódusnak átadott.
      *
      * @return RequestInterface
      */
@@ -160,6 +174,6 @@ interface NetworkExceptionInterface extends ClientExceptionInterface
 }
 ```
 
-[Liskov]: https://en.wikipedia.org/wiki/Liskov_substitution_principle
+[Liskov]: https://letscode.hu/2016/07/05/betonozas-3-0-liskov-es-haverok/
 
 [Kezdőlap](../README.md)

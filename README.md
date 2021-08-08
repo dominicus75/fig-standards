@@ -35,7 +35,7 @@ A jelen fordítás csak a már elfogadott (esetleg már elavult) ajánlásokat t
 | 15  | [HTTP-kezelők][psr15]                | Woody Gilk                     | elfogadott   | magyar |
 | 16  | [Egyszerű gyorsítótár][psr16]        | Paul Dragoonis                 | elfogadott   | magyar |
 | 17  | [HTTP-gyárak][psr17]                 | Woody Gilk                     | elfogadott   | magyar |
-| 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   | fordítás folyamatban |
+| 18  | [HTTP-kliens][psr18]                 | Tobias Nyholm                  | elfogadott   | magyar |
 
 
 [psr0]: accepted/PSR-0.md
